@@ -11,16 +11,16 @@ const { gsap } = window;
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const sh = (m, cast = true, recv = true) => { m.castShadow = cast; m.receiveShadow = recv; return m; };
 
-/* ---------- colours per theme (no gold: navy, ivory, claret, silver) ---------- */
+/* ---------- colours per theme (from the logo: navy, cream, gold) ---------- */
 const THEMES = {
-  light: { bg:0xF6F2EA, heroBg:0x1A2340, pages:0x1F2A44, heroPages:0xEFE8DA, star:0x9E3346, starGlow:0x000000, ribbon:0x2B3656, heroRibbon:0xC9CEDB,
-           wall:0xF5F0E6, roof:0x27314A, trim:0xA9AFBE, lawn:0xE6E0D2, plinth:0xECE6D9, leaf:0x46594A, trunk:0x6B5A48,
-           win:0x27314A, winGlow:0x000000, sketch:0x6D78A6, shadow:.14, hemi:.95, key:1.9, env:.8, starLight:0, glass:0xFFFFFF, cloud:0xFFFFFF, lamp:0x000000 },
-  dark:  { bg:0x0E1120, heroBg:0x121830, pages:0xEDE5D3, heroPages:0xEFE8DA, star:0xC4566A, starGlow:0x3A0E18, ribbon:0xC9CEDB, heroRibbon:0xC9CEDB,
-           wall:0x2A2E3A, roof:0x141826, trim:0x8D95A8, lawn:0x1D2130, plinth:0x1A1E2B, leaf:0x24342B, trunk:0x3A3128,
-           win:0xFFD9A0, winGlow:0xD9963A, sketch:0x8A94C4, shadow:.42, hemi:.38, key:.85, env:.45, starLight:6, glass:0x8A8FA8, cloud:0x283049, lamp:0xFFC47A }
+  light: { bg:0xF6F2E7, heroBg:0x13233A, pages:0x182D47, heroPages:0xF3EDDF, star:0xBE9D5E, starGlow:0x000000, ribbon:0x2A3F5C, heroRibbon:0xD9C8A0,
+           wall:0xF6F1E6, roof:0x1E3350, trim:0xB89A60, lawn:0xE7E1D2, plinth:0xEDE7DA, leaf:0x46594A, trunk:0x6B5A48,
+           win:0x1E3350, winGlow:0x000000, sketch:0x5C708E, shadow:.14, hemi:.95, key:1.9, env:.8, starLight:0, glass:0xFFFFFF, cloud:0xFFFFFF, lamp:0x000000 },
+  dark:  { bg:0x0C1626, heroBg:0x0F1D31, pages:0xEFE8D8, heroPages:0xF3EDDF, star:0xCDAE6E, starGlow:0x3A2A0E, ribbon:0xD9C8A0, heroRibbon:0xD9C8A0,
+           wall:0x26303F, roof:0x111B2B, trim:0xA58A55, lawn:0x1A2433, plinth:0x18212F, leaf:0x24342B, trunk:0x3A3128,
+           win:0xFFD9A0, winGlow:0xD9963A, sketch:0x8496B4, shadow:.42, hemi:.38, key:.85, env:.45, starLight:6, glass:0x8A93A8, cloud:0x223047, lamp:0xFFC47A }
 };
-const CLASS_COLORS = [0x9A6E45, 0x6E2A26, 0x2C4A3C, 0x24304F];   // tan, oxblood, forest, navy leather
+const CLASS_COLORS = [0xA5854C, 0x7A2A26, 0x2C4A3C, 0x1E3350];   // tan, oxblood, forest, navy leather
 const HERO_STAR = .8;    // the logo's star, a touch smaller than in the flat logo
 
 export async function createHomeWorld(canvas, markEls) {
@@ -34,8 +34,8 @@ export async function createHomeWorld(canvas, markEls) {
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
   scene.environmentIntensity = .8;
-  const bg = new THREE.Color(0x1A2340); scene.background = bg;
-  scene.fog = new THREE.Fog(0x1A2340, 22, 60);
+  const bg = new THREE.Color(0x13233A); scene.background = bg;
+  scene.fog = new THREE.Fog(0x13233A, 22, 60);
   const camera = new THREE.PerspectiveCamera(34, 1, .1, 200);
 
   /* colours that blend between the hero (ink navy) and the page (ivory) */
@@ -49,24 +49,24 @@ export async function createHomeWorld(canvas, markEls) {
   key.shadow.camera.near = 1; key.shadow.camera.far = 40; key.shadow.bias = -.0004; key.shadow.normalBias = .02;
   scene.add(key, key.target);
   const rim = new THREE.DirectionalLight(0xC9CEFF, 0); rim.position.set(4, 3, -6); scene.add(rim);   // a cool rim light for the hero
-  const starLight = new THREE.PointLight(0xFF9AAA, 0, 7, 1.6); scene.add(starLight);
+  const starLight = new THREE.PointLight(0xFFD08A, 0, 7, 1.6); scene.add(starLight);
 
   const mat = {
-    pages: new THREE.MeshPhysicalMaterial({ color:0x1F2A44, roughness:.5, clearcoat:.35, clearcoatRoughness:.3, envMapIntensity:.3 }),
-    star:  new THREE.MeshPhysicalMaterial({ color:0x9E3346, metalness:.25, roughness:.22, clearcoat:1, clearcoatRoughness:.08, emissive:0x000000, flatShading:true }),
-    ribbon:new THREE.MeshStandardMaterial({ color:0x2B3656, roughness:.5 }),
+    pages: new THREE.MeshPhysicalMaterial({ color:0x182D47, roughness:.5, clearcoat:.35, clearcoatRoughness:.3, envMapIntensity:.3 }),
+    star:  new THREE.MeshPhysicalMaterial({ color:0xBE9D5E, metalness:.72, roughness:.26, clearcoat:1, clearcoatRoughness:.1, emissive:0x000000, flatShading:true }),
+    ribbon:new THREE.MeshStandardMaterial({ color:0x2A3F5C, roughness:.5 }),
     wall:  new THREE.MeshStandardMaterial({ color:0xF5F0E6, roughness:.8 }),
-    roof:  new THREE.MeshStandardMaterial({ color:0x27314A, roughness:.55, metalness:.05 }),
-    trim:  new THREE.MeshStandardMaterial({ color:0xA9AFBE, roughness:.28, metalness:.8 }),
+    roof:  new THREE.MeshStandardMaterial({ color:0x1E3350, roughness:.55, metalness:.05 }),
+    trim:  new THREE.MeshStandardMaterial({ color:0xB89A60, roughness:.28, metalness:.8 }),
     lawn:  new THREE.MeshStandardMaterial({ color:0xE6E0D2, roughness:.95 }),
     plinth:new THREE.MeshStandardMaterial({ color:0xECE6D9, roughness:.6 }),
     leaf:  new THREE.MeshStandardMaterial({ color:0x46594A, roughness:.9 }),
     trunk: new THREE.MeshStandardMaterial({ color:0x6B5A48, roughness:.9 }),
-    win:   new THREE.MeshStandardMaterial({ color:0x27314A, roughness:.15, metalness:.4, emissive:0x000000 }),
+    win:   new THREE.MeshStandardMaterial({ color:0x1E3350, roughness:.15, metalness:.4, emissive:0x000000 }),
     frame: new THREE.MeshStandardMaterial({ color:0xFFFFFF, roughness:.6 }),
     lampG: new THREE.MeshStandardMaterial({ color:0xF7EEDB, roughness:.3, emissive:0x000000 }),
     ghost: new THREE.MeshStandardMaterial({ color:0xFFFFFF, transparent:true, opacity:.22, roughness:.2, depthWrite:false }),
-    sketch:new THREE.LineDashedMaterial({ color:0x6D78A6, dashSize:.07, gapSize:.07, transparent:true, opacity:.95 }),
+    sketch:new THREE.LineDashedMaterial({ color:0x5C708E, dashSize:.07, gapSize:.07, transparent:true, opacity:.95 }),
     shadow:new THREE.ShadowMaterial({ opacity:.14 }),
     cloud: new THREE.MeshStandardMaterial({ color:0xFFFFFF, roughness:1, transparent:true, opacity:.92 }),
   };
@@ -118,11 +118,11 @@ export async function createHomeWorld(canvas, markEls) {
     x.fillStyle = g; x.fillRect(0,0,256,256); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; })();
   const disc = new THREE.Mesh(new THREE.PlaneGeometry(7.5, 7.5), new THREE.MeshBasicMaterial({ map:discTex, transparent:true, depthWrite:false, fog:false }));
   disc.position.set(0, 2.5, -1.6); heroFx.add(disc);
-  const ringMat = new THREE.MeshBasicMaterial({ color:0xDCE0F0, transparent:true, opacity:.32, fog:false });
+  const ringMat = new THREE.MeshBasicMaterial({ color:0xE2CC98, transparent:true, opacity:.34, fog:false });
   const orbits = [[2.15, .2, -.35], [2.7, -.28, .5]].map(([r, rx, rz]) => {
     const g = new THREE.Group(); g.position.set(0, 2.45, 0); g.rotation.set(Math.PI/2 + rx, 0, rz);
     g.add(new THREE.Mesh(new THREE.TorusGeometry(r, .006, 6, 160), ringMat));
-    const bead = new THREE.Mesh(new THREE.SphereGeometry(.045, 16, 12), new THREE.MeshBasicMaterial({ color:0xFFFFFF, fog:false })); bead.position.x = r; g.add(bead);
+    const bead = new THREE.Mesh(new THREE.SphereGeometry(.045, 16, 12), new THREE.MeshBasicMaterial({ color:0xFF6A4A, fog:false })); bead.position.x = r; g.add(bead);
     heroFx.add(g); return g;
   });
   function smallBook(color, w = .62, h = .1, d = .44) {
@@ -132,7 +132,7 @@ export async function createHomeWorld(canvas, markEls) {
     const band = new THREE.Mesh(new THREE.BoxGeometry(w * .7, h * .5, .004), mat.trim); band.position.z = d/2 + .002; g.add(band);
     return g;
   }
-  const floaters = [[0x24304F, 3.05, 2.55, -1.1], [0x6E2A26, 2.55, 1.15, .7], [0xEFE8DA, -2.35, 1.0, -.9]].map(([c, x, y, z], k) => {
+  const floaters = [[0x1E3350, 3.05, 2.55, -1.1], [0xA5854C, 2.55, 1.15, .7], [0xF3EDDF, -2.35, 1.0, -.9]].map(([c, x, y, z], k) => {
     const b = smallBook(c); b.position.set(x, y, z); b.userData = { x, y, z, p:k * 2.1 }; heroFx.add(b); return b;
   });
 
@@ -185,7 +185,7 @@ export async function createHomeWorld(canvas, markEls) {
     x.fillStyle = '#fbf6ea'; x.fillRect(0,0,64,256); x.fillStyle = 'rgba(110,100,90,.16)'; for (let y = 3; y < 256; y += 5) x.fillRect(0, y, 64, 1);
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(1, 1); return t; })();
   const pageMat = new THREE.MeshStandardMaterial({ map:pageLines, roughness:.9 });
-  const ribbonMats = [0x7A1F2E, 0x24304F, 0x7A1F2E, 0xD9D2C4].map(c => new THREE.MeshStandardMaterial({ color:c, roughness:.6, side:THREE.DoubleSide }));
+  const ribbonMats = [0xA5854C, 0x1E3350, 0xA5854C, 0xE2D6BC].map(c => new THREE.MeshStandardMaterial({ color:c, roughness:.6, side:THREE.DoubleSide }));
   const NAMES = ['Nursery','KG','Class 1','Class 2','Classes 3–5','Classes 6–8','Matric'];
   for (let i = 0; i < CLASSES; i++) {
     const open = i < 4, g = new THREE.Group();
@@ -219,7 +219,7 @@ export async function createHomeWorld(canvas, markEls) {
   // navy blazer, white collar, claret tie, charcoal trousers, claret backpack. Pivots at hips and shoulders for walking.
   const skin = new THREE.MeshStandardMaterial({ color:0xC99A7A, roughness:.6 });
   const hairM = new THREE.MeshStandardMaterial({ color:0x2A1E18, roughness:.75 });
-  const blazer = new THREE.MeshStandardMaterial({ color:0x1F2A44, roughness:.7 });
+  const blazer = new THREE.MeshStandardMaterial({ color:0x182D47, roughness:.7 });
   const shirt = new THREE.MeshStandardMaterial({ color:0xF7F4EE, roughness:.8 });
   const trouser = new THREE.MeshStandardMaterial({ color:0x3A3D46, roughness:.8 });
   const shoe = new THREE.MeshStandardMaterial({ color:0x15161A, roughness:.35, metalness:.1 });

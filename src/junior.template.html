@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Clarus Junior · The Early Years in 3D</title>
+<meta name="description" content="Walk through Clarus Junior in 3D: Nursery, KG, Class 1 and Class 2 at Clarus School.">
+<meta name="theme-color" content="#13233A">
+<link rel="preload" href="fonts/playfair-display-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/poppins-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/cinzel-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="canonical" href="https://clarus.nexlyr.solutions/junior">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Clarus School">
+<meta property="og:locale" content="en_PK">
+<meta property="og:url" content="https://clarus.nexlyr.solutions/junior">
+<meta property="og:title" content="Clarus Junior · The Early Years in 3D">
+<meta property="og:description" content="Walk through Clarus Junior in 3D: Nursery, KG, Class 1 and Class 2 at Clarus School.">
+<meta property="og:image" content="https://clarus.nexlyr.solutions/assets/og-junior.jpg">
+<meta property="og:image:secure_url" content="https://clarus.nexlyr.solutions/assets/og-junior.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Clarus Junior nursery classroom in 3D, beside the Clarus School wordmark">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Clarus Junior · The Early Years in 3D">
+<meta name="twitter:description" content="Walk through Clarus Junior in 3D: Nursery, KG, Class 1 and Class 2 at Clarus School.">
+<meta name="twitter:image" content="https://clarus.nexlyr.solutions/assets/og-junior.jpg">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="application-name" content="Clarus School">
+<meta name="apple-mobile-web-app-title" content="Clarus">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="vendor/lenis/lenis.css">
+<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/three.min.js", "three/addons/": "./vendor/three/addons/" } }
+</script>
+</head>
+<body class="junior-page">
+{{DEFS}}
+<a class="skip" href="#top">Skip to content</a>
+
+<!-- same ink-glass bar as the main school -->
+<header class="nav" id="nav">
+  <div class="nav-in glass">
+    <a class="brand" href="#top" aria-label="Clarus Junior, top of page">
+      <span class="badge"><svg viewBox="14 6 465 398" aria-hidden="true"><use href="#cmark"/></svg></span>
+      <span class="brand-t"><b>CLARUS JUNIOR</b><small>Nursery to Class 2 · Clarus School</small></span>
+    </a>
+    <nav class="links" aria-label="Main">
+      <a href="#journey">Our classes</a>
+      <a href="#about">About</a>
+      <a href="index.html#admissions">Admissions</a>
+      <a href="index.html">The main school</a>
+    </nav>
+    <div class="nav-end">
+      <a class="btn btn-bone btn-sm nav-cta" href="index.html#admissions">Book a visit</a>
+      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="sheet" aria-label="Open menu"><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="sheet glass" id="sheet">
+  <a href="#journey">Our classes</a>
+  <a href="#about">About</a>
+  <a href="index.html#admissions">Admissions</a>
+  <a href="index.html">The main school</a>
+  <a class="btn btn-bone btn-wide" href="index.html#admissions">Book a visit</a>
+</div>
+
+<main id="top">
+  <!-- The journey: tall section, sticky stage. Scroll position drives the camera. -->
+  <section id="journey" aria-label="A walk through the classes">
+    <div class="stage">
+      <canvas id="gl" aria-hidden="true"></canvas>
+
+      <div class="copy" id="copy">
+        <div class="copy-main">
+          <p class="lab" id="c-label">Class 1 of 4</p>
+          <h1 class="title" id="c-title">Nursery</h1>
+        </div>
+        <div class="copy-side glass-paper">
+          <p class="desc" id="c-desc">Play, songs, stories and first friends. A gentle start where little ones learn by doing.</p>
+          <a class="btn btn-sm" id="c-btn" href="#about">Explore more</a>
+        </div>
+      </div>
+
+      <div class="dots" id="dots" aria-hidden="true"></div>
+      <div class="j-cue" id="cue" aria-hidden="true"><span></span>Scroll</div>
+    </div>
+  </section>
+
+  <section id="about" class="j-about">
+    <div class="clouds" aria-hidden="true">{{CLOUDS}}</div>
+    <div class="about-in">
+      <p class="eyebrow">About Clarus Junior</p>
+      <h2 class="j-statement" id="statement">A bright, gentle start for Nursery to Class 2.</h2>
+      <p class="about-body">Text, class sizes and numbers here are placeholders until the school confirms them.</p>
+      <div class="tiles">
+        <div class="tile t1"><b>00</b><span>Children in each class</span></div>
+        <div class="tile t2"><b>00</b><span>Children to every teacher</span></div>
+        <div class="tile t3"><b>00</b><span>Houses, one family</span></div>
+        <div class="tile t4"><b>00</b><span>Your fourth number</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="strip" aria-hidden="true">
+    <div class="strip-row r1"><div class="strip-track"><img src="assets/photos/ph-nursery-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-art-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-4-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-5-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-science-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-boots-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-nursery-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-art-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-4-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-5-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-science-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-boots-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"></div></div>
+    <div class="strip-row r2"><div class="strip-track"><img src="assets/photos/ph-1-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-2-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-stage-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-smiles-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-6-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-sports-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-1-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-2-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-stage-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-smiles-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-6-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-sports-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"></div></div>
+  </div>
+  <div class="foot-cta glass">
+    <p class="eyebrow">Admissions open</p>
+    <p class="fc-h">Bring your little one to visit.</p>
+    <a class="btn btn-bone" href="index.html#admissions">Book a visit</a>
+  </div>
+  <div class="foot-main on-ink">
+    <div class="foot-top">
+      <svg class="foot-mark" viewBox="14 6 465 398" aria-hidden="true"><use href="#cmark"/></svg>
+      <p class="foot-word">CLARUS SCHOOL</p>
+      <p class="foot-tag"><i></i>Learn anywhere, succeed everywhere<i></i></p>
+    </div>
+    <div class="foot-cols">
+      <div><p class="fh">Clarus Junior</p><a href="#journey">Our classes</a><a href="#about">About</a></div>
+      <div><p class="fh">Clarus School</p><a href="index.html">The main school</a><a href="index.html#life">School life</a><a href="index.html#admissions">Admissions</a></div>
+      <div><p class="fh">Visit</p><p>Campus address to be added</p><p>School hours to be added</p></div>
+    </div>
+  </div>
+  <div class="foot-base">
+    <span>© 2026 Clarus School</span>
+    <a class="nexlyr" href="https://nexlyr.solutions" target="_blank" rel="noopener">
+      {{NEXLYR}}
+      <span class="nx-txt"><small>Designed &amp; built by</small><b>NEXLYR</b></span>
+      <span class="nx-go">Connect</span>
+    </a>
+  </div>
+</footer>
+
+<script src="vendor/gsap/gsap.min.js"></script>
+<script src="vendor/gsap/ScrollTrigger.min.js"></script>
+<script src="vendor/gsap/SplitText.min.js"></script>
+<script src="vendor/lenis/lenis.min.js"></script>
+<script src="js/chrome.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

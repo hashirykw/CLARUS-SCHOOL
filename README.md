@@ -43,6 +43,16 @@ The mark (book pages + four-point star) is re-drawn as a vector from the sample 
 
 - Campus names and details (Flagship / Junior / Next are placeholders)
 - WhatsApp number for the form (until then it says online booking opens soon)
+- Principal's photo, name and message (`src/index.template.html`, section `.msg`, marked PLACEHOLDER)
+- Teachers' names, photos and classes (section `.staff`)
+- Fee schedule figures (section `.fees`, shows "To be announced")
+- Event dates (section `.life`, shows "Date to be announced")
+- Footer: campus address and school hours
+- Clarus Junior: the four number tiles (00)
+
+## Photographs
+
+Event, footer and phone-hero photos in `assets/photos/` are free stock photos from Unsplash (Unsplash License: free to use, no attribution required). Swap them for the school's own photos when they exist, keeping the same file names.
 
 ## Sharing, icons and hosting
 
@@ -56,7 +66,7 @@ The mark (book pages + four-point star) is re-drawn as a vector from the sample 
 - Preloader plays once per browser session; reduced-motion users skip it.
 - Theme follows the device the first time, then remembers the visitor's choice.
 - Pixel ratio is capped (1.6 on phones, 2 on desktop); the 3D stops rendering once the content sheet covers it.
-- Design language follows the Sir Xahid site: layered glass, grain and glows, rolling-label buttons, and the Light/Dark mode pill with the sound button bottom-left. Palette: ink navy, ivory, claret, silver (no gold).
+- Design language follows the Sir Xahid site: layered glass, grain and glows, rolling-label buttons, and the Light/Dark mode pill with the sound button bottom-left. Palette sampled from the logo: navy #182D47, gold #BE9D5E / #A5854C / #977945, cream #F6F2E7, with a glowing ember orb on buttons (from the user's glass button references). Admissions, fees and the footer use frosted ink glass.
 - The logo's star is an eight-point compass star (src/defs.html), replacing the long-armed four-point star.
 - Sounds play only after the visitor's first tap, and can be switched off from the side controls.
-- Vendors are local: Three.js r187 (minified to `vendor/three/three.min.js`), GSAP 3.15, Lenis 1.3. Fonts are self-hosted: Cinzel (logo wordmark), Playfair Display (headings) and Poppins (text), plus Jost/Inter for the junior page.
+- Vendors are local: Three.js r187 (minified to `vendor/three/three.min.js`), GSAP 3.15, Lenis 1.3. Fonts are self-hosted: Cinzel (logo wordmark), Playfair Display (headings) and Poppins (text), plus Jost for the 3D labels on the junior page. Clarus Junior shares the main page's nav, buttons and footer (`js/chrome.js`) and is built from `src/junior.template.html` by `python3 src/build.py`.

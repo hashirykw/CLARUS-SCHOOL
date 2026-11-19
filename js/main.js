@@ -30,7 +30,7 @@ function setScene(k){
   const c = CLASSES[k];
   if(split){ split.revert(); split = null; }
   gsap.killTweensOf([el.desc, el.btn]);
-  el.label.textContent = `(  ${c.label}  )`; el.title.textContent = c.title; el.desc.textContent = c.text; el.btn.textContent = c.btn;
+  el.label.textContent = c.label; el.title.textContent = c.title; el.desc.textContent = c.text; (window.setBtnLabel || ((b,t)=>b.textContent=t))(el.btn, c.btn);
   [...el.dots.children].forEach((d,i)=>d.classList.toggle('on', i===k));
   if(REDUCE) return;
   split = new SplitText(el.title, { type:'chars' });
@@ -75,7 +75,6 @@ function frame(time){
 ScrollTrigger.create({ trigger:'#journey', start:'top top', end:'bottom bottom', onUpdate:self=>{ progress = self.progress; } });
 new IntersectionObserver(es=>{ visible = es[0].isIntersecting; }).observe(document.getElementById('journey'));
 
-ScrollTrigger.create({ trigger:'#about', start:'top 84px', toggleClass:{ targets:'.nav', className:'solid' } });
 
 /* statement types in once, when it scrolls into view (its space is already reserved) */
 if(!REDUCE){

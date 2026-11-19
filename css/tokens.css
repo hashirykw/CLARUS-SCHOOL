@@ -1,6 +1,6 @@
 /* Hallmark · studied-DNA build (source: Sir Xahid Anwer site, the user's own) · tone: classical, expensive
- * palette: ink navy oklch(24.5% .045 268) · ivory oklch(96.2% .011 85) · claret oklch(42% .13 15) · periwinkle silver oklch(78% .045 268)
- * no gold in the interface (the logo's star keeps its own colour)
+ * palette (sampled from the Clarus logo): navy #182D47 oklch(29.3% .055 255) · gold #BE9D5E / #A5854C / #977945 · cream #F6F2E7
+ * glow accent (user reference: glass pill with a lit red orb): ember red, used only on buttons and live highlights
  * display: Playfair Display 500/600 (roman only) · body: Poppins 400/500/600 · wordmark: Cinzel 500 */
 
 @font-face{font-family:"Playfair Display";font-weight:500;font-display:swap;src:url(../fonts/playfair-display-latin-500-normal.woff2) format("woff2")}
@@ -33,69 +33,82 @@
   --ease-spring:cubic-bezier(.34,1.45,.5,1);
   --dur-fast:.2s; --dur-mid:.4s; --dur-slow:.9s;
 
-  /* brand constants */
-  --color-navy:oklch(24.5% .045 268);
-  --color-navy-2:oklch(29% .05 268);
-  --color-navy-3:oklch(34% .055 268);
-  --color-ivory:oklch(96.2% .011 85);
-  --color-ivory-2:oklch(99.4% .006 85);
-  --color-claret:oklch(42% .13 15);
-  --color-claret-soft:oklch(58% .14 12);
-  --color-silver:oklch(78% .045 268);
-  --color-glow-claret:oklch(50% .16 15 / .42);
-  --color-glow-indigo:oklch(45% .14 275 / .55);
+  /* brand constants — sampled from the logo */
+  --color-navy:oklch(29.3% .055 255);          /* #182D47 logo navy */
+  --color-navy-deep:oklch(21% .045 255);       /* hero stage, footer */
+  --color-navy-2:oklch(33% .06 255);
+  --color-navy-3:oklch(38% .065 255);
+  --color-ivory:oklch(96.1% .015 90);          /* #F6F2E7 logo paper */
+  --color-ivory-2:oklch(99.2% .007 90);
+  --color-gold:oklch(71.2% .09 83);            /* #BE9D5E star, lit face */
+  --color-gold-mid:oklch(63.4% .085 81);       /* #A5854C star arms */
+  --color-gold-deep:oklch(59.3% .079 80);      /* #977945 star shadow face */
+  --color-gold-soft:oklch(84% .06 86);         /* champagne, for text on navy */
+  --color-gold-ink:oklch(49% .075 78);         /* gold dark enough for small text on cream */
+  --color-ember:oklch(60% .215 28);            /* the glowing orb */
+  --color-ember-hi:oklch(76% .17 40);
+  --color-ember-lo:oklch(40% .16 25);
+  --color-glow-ember:oklch(60% .22 28 / .5);
+  --color-glow-gold:oklch(72% .1 83 / .32);
+  --color-glow-navy:oklch(42% .1 255 / .55);
+  /* legacy names, re-pointed */
+  --color-claret:var(--color-ember);
+  --color-claret-soft:var(--color-ember-hi);
+  --color-silver:var(--color-gold-soft);
+  --color-glow-claret:var(--color-glow-gold);
+  --color-glow-indigo:var(--color-glow-navy);
 
   /* leather-bound class colours (UI dots + 3D books) */
-  --color-tan:oklch(58% .08 62);
-  --color-oxblood:oklch(40% .1 25);
-  --color-forest:oklch(40% .06 160);
-  --color-ink-blue:oklch(34% .06 265);
+  --color-tan:oklch(63% .085 81);
+  --color-oxblood:oklch(46% .12 25);
+  --color-forest:oklch(44% .06 160);
+  --color-ink-blue:oklch(38% .065 255);
 
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
 
   --color-nx-a:oklch(76% .14 225); --color-nx-b:oklch(50% .14 250); --color-nx-card:oklch(17% .01 250);
 }
 
-/* ---------- LIGHT · ivory paper, navy ink, claret accent ---------- */
+/* ---------- LIGHT · cream paper, navy ink, gold accent ---------- */
 :root,[data-theme="light"]{
   color-scheme:light;
-  --color-paper:oklch(96.2% .011 85);
-  --color-surface:oklch(99.4% .006 85);
-  --color-ink:oklch(24.5% .045 268);
-  --color-ink-2:oklch(37% .035 268);
-  --color-mute:oklch(52% .012 280);
-  --color-faint:oklch(86% .012 85);
-  --color-rule:oklch(24.5% .045 268 / .12);
-  --color-accent:oklch(42% .13 15);
-  --color-mark:oklch(27% .06 265);
-  --color-hero:oklch(24.5% .045 268);
-  --btn-bg:oklch(24.5% .045 268); --btn-fg:oklch(99.4% .006 85); --btn-disc:oklch(42% .13 15); --btn-disc-fg:oklch(99.4% .006 85);
-  --glass-paper:linear-gradient(145deg,oklch(100% 0 0 / .82),oklch(100% 0 0 / .56));
-  --glass-paper-shadow:inset 0 1px 0 oklch(100% 0 0),0 1px 2px oklch(24.5% .045 268 / .06),0 24px 48px -30px oklch(24.5% .045 268 / .4);
-  --glass-paper-rim:linear-gradient(150deg,oklch(100% 0 0),oklch(24.5% .045 268 / .08) 50%,oklch(42% .13 15 / .22));
-  --scrim:oklch(96.2% .011 85 / .92);
+  --color-paper:oklch(96.1% .015 90);
+  --color-surface:oklch(99.2% .007 90);
+  --color-ink:oklch(29.3% .055 255);
+  --color-ink-2:oklch(39% .045 255);
+  --color-mute:oklch(52% .02 255);
+  --color-faint:oklch(86% .018 88);
+  --color-rule:oklch(29.3% .055 255 / .12);
+  --color-accent:oklch(49% .075 78);
+  --color-mark:oklch(29.3% .055 255);
+  --color-hero:oklch(21% .045 255);
+  --btn-bg:oklch(29.3% .055 255); --btn-fg:oklch(99.2% .007 90); --btn-disc:var(--color-ember); --btn-disc-fg:oklch(99.2% .007 90);
+  --glass-paper:linear-gradient(145deg,oklch(100% 0 0 / .8),oklch(100% 0 0 / .52));
+  --glass-paper-shadow:inset 0 1px 0 oklch(100% 0 0),0 1px 2px oklch(29.3% .055 255 / .06),0 24px 48px -30px oklch(29.3% .055 255 / .42);
+  --glass-paper-rim:linear-gradient(150deg,oklch(100% 0 0),oklch(29.3% .055 255 / .08) 50%,oklch(71.2% .09 83 / .45));
+  --scrim:oklch(96.1% .015 90 / .92);
   --color-ok:oklch(58% .12 150);
-  --color-focus:oklch(42% .13 15);
+  --color-focus:oklch(59.3% .079 80);
 }
 
-/* ---------- DARK · midnight, ivory, rose ---------- */
+/* ---------- DARK · midnight navy, cream, champagne gold ---------- */
 [data-theme="dark"]{
   color-scheme:dark;
-  --color-paper:oklch(15.5% .03 270);
-  --color-surface:oklch(20% .03 270);
-  --color-ink:oklch(94.6% .013 85);
-  --color-ink-2:oklch(85% .015 85);
-  --color-mute:oklch(70% .025 270);
-  --color-faint:oklch(33% .03 270);
-  --color-rule:oklch(94.6% .013 85 / .1);
-  --color-accent:oklch(72% .1 10);
-  --color-mark:oklch(93% .018 85);
-  --color-hero:oklch(19% .04 270);
-  --btn-bg:oklch(94.6% .013 85); --btn-fg:oklch(24.5% .045 268); --btn-disc:oklch(42% .13 15); --btn-disc-fg:oklch(99.4% .006 85);
-  --glass-paper:linear-gradient(145deg,oklch(28% .035 270 / .66),oklch(20% .03 270 / .5));
+  --color-paper:oklch(16% .035 255);
+  --color-surface:oklch(21% .04 255);
+  --color-ink:oklch(95% .015 90);
+  --color-ink-2:oklch(86% .02 90);
+  --color-mute:oklch(71% .03 255);
+  --color-faint:oklch(33% .04 255);
+  --color-rule:oklch(95% .015 90 / .1);
+  --color-accent:oklch(80% .085 84);
+  --color-mark:oklch(94% .02 90);
+  --color-hero:oklch(18% .04 255);
+  --btn-bg:oklch(95% .015 90); --btn-fg:oklch(29.3% .055 255); --btn-disc:var(--color-ember); --btn-disc-fg:oklch(99.2% .007 90);
+  --glass-paper:linear-gradient(145deg,oklch(30% .05 255 / .62),oklch(21% .04 255 / .48));
   --glass-paper-shadow:inset 0 1px 0 oklch(100% 0 0 / .14),0 1px 2px oklch(0% 0 0 / .3),0 28px 56px -30px oklch(0% 0 0 / .8);
-  --glass-paper-rim:linear-gradient(150deg,oklch(100% 0 0 / .32),oklch(100% 0 0 / .05) 45%,oklch(72% .1 10 / .3));
-  --scrim:oklch(15.5% .03 270 / .9);
+  --glass-paper-rim:linear-gradient(150deg,oklch(100% 0 0 / .32),oklch(100% 0 0 / .05) 45%,oklch(80% .085 84 / .35));
+  --scrim:oklch(16% .035 255 / .9);
   --color-ok:oklch(74% .12 150);
-  --color-focus:oklch(72% .1 10);
+  --color-focus:oklch(80% .085 84);
 }

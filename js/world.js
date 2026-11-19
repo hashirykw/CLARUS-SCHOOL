@@ -13,7 +13,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 export const USE_MODELS = true;
 
 export const SPACING = 14;          // distance between scenes along the path
-export const P = { navy:0x0E1B3D, gold:0xD9A63A, sun:0xF6D54A, coral:0xF0785C, sky:0x7FD8EE, lilac:0xB892E6,
+export const P = { navy:0x182D47, gold:0xBE9D5E, sun:0xF6D54A, coral:0xF0785C, sky:0x7FD8EE, lilac:0xB892E6,
                    ink:0x17142B, cream:0xFBF9F5, floor:0xF1ECE4, wood:0xD9B98C, green:0x6E9A5B };
 const RIBBON = [0xF3C62F, 0xF0785C, 0x6FCBE6, 0xB892E6, 0xE2B040];
 

@@ -5,7 +5,7 @@ import { sound } from './sound.js';
 /* ---------- content: edit wording here ---------- */
 const CLASSES = [
   { title:'Nursery',     open:true,  tag:'var(--color-tan)',          text:'Where it all begins.' },
-  { title:'KG',          open:true,  tag:'var(--color-claret-soft)',  text:'Letters, numbers, first stories.' },
+  { title:'KG',          open:true,  tag:'var(--color-oxblood)',  text:'Letters, numbers, first stories.' },
   { title:'Class 1',     open:true,  tag:'oklch(62% .08 160)',        text:'Reading and writing with confidence.' },
   { title:'Class 2',     open:true,  tag:'var(--color-silver)',       text:'Thinking, speaking, sharing ideas.' },
   { title:'Classes 3–5', open:false, text:'Opening year by year.' },
@@ -107,7 +107,7 @@ function placePill(k) { const b = tabs[k]; pill.style.width = b.offsetWidth + 'p
 function paintCampus(k) {
   const cp = CAMPUSES[k];
   c.tag.querySelector('span').textContent = cp.soon ? 'Coming soon' : 'Open';
-  c.tag.style.setProperty('--tag', cp.soon ? 'var(--color-claret-soft)' : 'var(--color-ok)');
+  c.tag.style.setProperty('--tag', cp.soon ? 'var(--color-gold)' : 'var(--color-ok)');
   c.name.textContent = cp.name; c.text.textContent = cp.text;
   c.visit.hidden = cp.soon;
   c.map.hidden = !cp.map; if (cp.map) { c.map.href = cp.map; c.map.target = '_blank'; c.map.rel = 'noopener'; }
@@ -149,7 +149,20 @@ function navState(y) {
 
 /* ---------- reveals: lines rise from behind masks, images wipe open, cards drift up ---------- */
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin:'0px 0px -12% 0px' });
-$$('.reveal, .wipe, .adm .h2, .ch-head').forEach((el, i) => io.observe(el));
+$$('.reveal, .wipe, .rv, .ch-head').forEach((el, i) => io.observe(el));
+
+/* ---------- footer photographs drift faster while the page is moving ---------- */
+const stripAnims = () => $$('.strip-track').flatMap(t => t.getAnimations ? t.getAnimations() : []);
+let stripRate = 1, stripTarget = 1, stripList = null;
+if (!REDUCE && lenis) {
+  lenis.on('scroll', e => { stripTarget = 1 + Math.min(4, Math.abs(e.velocity || 0) * .12); });
+  gsap.ticker.add(() => {
+    stripTarget += (1 - stripTarget) * .04;
+    stripRate += (stripTarget - stripRate) * .1;
+    if (!stripList || !stripList.length) stripList = stripAnims();
+    stripList.forEach(a => a.playbackRate = stripRate);
+  });
+}
 document.body.classList.add('split-ready');
 
 /* ---------- statement: words light up as it scrolls through ---------- */
@@ -191,7 +204,7 @@ themeBtn.addEventListener('click', () => {
   const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
   sound.theme(next === 'dark');
   const apply = () => {
-    root.dataset.theme = next; $('#meta-theme').content = next === 'dark' ? '#121830' : '#1A2340';
+    root.dataset.theme = next; $('#meta-theme').content = next === 'dark' ? '#0F1D31' : '#13233A';
     try { localStorage.setItem('clarus-theme', next); } catch (e) {}
     if (world) { world.applyTheme(next, true); world.render(); }
     syncTheme();

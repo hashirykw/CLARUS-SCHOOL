@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Clarus School · Learn Anywhere, Succeed Everywhere</title>
 <meta name="description" content="Clarus School. Nursery to Class 2, opening 2026 and growing class by class to Matric. Book a campus visit.">
-<meta name="theme-color" content="#1A2340" id="meta-theme">
+<meta name="theme-color" content="#13233A" id="meta-theme">
 <link rel="canonical" href="https://clarus.nexlyr.solutions/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Clarus School">
@@ -37,13 +37,14 @@
 <script>
 (function(){var d=document.documentElement,t,seen;try{t=localStorage.getItem('clarus-theme');seen=sessionStorage.getItem('clarus-loaded')}catch(e){}
 if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
-d.dataset.theme=t;document.getElementById('meta-theme').content=t==='dark'?'#121830':'#1A2340';
+d.dataset.theme=t;document.getElementById('meta-theme').content=t==='dark'?'#0F1D31':'#13233A';
 if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('no-loader');else d.classList.add('loading');})();
 </script>
 <link rel="preload" href="fonts/playfair-display-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/poppins-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/poppins-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/cinzel-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="assets/photos/hero-mobile.webp" media="(max-width:820px)">
 <link rel="modulepreload" href="vendor/three/three.min.js">
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="vendor/lenis/lenis.css">
@@ -84,6 +85,7 @@ if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add(
     <nav class="links" aria-label="Main">
       <a href="#grow">Classes</a>
       <a href="#campuses">Campuses</a>
+      <a href="#life">School life</a>
       <a href="#admissions">Admissions</a>
       <a href="junior.html" class="to-junior">Clarus Junior</a>
     </nav>
@@ -96,6 +98,7 @@ if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add(
 <div class="sheet glass" id="sheet">
   <a href="#grow">Classes</a>
   <a href="#campuses">Campuses</a>
+  <a href="#life">School life</a>
   <a href="#admissions">Admissions</a>
   <a href="junior.html" class="to-junior">Clarus Junior</a>
   <a class="btn btn-bone btn-wide" href="#admissions">Book a visit</a>
@@ -119,6 +122,12 @@ if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add(
 
 <!-- ============ 1 · HERO ============ -->
 <section class="hero" id="top">
+  <!-- phones get their own hero: a full-bleed photograph, a slow drift, a gold seal -->
+  <div class="hero-media" aria-hidden="true"><div class="hm-img"></div></div>
+  <div class="seal" aria-hidden="true">
+    <svg class="seal-ring" viewBox="0 0 120 120"><defs><path id="seal-p" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0"/></defs><text><textPath href="#seal-p">ADMISSIONS OPEN · EST. 2026 · CLARUS SCHOOL ·</textPath></text></svg>
+    <svg class="seal-star" viewBox="152 76 188.5 188"><use href="#cstar"/></svg>
+  </div>
   <div class="hero-in">
     <p class="chip glass fade-in"><i class="dot"></i>Admissions open · Nursery to Class 2</p>
     <h1 class="hero-h" id="hero-h"><span class="lm"><span>Learn anywhere.</span></span><span class="lm l2"><span>Succeed everywhere.</span></span></h1>
@@ -193,34 +202,116 @@ if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add(
   </a>
 </section>
 
-<section class="adm" id="admissions">
-  <div class="adm-head">
-    <p class="eyebrow reveal">Admissions</p>
-    <h2 class="h2 rv"><span class="lm"><span>Book a visit</span></span><span class="lm"><span><em>to Clarus.</em></span></span></h2>
-    <p class="lead reveal">Leave your details and the school will get back to you.</p>
-  </div>
-  <form class="enq glass-paper reveal" id="enq" novalidate>
-    <label class="field"><span>Parent's name</span><input name="parent" autocomplete="name" required></label>
-    <label class="field"><span>Phone / WhatsApp</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
-    <div class="f-row">
-      <label class="field"><span>Class</span><select name="class" required><option value="">Choose</option><option>Nursery</option><option>KG</option><option>Class 1</option><option>Class 2</option></select></label>
-      <label class="field"><span>Campus</span><select name="campus" id="enq-campus"></select></label>
+<section class="msg" aria-labelledby="msg-h">
+  <!-- PLACEHOLDER: replace the photo, name and message with the principal's own -->
+  <div class="msg-in">
+    <figure class="msg-photo wipe">
+      <div class="ph-empty"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="24" r="11"/><path d="M12 56c2-11 10-17 20-17s18 6 20 17"/></svg><span>Principal's photo</span></div>
+    </figure>
+    <div class="msg-text">
+      <p class="eyebrow reveal" id="msg-h">From the Principal</p>
+      <blockquote class="msg-q reveal">
+        <svg class="msg-mark" viewBox="0 0 48 36" aria-hidden="true"><path d="M0 36V20Q0 4 16 0l2 5q-9 3-9 13h9v18zm28 0V20q0-16 16-20l2 5q-9 3-9 13h9v18z"/></svg>
+        <p>Every child who comes to Clarus should be known by name, taught with patience and stretched with care. We are opening one class at a time on purpose, so that every class we open is one we can do properly.</p>
+      </blockquote>
+      <div class="msg-sign reveal">
+        <span class="sig">Name of Principal</span>
+        <span class="role">Principal, Clarus School</span>
+      </div>
     </div>
-    <button class="btn btn-wide" type="submit" id="enq-btn">Request a visit</button>
-    <p class="enq-note" id="enq-note" aria-live="polite"></p>
-  </form>
+  </div>
+</section>
+
+<section class="staff" aria-labelledby="staff-h">
+  <!-- PLACEHOLDER: add each teacher's name, photo and class -->
+  <div class="sec-head">
+    <p class="eyebrow reveal">Our teachers</p>
+    <h2 class="h2 rv" id="staff-h"><span class="lm"><span>The people who</span></span><span class="lm"><span><em>teach your child.</em></span></span></h2>
+  </div>
+  <div class="staff-grid">
+    <article class="tcard glass-paper reveal" style="--c:var(--color-tan)"><div class="t-ph"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="24" r="11"/><path d="M12 56c2-11 10-17 20-17s18 6 20 17"/></svg></div><p class="t-cls"><i></i>Nursery</p><h3>Teacher's name</h3><p class="t-role">Class teacher</p></article>
+    <article class="tcard glass-paper reveal" style="--c:var(--color-oxblood)"><div class="t-ph"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="24" r="11"/><path d="M12 56c2-11 10-17 20-17s18 6 20 17"/></svg></div><p class="t-cls"><i></i>KG</p><h3>Teacher's name</h3><p class="t-role">Class teacher</p></article>
+    <article class="tcard glass-paper reveal" style="--c:var(--color-forest)"><div class="t-ph"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="24" r="11"/><path d="M12 56c2-11 10-17 20-17s18 6 20 17"/></svg></div><p class="t-cls"><i></i>Class 1</p><h3>Teacher's name</h3><p class="t-role">Class teacher</p></article>
+    <article class="tcard glass-paper reveal" style="--c:var(--color-ink-blue)"><div class="t-ph"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="24" r="11"/><path d="M12 56c2-11 10-17 20-17s18 6 20 17"/></svg></div><p class="t-cls"><i></i>Class 2</p><h3>Teacher's name</h3><p class="t-role">Class teacher</p></article>
+  </div>
+</section>
+
+<section class="life" id="life" aria-labelledby="life-h">
+  <div class="sec-head">
+    <p class="eyebrow reveal">School life</p>
+    <h2 class="h2 rv" id="life-h"><span class="lm"><span>Days they will</span></span><span class="lm"><span><em>remember.</em></span></span></h2>
+    <p class="lead reveal">The events we are planning for the first year. Dates will be shared with families.</p>
+  </div>
+  <div class="ev-grid">
+    <a class="ev ev-big wipe" href="#admissions"><img src="assets/photos/ev-science.webp" width="950" height="713" alt="A young girl in a lab coat and goggles watching a cloud of vapour rise from a bucket" loading="lazy" decoding="async"><div class="ev-cap glass"><p class="ev-when">Date to be announced</p><h3>Science Week</h3><p>Small hands, big questions: experiments every child can try.</p></div></a>
+    <a class="ev wipe" href="#admissions"><img src="assets/photos/ev-sports.webp" width="950" height="713" alt="Two children running and laughing" loading="lazy" decoding="async"><div class="ev-cap glass"><p class="ev-when">Date to be announced</p><h3>Sports Day</h3></div></a>
+    <a class="ev wipe" href="#admissions"><img src="assets/photos/ev-stage.webp" width="950" height="713" alt="Children on stage speaking into a microphone" loading="lazy" decoding="async"><div class="ev-cap glass"><p class="ev-when">Date to be announced</p><h3>Annual Show</h3></div></a>
+    <a class="ev wipe" href="#admissions"><img src="assets/photos/ev-art.webp" width="950" height="713" alt="A smiling little girl with paint on her face" loading="lazy" decoding="async"><div class="ev-cap glass"><p class="ev-when">Date to be announced</p><h3>Colour Day</h3></div></a>
+  </div>
+</section>
+
+<section class="adm" id="admissions" aria-labelledby="adm-h">
+  <div class="adm-bg" aria-hidden="true"><img src="assets/photos/ph-smiles-s.webp" alt="" width="480" height="360" loading="lazy" decoding="async"></div>
+  <div class="adm-in">
+    <div class="adm-head">
+      <p class="eyebrow reveal">Admissions 2026</p>
+      <h2 class="h2 rv" id="adm-h"><span class="lm"><span>Book a visit</span></span><span class="lm"><span><em>to Clarus.</em></span></span></h2>
+      <p class="lead reveal">Leave your details and the school will call you back to arrange a visit.</p>
+      <ol class="steps reveal">
+        <li><b>1</b><span>Book a visit</span></li>
+        <li><b>2</b><span>See the classrooms</span></li>
+        <li><b>3</b><span>Confirm admission</span></li>
+      </ol>
+    </div>
+    <form class="enq glass-ink reveal" id="enq" novalidate>
+      <p class="enq-t">Enquiry</p>
+      <label class="field"><span>Parent's name</span><input name="parent" autocomplete="name" required></label>
+      <label class="field"><span>Phone / WhatsApp</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
+      <div class="f-row">
+        <label class="field"><span>Class</span><select name="class" required><option value="">Choose</option><option>Nursery</option><option>KG</option><option>Class 1</option><option>Class 2</option></select></label>
+        <label class="field"><span>Campus</span><select name="campus" id="enq-campus"></select></label>
+      </div>
+      <button class="btn btn-bone btn-wide" type="submit" id="enq-btn">Request a visit</button>
+      <p class="enq-note" id="enq-note" aria-live="polite"></p>
+    </form>
+    <!-- PLACEHOLDER: the school's fee schedule -->
+    <div class="fees glass-ink reveal" aria-labelledby="fees-h">
+      <div class="fees-top"><h3 id="fees-h">Fee schedule</h3><span class="tba">To be announced</span></div>
+      <div class="fees-row fees-hd" aria-hidden="true"><span>Class</span><span>Admission</span><span>Monthly</span></div>
+      <div class="fees-row"><span><i style="--c:var(--color-tan)"></i>Nursery</span><span>—</span><span>—</span></div>
+      <div class="fees-row"><span><i style="--c:var(--color-oxblood)"></i>KG</span><span>—</span><span>—</span></div>
+      <div class="fees-row"><span><i style="--c:var(--color-forest)"></i>Class 1</span><span>—</span><span>—</span></div>
+      <div class="fees-row"><span><i style="--c:var(--color-ink-blue)"></i>Class 2</span><span>—</span><span>—</span></div>
+      <p class="fees-note">The school will share the full fee schedule with families before admissions close.</p>
+    </div>
+  </div>
 </section>
 
 <footer class="foot">
   <div class="clouds" aria-hidden="true">{{CLOUDS}}</div>
-  <div class="foot-top on-ink">
-    <svg class="foot-mark" viewBox="14 6 465 398" aria-hidden="true"><use href="#cmark"/></svg>
-    <p class="foot-word">CLARUS SCHOOL</p>
-    <p class="foot-tag"><i></i>Learn anywhere, succeed everywhere<i></i></p>
+  <div class="strip" aria-hidden="true">
+    <div class="strip-row r1"><div class="strip-track"><img src="assets/photos/ph-smiles-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-science-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-nursery-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-5-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-sports-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-4-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-smiles-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-science-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-nursery-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-5-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-sports-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-4-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"></div></div>
+    <div class="strip-row r2"><div class="strip-track"><img src="assets/photos/ph-boots-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-art-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-2-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-1-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-stage-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-6-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-boots-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-art-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-2-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-1-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-stage-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-6-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"></div></div>
+  </div>
+  <div class="foot-cta glass reveal">
+    <p class="eyebrow">Admissions open</p>
+    <p class="fc-h">Come and see Clarus for yourself.</p>
+    <a class="btn btn-bone" href="#admissions">Book a visit</a>
+  </div>
+  <div class="foot-main on-ink">
+    <div class="foot-top">
+      <svg class="foot-mark" viewBox="14 6 465 398" aria-hidden="true"><use href="#cmark"/></svg>
+      <p class="foot-word">CLARUS SCHOOL</p>
+      <p class="foot-tag"><i></i>Learn anywhere, succeed everywhere<i></i></p>
+    </div>
+    <div class="foot-cols">
+      <div><p class="fh">Explore</p><a href="#grow">Classes</a><a href="#campuses">Campuses</a><a href="#life">School life</a><a href="junior.html" class="to-junior">Clarus Junior</a></div>
+      <div><p class="fh">Admissions</p><a href="#admissions">Book a visit</a><a href="#fees-h">Fee schedule</a></div>
+      <div><p class="fh">Visit</p><p>Campus address to be added</p><p>School hours to be added</p></div>
+    </div>
   </div>
   <div class="foot-base">
     <span>© 2026 Clarus School</span>
-    <nav class="foot-links" aria-label="Footer"><a href="#grow">Classes</a><a href="#campuses">Campuses</a><a href="#admissions">Admissions</a><a href="junior.html" class="to-junior">Clarus Junior</a></nav>
     <a class="nexlyr" href="https://nexlyr.solutions" target="_blank" rel="noopener">
       {{NEXLYR}}
       <span class="nx-txt"><small>Designed &amp; built by</small><b>NEXLYR</b></span>
