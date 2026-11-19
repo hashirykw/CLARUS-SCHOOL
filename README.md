@@ -6,7 +6,7 @@ Two pages, one feel: both scroll through a continuous 3D world with smooth scrol
 
 | Page | What it is |
 | --- | --- |
-| `index.html` | The main school site. Preloader → 3D logo opens → the star climbs a staircase of books (one book per class) → lands on each campus on a turntable → content sections. Light and dark themes. |
+| `index.html` | The main school site. Opening (star, ring, name) → ink-navy hero with the 3D logo, orbit rings and floating books → a 3D student climbs a staircase of books, growing at each class → waves at each campus → content sections. Light and dark themes. |
 | `junior.html` | Clarus Junior: the playful 3D walk through Nursery, KG, Class 1 and Class 2. |
 
 ## Run it
@@ -56,6 +56,7 @@ The mark (book pages + four-point star) is re-drawn as a vector from the sample 
 - Preloader plays once per browser session; reduced-motion users skip it.
 - Theme follows the device the first time, then remembers the visitor's choice.
 - Pixel ratio is capped (1.6 on phones, 2 on desktop); the 3D stops rendering once the content sheet covers it.
-- Buttons follow the SMK site: gold gradient with a cut corner, a light sweep on hover, and a magnetic pull towards the pointer (`data-mag`).
+- Design language follows the Sir Xahid site: layered glass, grain and glows, rolling-label buttons, and the Light/Dark mode pill with the sound button bottom-left. Palette: ink navy, ivory, claret, silver (no gold).
+- The logo's star is an eight-point compass star (src/defs.html), replacing the long-armed four-point star.
 - Sounds play only after the visitor's first tap, and can be switched off from the side controls.
-- Vendors are local: Three.js r187 (minified to `vendor/three/three.min.js`), GSAP 3.15, Lenis 1.3. Fonts are self-hosted: Cinzel (logo wordmark), Cormorant Garamond (headings) and Geist (text), plus Jost/Inter for the junior page.
+- Vendors are local: Three.js r187 (minified to `vendor/three/three.min.js`), GSAP 3.15, Lenis 1.3. Fonts are self-hosted: Cinzel (logo wordmark), Playfair Display (headings) and Poppins (text), plus Jost/Inter for the junior page.

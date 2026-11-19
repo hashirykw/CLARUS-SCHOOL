@@ -1,13 +1,13 @@
-// home.js — the main Clarus page: opening, smooth scroll, chapter text, theme + sound, menu and form.
+// home.js — the main Clarus page: opening, smooth scroll, reveals, chapter text, dock (theme + sound), menu and form.
 import { createHomeWorld } from './world-home.js';
 import { sound } from './sound.js';
 
 /* ---------- content: edit wording here ---------- */
 const CLASSES = [
-  { title:'Nursery',     open:true,  tag:'var(--color-tan)', text:'Where it all begins.' },
-  { title:'KG',          open:true,  tag:'var(--color-oxblood)', text:'Letters, numbers, first stories.' },
-  { title:'Class 1',     open:true,  tag:'var(--color-forest)', text:'Reading and writing with confidence.' },
-  { title:'Class 2',     open:true,  tag:'var(--color-navy)', text:'Thinking, speaking, sharing ideas.' },
+  { title:'Nursery',     open:true,  tag:'var(--color-tan)',          text:'Where it all begins.' },
+  { title:'KG',          open:true,  tag:'var(--color-claret-soft)',  text:'Letters, numbers, first stories.' },
+  { title:'Class 1',     open:true,  tag:'oklch(62% .08 160)',        text:'Reading and writing with confidence.' },
+  { title:'Class 2',     open:true,  tag:'var(--color-silver)',       text:'Thinking, speaking, sharing ideas.' },
   { title:'Classes 3–5', open:false, text:'Opening year by year.' },
   { title:'Classes 6–8', open:false, text:'Opening year by year.' },
   { title:'Matric',      open:false, text:'Where the staircase leads.' },
@@ -20,8 +20,8 @@ const CAMPUSES = [
 ];
 const WHATSAPP = '';   // school WhatsApp in international format, e.g. 923001234567
 
-/* the logo's star, in the logo's own coordinates (see src/defs.html) */
-const STAR = { centre:[246.25,148], depth:30, points:{ T:[246.25,12], tr:[270.25,124], R:[353.5,148], br:[270.25,172], B:[246.25,329], bl:[222.25,172], L:[139,148], tl:[222.25,124] } };
+/* the logo's star, in the logo's own coordinates (built in src/defs.html) */
+const STAR_C = [246.25, 170], STAR_R = [92, 24, 46, 24];   // main point, valley, diagonal point, valley
 
 const { gsap, ScrollTrigger, Lenis } = window;
 gsap.registerPlugin(ScrollTrigger);
@@ -35,7 +35,7 @@ const isPhone = () => innerWidth < 820;
 /* ---------- smooth scroll ---------- */
 let lenis = null;
 if (!REDUCE) {
-  lenis = new Lenis({ lerp:.09, wheelMultiplier:.85, touchMultiplier:1.3 });
+  lenis = new Lenis({ lerp:.085, wheelMultiplier:.9, touchMultiplier:1.3 });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add(t => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -48,19 +48,19 @@ $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
   e.preventDefault(); closeMenu();
   scrollToY(id === '#top' ? 0 : el.getBoundingClientRect().top + scrollY);
 }));
-addEventListener('pointerdown', e => { if (e.target.closest('.btn, .pbtn, .link, .links a, .menu a, .logo, .jr-card, .nexlyr')) sound.tap(); });
+addEventListener('pointerdown', e => { if (e.target.closest('.btn, .link, .links a, .sheet a, .brand, .jr-card, .nexlyr, .seg button')) sound.tap(); });
 
-/* ---------- magnetic buttons (as on the SMK site): they lean towards the pointer ---------- */
-if (matchMedia('(pointer: fine)').matches && !REDUCE) $$('[data-mag]').forEach(el => {
-  el.addEventListener('pointermove', e => {
-    const r = el.getBoundingClientRect();
-    el.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .22}px,${(e.clientY - r.top - r.height / 2) * .32}px)`;
-  });
-  el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+/* ---------- motion buttons (Sir Xahid site): rolling label, arrow through its disc, colour flood ---------- */
+const ARROW = '<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+$$('.btn').forEach(b => {
+  const label = b.textContent.trim().replace(/\s+/g, ' '); if (!label) return;
+  const esc = label.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  b.innerHTML = `<span class="btn-l"><span>${esc}</span><span aria-hidden="true">${esc}</span></span><span class="btn-fill" aria-hidden="true"></span><span class="btn-i" aria-hidden="true">${ARROW}${ARROW}</span>`;
 });
 
 /* ---------- chapter anchors ---------- */
-const grow = $('#grow'), campus = $('#campuses'), paper = $('#paper'), washL = $('#wash-l');
+const grow = $('#grow'), campus = $('#campuses'), paper = $('#paper');
+const washH = $('#wash-h'), washT = $('#wash-t'), grain = $('#grainy');
 grow.style.setProperty('--steps', CLASSES.length); campus.style.setProperty('--campuses', CAMPUSES.length);
 let A = [];
 function anchors() {
@@ -91,25 +91,25 @@ function setClass(k) {
   [...g.bar.children].forEach((d, i) => { d.classList.toggle('on', i === k); d.classList.toggle('done', i < k); });
   gParts.forEach(el => el.classList.add('out'));
   clearTimeout(setClass.t);
-  setClass.t = setTimeout(() => { paintClass(k); gParts.forEach((el, n) => setTimeout(() => el.classList.remove('out'), n * 50)); }, 200);
+  setClass.t = setTimeout(() => { paintClass(k); gParts.forEach((el, n) => setTimeout(() => el.classList.remove('out'), n * 60)); }, 210);
 }
 
 /* ---------- campus panel + segmented control ---------- */
-const c = { tag:$('#c-status'), name:$('#c-name'), text:$('#c-text'), map:$('#c-map'), tabs:$('#c-tabs') };
+const c = { tag:$('#c-status'), name:$('#c-name'), text:$('#c-text'), map:$('#c-map'), tabs:$('#c-tabs'), visit:$('#c-visit') };
 const cParts = [c.tag, c.name, c.text]; cParts.forEach(el => el.classList.add('swap'));
 const pill = document.createElement('i'); pill.className = 'seg-pill'; c.tabs.appendChild(pill);
 const tabs = CAMPUSES.map((cp, i) => {
   const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab');
   b.setAttribute('aria-selected', String(i === 0)); b.textContent = cp.tab;
-  b.addEventListener('click', () => { sound.tap(); goCampus(i); }); c.tabs.appendChild(b); return b;
+  b.addEventListener('click', () => goCampus(i)); c.tabs.appendChild(b); return b;
 });
-function placePill(k) { const b = tabs[k]; pill.style.width = b.offsetWidth + 'px'; pill.style.transform = `translateX(${b.offsetLeft - 3}px)`; }
+function placePill(k) { const b = tabs[k]; pill.style.width = b.offsetWidth + 'px'; pill.style.transform = `translateX(${b.offsetLeft - 4}px)`; }
 function paintCampus(k) {
   const cp = CAMPUSES[k];
   c.tag.querySelector('span').textContent = cp.soon ? 'Coming soon' : 'Open';
-  c.tag.style.setProperty('--tag', cp.soon ? 'var(--color-gold)' : 'var(--color-ok)');
+  c.tag.style.setProperty('--tag', cp.soon ? 'var(--color-claret-soft)' : 'var(--color-ok)');
   c.name.textContent = cp.name; c.text.textContent = cp.text;
-  $('#c-visit').hidden = cp.soon;
+  c.visit.hidden = cp.soon;
   c.map.hidden = !cp.map; if (cp.map) { c.map.href = cp.map; c.map.target = '_blank'; c.map.rel = 'noopener'; }
 }
 paintCampus(0);
@@ -121,30 +121,36 @@ function setCampus(k) {
   tabs.forEach((b, i) => b.setAttribute('aria-selected', String(i === k))); placePill(k);
   cParts.forEach(el => el.classList.add('out'));
   clearTimeout(setCampus.t);
-  setCampus.t = setTimeout(() => { paintCampus(k); cParts.forEach((el, n) => setTimeout(() => el.classList.remove('out'), n * 50)); }, 200);
+  setCampus.t = setTimeout(() => { paintCampus(k); cParts.forEach((el, n) => setTimeout(() => el.classList.remove('out'), n * 60)); }, 210);
   sound.campus(k);
 }
 function goCampus(k) { scrollToY(A[1 + CLASSES.length + k] + 2); }
 
-/* ---------- nav: compact, hides on the way down, returns on the way up ---------- */
-const nav = $('#nav'), side = $('.side');
+/* ---------- nav + menu ---------- */
+const nav = $('#nav'), dock = $('#dock'), sheet = $('#sheet'), menuBtn = $('#menu-btn');
 const navLinks = $$('.links a[href^="#"]');
 let lastY = 0;
-const menu = $('#menu'), menuBtn = $('#menu-btn');
-const menuOpen = () => !menu.hidden;
+const menuOpen = () => sheet.classList.contains('open');
+function openMenu() { sheet.classList.add('open'); menuBtn.setAttribute('aria-expanded', 'true'); menuBtn.setAttribute('aria-label', 'Close menu'); dock.classList.add('away'); }
+function closeMenu() { if (!menuOpen()) return; sheet.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.setAttribute('aria-label', 'Open menu'); dock.classList.remove('away'); }
+menuBtn.addEventListener('click', () => { sound.tap(); menuOpen() ? closeMenu() : openMenu(); });
+addEventListener('pointerdown', e => { if (menuOpen() && !e.target.closest('.nav, .sheet')) closeMenu(); });
+addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 function navState(y) {
-  if (y < 80 || y < lastY - 2) nav.classList.remove('hide'); else if (y > lastY + 2 && !menuOpen()) nav.classList.add('hide');
-  const inPaper = paper.getBoundingClientRect().top < innerHeight * .6;
-  side.classList.toggle('tuck', isPhone() && inPaper && nav.classList.contains('hide'));
+  const down = y > lastY + 2, upw = y < lastY - 2;
+  nav.classList.toggle('scrolled', y > 40);
+  if (y < 80 || upw) nav.classList.remove('hide'); else if (down && !menuOpen()) nav.classList.add('hide');
+  // on phones the dock steps aside while scrolling down, back on the way up
+  if (isPhone() && !menuOpen()) dock.classList.toggle('away', down && y > 200 ? true : upw ? false : dock.classList.contains('away'));
   let on = -1; navLinks.forEach((a, i) => { const el = $(a.getAttribute('href')); if (el && el.getBoundingClientRect().top < innerHeight * .45) on = i; });
   navLinks.forEach((a, i) => a.classList.toggle('on', i === on));
   lastY = y;
 }
-function openMenu() { menu.hidden = false; requestAnimationFrame(() => menu.classList.add('open')); menuBtn.setAttribute('aria-expanded', 'true'); menuBtn.setAttribute('aria-label', 'Close menu'); }
-function closeMenu() { if (menu.hidden) return; menu.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.setAttribute('aria-label', 'Open menu'); setTimeout(() => { if (!menu.classList.contains('open')) menu.hidden = true; }, 380); }
-menuBtn.addEventListener('click', () => { sound.tap(); menuOpen() ? closeMenu() : openMenu(); });
-addEventListener('pointerdown', e => { if (menuOpen() && !e.target.closest('.nav')) closeMenu(); });
-addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+/* ---------- reveals: lines rise from behind masks, images wipe open, cards drift up ---------- */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin:'0px 0px -12% 0px' });
+$$('.reveal, .wipe, .adm .h2, .ch-head').forEach((el, i) => io.observe(el));
+document.body.classList.add('split-ready');
 
 /* ---------- statement: words light up as it scrolls through ---------- */
 const st = $('#statement');
@@ -156,10 +162,6 @@ function statementState() {
   const n = Math.round(p * words.length);
   words.forEach((w, i) => w.classList.toggle('lit', i < n));
 }
-
-/* ---------- reveal on scroll ---------- */
-const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin:'0px 0px -10% 0px' });
-$$('.reveal').forEach((el, i) => { el.style.transitionDelay = `${(i % 2) * 90}ms`; io.observe(el); });
 
 /* ---------- form ---------- */
 const form = $('#enq'), note = $('#enq-note');
@@ -177,51 +179,68 @@ form.addEventListener('submit', e => {
 });
 form.addEventListener('input', e => e.target.closest('.field')?.classList.remove('bad'));
 
-/* ---------- theme switch + sound switch ---------- */
+/* ---------- dock: theme switch + sound ---------- */
 const themeBtn = $('#theme-btn'), soundBtn = $('#sound-btn');
 const syncTheme = () => themeBtn.setAttribute('aria-checked', String(root.dataset.theme === 'dark'));
 syncTheme();
-soundBtn.setAttribute('aria-pressed', String(sound.on));
-soundBtn.addEventListener('click', () => { sound.set(!sound.on); soundBtn.setAttribute('aria-pressed', String(sound.on)); });
+const syncSound = () => { soundBtn.setAttribute('aria-pressed', String(sound.on)); soundBtn.setAttribute('aria-label', sound.on ? 'Sound effects on' : 'Sound effects off'); };
+syncSound();
+soundBtn.addEventListener('click', () => { sound.set(!sound.on); syncSound(); });
 let world = null;
 themeBtn.addEventListener('click', () => {
   const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
   sound.theme(next === 'dark');
   const apply = () => {
-    root.dataset.theme = next; $('#meta-theme').content = next === 'dark' ? '#0B0B0C' : '#F4F4F1';
+    root.dataset.theme = next; $('#meta-theme').content = next === 'dark' ? '#121830' : '#1A2340';
     try { localStorage.setItem('clarus-theme', next); } catch (e) {}
     if (world) { world.applyTheme(next, true); world.render(); }
     syncTheme();
   };
   if (!document.startViewTransition || REDUCE) { apply(); return; }
-  const r = themeBtn.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+  const k = themeBtn.querySelector('.tpill-k').getBoundingClientRect(), x = k.left + k.width / 2, y = k.top + k.height / 2;
   const end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
   const vt = document.startViewTransition(apply);
   vt.ready.then(() => root.animate({ clipPath:[`circle(0px at ${x}px ${y}px)`, `circle(${end}px at ${x}px ${y}px)`] },
     { duration:850, easing:'cubic-bezier(.65,0,.35,1)', pseudoElement:'::view-transition-new(root)' }));
 });
 
+/* ---------- opening progress ---------- */
+const pr = $('#ld-pr'), pct = $('#ld-pct');
+let shown = 0, target = 0;
+function setProgress(p) { target = Math.max(target, p); }
+if (loading) (function tick() {
+  shown += (target - shown) * .08 + .002; shown = Math.min(shown, target);
+  pr.style.setProperty('--p', shown.toFixed(3)); pct.textContent = String(Math.round(shown * 100)).padStart(2, '0');
+  if (shown < .999 || !document.getElementById('loader')) { if (document.getElementById('loader')) requestAnimationFrame(tick); }
+})();
+setProgress(.18);
+
 /* ---------- 3D world ---------- */
 const canvas = $('#world');
-await Promise.all([document.fonts.load('500 76px Cinzel'), document.fonts.ready]).catch(() => {});
+await Promise.all([document.fonts.load('500 64px Cinzel'), document.fonts.load('600 40px "Playfair Display"'), document.fonts.ready]).catch(() => {});
+setProgress(.45);
 const bands = [1,2,3,4].map(i => document.getElementById('cb' + i).getAttribute('d'));
-try { world = await createHomeWorld(canvas, { bands, star:STAR }); }
+try { world = await createHomeWorld(canvas, { bands, star:{ centre:STAR_C, radii:STAR_R, depth:22 } }); }
 catch (err) { console.warn('3D world unavailable', err); canvas.remove(); }
-if (world) world.applyTheme(root.dataset.theme, true);
+if (world) { world.applyTheme(root.dataset.theme, true); world.render(); }
+setProgress(.92);
 
 let worldOn = true, lastStep = 0;
 function onScroll() {
   const y = lenis ? lenis.animatedScroll : scrollY;
   const t = scrollT(y);
   if (world) world.state.t = Math.max(0, Math.min(A.length - 2, t));
-  washL.style.opacity = Math.max(0, 1 - t * 1.4).toFixed(3);
+  const heroMix = 1 - Math.min(1, Math.max(0, t / .55));
+  washH.style.opacity = heroMix.toFixed(3);
+  washT.style.opacity = (1 - heroMix).toFixed(3);
+  grain.style.opacity = (.06 + heroMix * .12).toFixed(3);
   if (t >= .5 && t < 1 + CLASSES.length) {
     const k = Math.min(CLASSES.length - 1, Math.max(0, Math.round(t - 1)));
     if (k !== lastStep) { sound.step(k); lastStep = k; }
     setClass(k);
   }
   if (t >= CLASSES.length + .5) setCampus(Math.min(CAMPUSES.length - 1, Math.max(0, Math.round(t - 1 - CLASSES.length))));
-  const covered = paper.getBoundingClientRect().top <= 0;
+  const covered = paper.getBoundingClientRect().top <= -160;
   if (covered === worldOn) { worldOn = !covered; canvas.classList.toggle('off', covered); }
   navState(y); statementState();
 }
@@ -240,20 +259,14 @@ let visible = true;
 document.addEventListener('visibilitychange', () => { visible = !document.hidden; });
 gsap.ticker.add(time => { if (world && worldOn && visible) world.frame(time); });
 
-/* ---------- opening → page ---------- */
-function finishOpening() {
-  const ld = $('#loader'), from = $('#ld-mark'), to = $('#nav-mark');
-  ld.classList.add('out');
-  // the mark glides from the centre of the screen into the navbar
+/* ---------- opening → hero ---------- */
+function heroIn() { $('#hero-h').classList.add('in'); }
+if (loading) {
+  setProgress(1);
   setTimeout(() => {
-    const a = from.getBoundingClientRect(), b = to.getBoundingClientRect();
-    const dx = (b.left + b.width / 2) - (a.left + a.width / 2), dy = (b.top + b.height / 2) - (a.top + a.height / 2), s = b.width / a.width;
-    from.animate([{ transform:'none' }, { transform:`translate(${dx}px, ${dy}px) scale(${s})` }], { duration:1000, easing:'cubic-bezier(.65,0,.35,1)', fill:'forwards' });
-    setTimeout(() => ld.classList.add('fade'), 380);
-    setTimeout(() => { root.classList.add('mark-wait'); root.classList.remove('loading'); if (world) world.intro(2.2); lenis && lenis.start(); sound.open(); }, 620);
-    setTimeout(() => { root.classList.remove('mark-wait'); ld.remove(); try { sessionStorage.setItem('clarus-loaded', '1'); } catch (e) {} }, 1330);
-  }, 300);
-}
-if (loading) setTimeout(finishOpening, Math.max(0, 2900 - (performance.now() - t0)));
-else if (world) world.intro(1.6);
+    const ld = $('#loader'); ld.classList.add('out');
+    setTimeout(() => { root.classList.remove('loading'); heroIn(); if (world) world.intro(2.2); lenis && lenis.start(); sound.open(); }, 380);
+    setTimeout(() => { ld.remove(); try { sessionStorage.setItem('clarus-loaded', '1'); } catch (e) {} }, 1300);
+  }, Math.max(0, 2600 - (performance.now() - t0)));
+} else { heroIn(); if (world) world.intro(1.6); }
 window.__ready = true;
