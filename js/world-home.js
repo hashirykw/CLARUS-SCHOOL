@@ -13,14 +13,16 @@ const sh = (m, cast = true, recv = true) => { m.castShadow = cast; m.receiveShad
 
 /* ---------- colours per theme (lerped on switch) ---------- */
 const THEMES = {
-  light: { bg:0xF6F1E6, pages:0x14264C, pagesSheen:0x2A4683, star:0xCC9C4C, starGlow:0x000000, ribbon:0xC9A257, ribbonGlow:0x000000,
-           wall:0xFBF7EE, roof:0x1B2C55, trim:0xC9A257, lawn:0xC8D4B0, plinth:0xEFE7D6, leaf:0x7C9C73, trunk:0xA88D70, page:0xFFFCF4,
-           win:0x33466E, winGlow:0x000000, sketch:0xB8914A, shadow:.16, hemi:1.15, key:2.4, env:.9, starLight:0, glass:0xFFFFFF },
-  dark:  { bg:0x0B132B, pages:0xEFE8D9, pagesSheen:0xFFFFFF, star:0xE6BE70, starGlow:0x6B4A12, ribbon:0xE0B865, ribbonGlow:0x6E4E16,
-           wall:0x2A3456, roof:0x101A36, trim:0xE0B865, lawn:0x1E2C40, plinth:0x1A2442, leaf:0x2C4652, trunk:0x3A3448, page:0xD9D3C4,
-           win:0xFFC977, winGlow:0xE09A3A, sketch:0xE0B865, shadow:.38, hemi:.42, key:.9, env:.45, starLight:9, glass:0x9FB0E0 }
+  light: { bg:0xF4F4F1, pages:0x161B26, pagesSheen:0x2C3A55, star:0xC8A262, starGlow:0x000000, ribbon:0xC9AD78, ribbonGlow:0x000000,
+           wall:0xFAF9F6, roof:0x3A3A3E, trim:0xC9AD78, lawn:0xE4E2DB, plinth:0xEDECE7, leaf:0x8E987E, trunk:0xB5A48E, page:0xFFFDF8,
+           win:0x2E3036, winGlow:0x000000, sketch:0xB59457, shadow:.12, hemi:.85, key:1.75, env:.7, starLight:0, glass:0xFFFFFF },
+  dark:  { bg:0x0B0B0C, pages:0xEDE6D6, pagesSheen:0xFFFFFF, star:0xDDBB78, starGlow:0x4A3410, ribbon:0xD9BC82, ribbonGlow:0x3A2C12,
+           wall:0x2B2B2E, roof:0x161618, trim:0xD9BC82, lawn:0x1D211C, plinth:0x1A1A1C, leaf:0x2F3A30, trunk:0x3A342E, page:0xD6D0C2,
+           win:0xFFD08A, winGlow:0xD9963A, sketch:0xD9BC82, shadow:.42, hemi:.38, key:.85, env:.4, starLight:8, glass:0x8A8A90 }
 };
-const CLASS_COLORS = [0xE5BD5C, 0xD98466, 0x78A9CC, 0x9E8FCB];   // mustard, terracotta, dusty sky, dusty lilac
+const STAR_BOOK = .34;   // star size on the books, relative to its size in the logo
+const STAR_REST = .82;   // how high the star floats above a book's cover (clears its points)
+const CLASS_COLORS = [0xD8C6A2, 0xC08B72, 0x939F88, 0xC6A097];   // sand, clay, sage, rose
 
 export async function createHomeWorld(canvas, markEls) {
   const isPhone = () => innerWidth < 820;
@@ -33,8 +35,8 @@ export async function createHomeWorld(canvas, markEls) {
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
   scene.environmentIntensity = .9;
-  scene.fog = new THREE.Fog(0xF6F1E6, 22, 58);
-  const bg = new THREE.Color(0xF6F1E6); scene.background = bg;
+  scene.fog = new THREE.Fog(0xF4F4F1, 22, 58);
+  const bg = new THREE.Color(0xF4F4F1); scene.background = bg;
 
   const camera = new THREE.PerspectiveCamera(34, 1, .1, 200);
 
@@ -49,22 +51,22 @@ export async function createHomeWorld(canvas, markEls) {
 
   /* materials (shared, so a theme switch is just a few colour lerps) */
   const mat = {
-    pages: new THREE.MeshPhysicalMaterial({ color:0x14264C, roughness:.48, metalness:.0, clearcoat:.4, clearcoatRoughness:.25, envMapIntensity:.25, sheen:0, sheenColor:new THREE.Color(0x2A4683) }),
+    pages: new THREE.MeshPhysicalMaterial({ color:0x161B26, roughness:.62, metalness:.0, clearcoat:.15, clearcoatRoughness:.4, envMapIntensity:.12, sheen:0, sheenColor:new THREE.Color(0x2A4683) }),
     star:  new THREE.MeshStandardMaterial({ color:0xD3A85C, metalness:1, roughness:.3, emissive:0x000000, flatShading:true }),
     ribbon:new THREE.MeshStandardMaterial({ color:0xC9A257, metalness:.6, roughness:.35, emissive:0x000000 }),
     halo:  new THREE.MeshBasicMaterial({ color:0xC9A257, transparent:true, opacity:.12, depthWrite:false }),
     wall:  new THREE.MeshStandardMaterial({ color:0xFBF7EE, roughness:.8 }),
-    roof:  new THREE.MeshStandardMaterial({ color:0x1B2C55, roughness:.55, metalness:.1 }),
+    roof:  new THREE.MeshStandardMaterial({ color:0x3A3A3E, roughness:.6, metalness:.05 }),
     trim:  new THREE.MeshStandardMaterial({ color:0xC9A257, roughness:.3, metalness:.85 }),
     lawn:  new THREE.MeshStandardMaterial({ color:0xDCE3C4, roughness:.95 }),
     plinth:new THREE.MeshStandardMaterial({ color:0xEFE7D6, roughness:.6 }),
     leaf:  new THREE.MeshStandardMaterial({ color:0x9DB98A, roughness:.9 }),
     trunk: new THREE.MeshStandardMaterial({ color:0xB79A79, roughness:.9 }),
     page:  new THREE.MeshStandardMaterial({ color:0xFFFCF4, roughness:.9 }),
-    win:   new THREE.MeshStandardMaterial({ color:0x9FB4D9, roughness:.2, metalness:.3, emissive:0x000000 }),
-    ghost: new THREE.MeshStandardMaterial({ color:0xFFFFFF, transparent:true, opacity:.28, roughness:.2, depthWrite:false }),
+    win:   new THREE.MeshStandardMaterial({ color:0x2E3036, roughness:.15, metalness:.4, emissive:0x000000 }),
+    ghost: new THREE.MeshStandardMaterial({ color:0xFFFFFF, transparent:true, opacity:.22, roughness:.2, depthWrite:false }),
     sketch:new THREE.LineDashedMaterial({ color:0xB8914A, dashSize:.07, gapSize:.07, transparent:true, opacity:.95 }),
-    shadow:new THREE.ShadowMaterial({ opacity:.16 }),
+    shadow:new THREE.ShadowMaterial({ opacity:.11 }),
   };
   const classMats = CLASS_COLORS.map(c => new THREE.MeshStandardMaterial({ color:c, roughness:.72, metalness:0 }));
 
@@ -114,11 +116,11 @@ export async function createHomeWorld(canvas, markEls) {
   const sparkTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
     const g = x.createRadialGradient(32,32,0,32,32,32); g.addColorStop(0,'rgba(255,255,255,1)'); g.addColorStop(.25,'rgba(255,240,200,.85)'); g.addColorStop(1,'rgba(255,220,150,0)');
     x.fillStyle = g; x.fillRect(0,0,64,64); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; })();
-  const SPARKS = isPhone() ? 26 : 44;
+  const SPARKS = isPhone() ? 12 : 18;
   const sparkPos = new Float32Array(SPARKS*3), sparkSeed = [];
   for (let i = 0; i < SPARKS; i++) sparkSeed.push({ r:.35 + Math.random()*.9, a:Math.random()*6.28, y:(Math.random()-.5)*1.2, s:.3 + Math.random()*.8 });
   const sparkGeo = new THREE.BufferGeometry(); sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
-  const sparkMat = new THREE.PointsMaterial({ map:sparkTex, color:0xE2B86A, size:.13, transparent:true, depthWrite:false, opacity:.9, blending:THREE.NormalBlending });
+  const sparkMat = new THREE.PointsMaterial({ map:sparkTex, color:0xE2B86A, size:.09, transparent:true, depthWrite:false, opacity:.9, blending:THREE.NormalBlending });
   const sparks = new THREE.Points(sparkGeo, sparkMat); scene.add(sparks);
 
   /* ================= THE PATH (a brass ribbon that joins the chapters) ================= */
@@ -135,13 +137,7 @@ export async function createHomeWorld(canvas, markEls) {
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
     const m = new THREE.Mesh(g, material); m.receiveShadow = true; return m;
   }
-  scene.add(ribbon(pathCurve, 1.15, .004, mat.halo), ribbon(pathCurve, .2, .008, mat.ribbon));
-  // little brass studs along the path, like stitches
-  const studGeo = new THREE.CylinderGeometry(.05, .05, .02, 12);
-  const studs = new THREE.InstancedMesh(studGeo, mat.trim, 60);
-  for (let i = 0; i < 60; i++) { const p = pathCurve.getPointAt(i/60); const s = new THREE.Object3D(); const side = (i%2 ? 1 : -1) * .42;
-    const tan = pathCurve.getTangentAt(i/60); s.position.set(p.x - tan.z*side, .012, p.z + tan.x*side); s.updateMatrix(); studs.setMatrixAt(i, s.matrix); }
-  scene.add(studs);
+  scene.add(ribbon(pathCurve, .07, .006, mat.ribbon));
 
   /* soft trees, round and friendly */
   function tree(x, z, s = 1) {
@@ -151,15 +147,13 @@ export async function createHomeWorld(canvas, markEls) {
     const c2 = sh(new THREE.Mesh(new THREE.SphereGeometry(.3, 18, 12), mat.leaf)); c2.position.set(.3, .78, .12); g.add(c2);
     return g;
   }
-  [[5.6,-8.6,1.25],[16.4,-7.8,1.3],[18.3,-6.3,.85],[30.2,-6.4,1.2],[31.2,-3.8,.85]].forEach(t => scene.add(tree(...t)));
 
   /* ================= CHAPTER 2 · THE STAIRCASE OF BOOKS ================= */
   const CLASSES = 7;
   function labelTexture(text, fg, bgc) {
     const c = document.createElement('canvas'); c.width = 1024; c.height = 160; const x = c.getContext('2d');
     x.fillStyle = bgc; x.fillRect(0,0,1024,160);
-    x.strokeStyle = fg; x.globalAlpha = .55; x.lineWidth = 3; x.strokeRect(26, 22, 972, 116); x.globalAlpha = 1;
-    x.fillStyle = fg; x.font = '500 76px Cinzel, Cormorant Garamond, serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillStyle = fg; x.font = '500 64px Cinzel, Georgia, serif'; x.letterSpacing = '10px'; x.textAlign = 'center'; x.textBaseline = 'middle';
     x.fillText(text.toUpperCase(), 512, 86);
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
   }
@@ -181,7 +175,7 @@ export async function createHomeWorld(canvas, markEls) {
       g.add(sh(new THREE.Mesh(new RoundedBoxGeometry(W, .06, D, 3, .025), cover)).translateY(H - .03));
       const block = sh(new THREE.Mesh(new THREE.BoxGeometry(W - .1, H - .1, D - .1), pageMat)); block.position.set(0, H/2, -.03); g.add(block);
       const spine = sh(new THREE.Mesh(new RoundedBoxGeometry(W, H, .16, 4, .07), cover)); spine.position.set(0, H/2, D/2 - .06); g.add(spine);
-      const lab = new THREE.Mesh(new THREE.PlaneGeometry(W*.78, W*.78*160/1024), new THREE.MeshStandardMaterial({ map:labelTexture(NAMES[i], '#14264C', '#' + CLASS_COLORS[i].toString(16)), roughness:.6 }));
+      const lab = new THREE.Mesh(new THREE.PlaneGeometry(W*.78, W*.78*160/1024), new THREE.MeshStandardMaterial({ map:labelTexture(NAMES[i], '#8A6A30', '#' + CLASS_COLORS[i].toString(16).padStart(6,'0')), roughness:.6 }));
       lab.position.set(0, H/2, D/2 + .025); g.add(lab);
       // brass bands on the spine
       for (const s of [-1, 1]) { const b = new THREE.Mesh(new THREE.BoxGeometry(.05, H*.9, .02), mat.trim); b.position.set(s*W*.45, H/2, D/2 + .025); g.add(b); }
@@ -195,14 +189,8 @@ export async function createHomeWorld(canvas, markEls) {
     scene.add(g); books.push(g);
   }
   const bookTop = i => books[i].position.clone().setY(books[i].position.y + H);
-  // ABC blocks at the foot of the stairs, for the little ones
-  const blockTex = (ch, col) => { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
-    x.fillStyle = col; x.fillRect(0,0,128,128); x.fillStyle = '#14264C'; x.font = '600 76px Manrope, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(ch, 64, 70);
-    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
-  [['A','#E5BD5C',8.05,-4.75,.25],['B','#78A9CC',8.55,-4.6,-.3],['C','#D98466',9.05,-4.8,.12]].forEach(([ch,col,x,z,r], k) => {
-    const m = sh(new THREE.Mesh(new RoundedBoxGeometry(.42,.42,.42,3,.05), new THREE.MeshStandardMaterial({ map:blockTex(ch,col), roughness:.6 })));
-    m.position.set(x, .21, z); m.rotation.y = r; scene.add(m);
-  });
+  // the part of each book's cover not covered by the next book: the star stands here
+  const tread = i => { books[i].updateMatrixWorld(); return books[i].localToWorld(V(i < CLASSES - 1 ? -(W - STEP.dx) / 2 : 0, H, 0)); };
 
   /* ================= CHAPTER 3 · CAMPUSES ON A TURNTABLE ================= */
   const turn = new THREE.Group(); turn.position.copy(PLINTH); scene.add(turn);
@@ -240,7 +228,7 @@ export async function createHomeWorld(canvas, markEls) {
     const wg = new THREE.Group(); windows(wg, 2.6, 2, 6, BASE + .5, .62, .56); for (const s of [-1,1]) windows(wg, 1, 1, 2, BASE + .55, 0, .46, s*2.2); add(wg);
     // flag
     add(cyl(.02, .02, 1.3, mat.trim, 1.5, BASE + 2.25, -.6, 8));
-    const flag = new THREE.Mesh(new THREE.PlaneGeometry(.5, .32, 8, 1), new THREE.MeshStandardMaterial({ color:0x14264C, side:THREE.DoubleSide, roughness:.7 }));
+    const flag = new THREE.Mesh(new THREE.PlaneGeometry(.5, .32, 8, 1), new THREE.MeshStandardMaterial({ color:0x1C2638, side:THREE.DoubleSide, roughness:.7 }));
     flag.position.set(1.76, BASE + 2.72, -.6); flag.userData.flag = true; add(flag);
     [[-3.2,1.6,.8],[3.3,1.5,.9],[-2.9,-1.9,.75],[3,-2,.7]].forEach(t => add(tree(...t)));
     return { g, parts, slot };
@@ -318,9 +306,9 @@ export async function createHomeWorld(canvas, markEls) {
   const K = { hero:null, steps:[], campus:[] };
   function buildKeys() {
     const portrait = innerHeight > innerWidth, ph = isPhone() || portrait;
-    K.hero = { pos:V(0, 2.5, ph ? 14.2 : 9.8), tgt:V(0, 2.35, 0), ox:portrait ? .5 : .72, oy:portrait ? .72 : .5 };
+    K.hero = { pos:V(0, 2.5, ph ? 14.2 : 11), tgt:V(0, 2.35, 0), ox:portrait ? .5 : .73, oy:portrait ? .72 : .5 };
     K.steps = books.map((b, i) => {
-      const t = bookTop(i).add(V(.2, .35, 0)); const far = i === 0 ? 1.25 : 1;
+      const t = tread(i).add(V(.45, .4, 0)); const far = i === 0 ? 1.25 : 1;
       return { pos:t.clone().add(V(-1.7, 1.75, ph ? 9.4 : 7.2).multiplyScalar(far)), tgt:t, ox:portrait ? .52 : .67, oy:portrait ? .4 : .52 };
     });
     K.campus = [0, 1, 2].map(k => {
@@ -340,7 +328,7 @@ export async function createHomeWorld(canvas, markEls) {
   function keyAt(i) { if (i <= 0) return K.hero; if (i <= 7) return K.steps[i-1]; return K.campus[Math.min(2, i-8)]; }
   function starAt(i) {
     if (i <= 0) return STAR_SLOT.clone();
-    if (i <= 7) return bookTop(i-1).add(V(0, .55, .1));
+    if (i <= 7) return tread(i-1).add(V(0, STAR_REST, 0));
     const k = Math.min(2, i-8); turn.updateMatrixWorld(); return campusSets[k].slot.getWorldPosition(V());
   }
   const starPos = V(), starTarget = V();
@@ -380,14 +368,14 @@ export async function createHomeWorld(canvas, markEls) {
     tmpA.copy(starAt(i)); tmpB.copy(starAt(i+1));
     const se = i === 0 ? smooth(Math.min(1, f*1.1)) : hold(f, .16);
     starTarget.lerpVectors(tmpA, tmpB, se);
-    starTarget.y += Math.sin(Math.PI*se) * (i === 0 ? 1.6 : i === 7 ? 3 : .85);
+    starTarget.y += Math.sin(Math.PI*se) * (i === 0 ? 1.4 : i === 7 ? 2.6 : .95);
     const rise = smooth(Math.min(1, Math.max(0, (state.intro - .35) / .65)));
     const spineP = V(0, emblem.position.y + .1, 0);
     if (t < .001) starTarget.lerpVectors(spineP, STAR_SLOT, rise).y += emblem.position.y - .95;
-    starPos.lerp(starTarget, t < .001 ? 1 : .2);
+    starPos.lerp(starTarget, t < .001 ? 1 : .45);
     star.position.copy(starPos); star.position.y += Math.sin(time*1.6) * .05;
     star.rotation.y = time * .7 + (1 - rise) * -4;
-    const sScale = THREE.MathUtils.lerp(1, .46, smooth(Math.min(1, t * 1.6))) * THREE.MathUtils.lerp(1, .68, smooth(Math.min(1, Math.max(0, t - 7))));
+    const sScale = THREE.MathUtils.lerp(1, STAR_BOOK, smooth(Math.min(1, t * 1.6))) * THREE.MathUtils.lerp(1, .9, smooth(Math.min(1, Math.max(0, t - 7))));
     star.scale.setScalar(Math.max(.001, sScale * (.25 + .75 * rise) * Math.min(1, rise * 4)));
     // squash on landing
     const land = i >= 1 && i < 7 ? Math.max(0, 1 - Math.abs(se - 1) * 12) : 0;
@@ -422,7 +410,7 @@ export async function createHomeWorld(canvas, markEls) {
     state.theme = name; const T = THEMES[name];
     const col = (target, hex) => { if (instant) { gsap.killTweensOf(target); target.setHex(hex); return; } const c = new THREE.Color(hex); gsap.to(target, { r:c.r, g:c.g, b:c.b, duration:.9, ease:'power2.inOut', overwrite:true }); };
     const pairs = [[bg, T.bg], [scene.fog.color, T.bg], [mat.pages.color, T.pages], [mat.pages.sheenColor, T.pagesSheen], [mat.star.color, T.star], [mat.star.emissive, T.starGlow],
-      [mat.ribbon.color, T.ribbon], [mat.ribbon.emissive, T.ribbonGlow], [mat.halo.color, T.ribbon], [mat.wall.color, T.wall], [mat.roof.color, T.roof], [mat.trim.color, T.trim],
+      [mat.ribbon.color, T.ribbon], [mat.ribbon.emissive, T.ribbonGlow], [mat.wall.color, T.wall], [mat.roof.color, T.roof], [mat.trim.color, T.trim],
       [mat.lawn.color, T.lawn], [mat.plinth.color, T.plinth], [mat.leaf.color, T.leaf], [mat.trunk.color, T.trunk], [mat.win.color, T.win], [mat.win.emissive, T.winGlow],
       [mat.sketch.color, T.sketch], [mat.ghost.color, T.glass], [sparkMat.color, T.star]];
     pairs.forEach(([c, h]) => col(c, h));

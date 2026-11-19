@@ -24,10 +24,11 @@ Open http://localhost:8000. On Vercel it works as-is: static files, no build on 
 | What | Where |
 | --- | --- |
 | Class names and wording on the main page | `CLASSES` at the top of `js/home.js` |
-| Campus names, areas, timings, phones, map links | `CAMPUSES` at the top of `js/home.js` |
+| Campus names, details and map links (empty fields are hidden) | `CAMPUSES` at the top of `js/home.js` |
 | School WhatsApp number for the visit form | `WHATSAPP` at the top of `js/home.js` |
 | Page text | `src/index.template.html`, then run `python3 src/build.py` to rebuild `index.html` |
 | Colours, fonts, spacing (both themes) | `css/tokens.css` |
+| Sound effects (synthesised, no files) | `js/sound.js` |
 | Layout and styles | `css/home.css` |
 | The 3D world (emblem, books, campuses, camera path) | `js/world-home.js` |
 | Junior page | `junior.html`, `css/style.css`, `js/main.js`, `js/world.js` |
@@ -40,14 +41,14 @@ The mark (book pages + four-point star) is re-drawn as a vector from the sample 
 
 ## Placeholders still to replace
 
-- Campus names, areas, timings, phones and map links (all marked "to confirm")
-- Ages per class, children per class
-- WhatsApp number for the form (until then the form shows a note instead of sending)
-- Copy in "The Clarus way" should be confirmed by the school
+- Campus names and details (Flagship / Junior / Next are placeholders)
+- WhatsApp number for the form (until then it says online booking opens soon)
 
 ## Notes
 
 - Preloader plays once per browser session; reduced-motion users skip it.
 - Theme follows the device the first time, then remembers the visitor's choice.
 - Pixel ratio is capped (1.6 on phones, 2 on desktop); the 3D stops rendering once the content sheet covers it.
-- Vendors are local: Three.js r187 (minified to `vendor/three/three.min.js`), GSAP 3.15, Lenis 1.3. Fonts are self-hosted: Cinzel (logo wordmark), Cormorant Garamond (headings), Manrope (text), plus Jost/Inter for the junior page.
+- Buttons use the same motion as the Sir Xahid Anwer site (rolling label, sliding arrow, colour flood), added by `enhanceBtn` in `js/home.js`.
+- Sounds play only after the visitor's first tap, and can be switched off from the side controls.
+- Vendors are local: Three.js r187 (minified to `vendor/three/three.min.js`), GSAP 3.15, Lenis 1.3. Fonts are self-hosted: Cinzel (logo wordmark) and Geist (everything else), plus Jost/Inter for the junior page.
