@@ -91,3 +91,6 @@ a:focus-visible{outline:2px solid var(--color-focus);outline-offset:3px;border-r
   .title::after,.cue span{animation:none}
   .dots i{transition:none}
 }
+
+/* smooth page change between the main site and Clarus Junior */
+@view-transition{navigation:auto}

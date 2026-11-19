@@ -1,60 +1,53 @@
-# Clarus Junior — scroll journey prototype
+# Clarus School — website
 
-Confidential. Not for public release. `noindex` is set in `index.html`.
+Confidential. Not for public release. `noindex` is set on both pages.
 
-A working prototype of the 3D class journey: scrolling walks the camera along a coloured path through five scenes (Nursery, KG, Class 1, Class 2, Beyond Junior), with the mascot walking alongside and each class title typing in.
+Two pages, one feel: both scroll through a continuous 3D world with smooth scrolling, and moving between them uses a soft page transition.
+
+| Page | What it is |
+| --- | --- |
+| `index.html` | The main school site. Preloader → 3D logo opens → the star climbs a staircase of books (one book per class) → lands on each campus on a turntable → content sections. Light and dark themes. |
+| `junior.html` | Clarus Junior: the playful 3D walk through Nursery, KG, Class 1 and Class 2. |
 
 ## Run it
 
-It must be served over HTTP (the 3D models will not load from a double-clicked file).
+Must be served over HTTP (3D and modules do not load from a double-clicked file).
 
 ```
-cd CLARUS-SCHOOL
 python3 -m http.server 8000
 ```
 
-Then open http://localhost:8000. On Vercel it works as-is: plain static files, no build step.
+Open http://localhost:8000. On Vercel it works as-is: static files, no build on the server.
 
-## What's inside
+## Editing
 
-| Path | What it is |
+| What | Where |
 | --- | --- |
-| `index.html` | Page structure. The first class's text is in the HTML so nothing blinks on load. |
-| `css/style.css` | All styles and colour tokens. Phone layout below 820px. |
-| `js/main.js` | Scroll logic and the class text. **Edit class names and wording in the `CLASSES` list at the top.** |
-| `js/world.js` | Builds the 3D world: floor, path, lights, camera, mascot, and loads the five scene models. |
-| `models/*.glb` | The five scenes, exported from the Blender files and compressed (about 2.4 MB in total). |
-| `blender/` | The Blender source files, renders and build script. Not deployed. |
-| `vendor/` | Three.js r187, GSAP 3.15 (ScrollTrigger, SplitText), Lenis 1.3, all local. Nothing is loaded from outside. |
-| `fonts/` | Jost (headings) and Inter (body), self-hosted. |
+| Class names and wording on the main page | `CLASSES` at the top of `js/home.js` |
+| Campus names, areas, timings, phones, map links | `CAMPUSES` at the top of `js/home.js` |
+| School WhatsApp number for the visit form | `WHATSAPP` at the top of `js/home.js` |
+| Page text | `src/index.template.html`, then run `python3 src/build.py` to rebuild `index.html` |
+| Colours, fonts, spacing (both themes) | `css/tokens.css` |
+| Layout and styles | `css/home.css` |
+| The 3D world (emblem, books, campuses, camera path) | `js/world-home.js` |
+| Junior page | `junior.html`, `css/style.css`, `js/main.js`, `js/world.js` |
 
-## Blender files
+`index.html` is generated: edit `src/index.template.html` and run `python3 src/build.py`. The build only pastes in the logo shapes (`src/defs.html`), the preloader (`src/loader.html`) and the Nexlyr credit (`src/nexlyr.html`). `src/` is not deployed.
 
-The five scene files, their renders and the build script are in `blender/` (see `blender/README.md`). That folder is excluded from Vercel deploys by `.vercelignore`, so it is never served on the live site.
+## Logo
 
-## Swapping in real art
-
-Each scene loads from `models/<name>.glb`: `nursery`, `kg`, `class1`, `class2`, `beyond`.
-
-1. Open the matching `.blend` file in `blender/blend/` or make a new scene.
-2. Keep the scene roughly within 6 m wide, with the floor at height 0 and the front edge facing the camera.
-3. Export the **Scene** collection only as glTF Binary (`.glb`).
-4. Compress it: `npx gltf-transform optimize in.glb out.glb --compress meshopt --texture-compress webp`
-5. Replace the file in `models/`. No code changes needed.
-
-If a model file is missing, the code-built version of that scene is used instead, so the page never breaks.
-
-The path, mascot, lights and shadows are added by the code, not by the models.
+The mark (book pages + four-point star) is re-drawn as a vector from the sample logo (19 Nov 2026), so it is crisp at any size and the pages can animate separately. Files: `assets/clarus-mark.svg`, `assets/favicon.svg`. If the final logo changes, replace the four page shapes `cb1`–`cb4` in `src/defs.html` and the star points in `js/home.js`, then rebuild.
 
 ## Placeholders still to replace
 
-- Class names, wording, and the four numbers in the About section
-- The mascot (stand-in flame character)
-- The children and classroom art (Blender scenes built from simple shapes)
-- The Clarus logo
+- Campus names, areas, timings, phones and map links (all marked "to confirm")
+- Ages per class, children per class
+- WhatsApp number for the form (until then the form shows a note instead of sending)
+- Copy in "The Clarus way" should be confirmed by the school
 
 ## Notes
 
-- Respects reduced-motion: no typing animation, no smooth scroll.
-- Pixel ratio is capped (1.5 on phones, 2 on desktop) to keep mid-range Android phones smooth.
-- `?capture=1` in the URL is only used for recording the walkthrough video.
+- Preloader plays once per browser session; reduced-motion users skip it.
+- Theme follows the device the first time, then remembers the visitor's choice.
+- Pixel ratio is capped (1.6 on phones, 2 on desktop); the 3D stops rendering once the content sheet covers it.
+- Vendors are local: Three.js r187 (minified to `vendor/three/three.min.js`), GSAP 3.15, Lenis 1.3. Fonts are self-hosted: Cinzel (logo wordmark), Cormorant Garamond (headings), Manrope (text), plus Jost/Inter for the junior page.

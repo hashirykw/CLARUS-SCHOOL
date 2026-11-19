@@ -1,0 +1,117 @@
+/* Hallmark · custom theme · vibe: "classical ink, brass, ivory, glass" · tone: luxury
+ * paper (light) oklch(96.5% .014 85) · paper (dark) oklch(16% .045 264) · accent: brass oklch(72% .11 76) + royal oklch(50% .16 262)
+ * display: Cormorant Garamond 500/600 (roman only) · body: Manrope 400/500/600
+ * axes: light+dark / classical-serif / warm-brass */
+
+@font-face{font-family:"Cormorant Garamond";font-weight:500;font-display:swap;src:url(../fonts/cormorant-garamond-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Cormorant Garamond";font-weight:600;font-display:swap;src:url(../fonts/cormorant-garamond-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Manrope";font-weight:400;font-display:swap;src:url(../fonts/manrope-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Manrope";font-weight:500;font-display:swap;src:url(../fonts/manrope-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Manrope";font-weight:600;font-display:swap;src:url(../fonts/manrope-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Cinzel";font-weight:500;font-display:swap;src:url(../fonts/cinzel-latin-500-normal.woff2) format("woff2")}
+/* metric-matched fallbacks, so the swap to the real fonts does not jump */
+@font-face{font-family:"Cormorant Fallback";src:local("Times New Roman"),local("Times"),local("Liberation Serif");size-adjust:92%;ascent-override:96%;descent-override:30%}
+@font-face{font-family:"Manrope Fallback";src:local("Arial"),local("Helvetica"),local("Liberation Sans");size-adjust:103%;ascent-override:104%;descent-override:29%}
+
+:root{
+  /* type */
+  --font-display:"Cormorant Garamond","Cormorant Fallback",Georgia,serif;
+  --font-body:"Manrope","Manrope Fallback",system-ui,sans-serif;
+  --font-mark:"Cinzel","Cormorant Fallback",Georgia,serif;   /* logo wordmark only */
+  --text-hero:clamp(48px,5.9vw,100px);
+  --text-h2:clamp(38px,5vw,74px);
+  --text-h3:clamp(26px,2.4vw,34px);
+  --text-lead:clamp(16px,1.25vw,18.5px);
+
+  /* space (4pt) */
+  --space-2xs:4px; --space-xs:8px; --space-sm:12px; --space-md:20px; --space-lg:32px;
+  --space-xl:48px; --space-2xl:72px; --space-3xl:120px;
+  --gutter:clamp(18px,4.5vw,72px);
+
+  /* shape */
+  --radius-pill:999px; --radius-sm:12px; --radius-md:20px; --radius-lg:28px; --radius-xl:36px;
+
+  /* motion */
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --ease-in:cubic-bezier(.55,0,1,.45);
+  --ease-in-out:cubic-bezier(.65,0,.35,1);
+  --dur-fast:.18s; --dur-mid:.42s; --dur-slow:.8s;
+
+  /* fixed brand colours */
+  --color-brand-navy:oklch(26% .075 264);     /* Ink Navy */
+  --color-brand-brass:oklch(72% .11 76);      /* Brass */
+  --color-sun:oklch(86% .14 92);
+  --color-coral:oklch(73% .14 38);
+  --color-sky:oklch(82% .09 220);
+  --color-lilac:oklch(74% .11 305);
+  --color-whatsapp:oklch(70% .17 152);
+  --color-nx-a:oklch(76% .14 225);
+  --color-nx-b:oklch(50% .14 250);
+  --color-nx-card:oklch(17% .02 250);
+}
+
+/* ---------- LIGHT · ivory paper, ink navy, brass ---------- */
+:root,[data-theme="light"]{
+  color-scheme:light;
+  --color-paper:oklch(96.6% .014 85);
+  --color-paper-2:oklch(93.4% .02 82);
+  --color-paper-3:oklch(89.5% .026 80);
+  --color-ink:oklch(23% .065 264);
+  --color-ink-2:oklch(42% .045 264);
+  --color-mute:oklch(55% .03 264);
+  --color-rule:oklch(23% .065 264 / .12);
+  --color-brass:oklch(62% .115 72);
+  --color-brass-soft:oklch(72% .11 76);
+  --color-royal:oklch(47% .165 262);
+  --color-on-solid:oklch(98% .01 85);
+  --color-solid:oklch(23% .065 264);
+  --color-solid-hover:oklch(31% .09 264);
+  --color-glow-a:oklch(82% .1 76 / .55);
+  --color-glow-b:oklch(70% .12 255 / .35);
+  --color-glow-c:oklch(84% .09 20 / .35);
+  --glass-bg:oklch(99% .008 85 / .58);
+  --glass-bg-strong:oklch(99% .008 85 / .78);
+  --glass-line:oklch(100% 0 0 / .75);
+  --glass-edge:oklch(23% .065 264 / .09);
+  --glass-shadow:0 1px 0 oklch(100% 0 0 / .8) inset,0 18px 50px -18px oklch(30% .06 264 / .28),0 2px 8px -2px oklch(30% .06 264 / .08);
+  --card-ink-bg:oklch(25% .075 264);
+  --card-ink-text:oklch(95% .015 85);
+  --tint-sun:oklch(94% .055 92); --tint-coral:oklch(92% .045 38); --tint-sky:oklch(93% .035 225); --tint-lilac:oklch(92% .04 305);
+  --scrim:oklch(96.6% .014 85 / .9);
+  --color-mark:oklch(27% .08 264);
+  --color-star-1:oklch(81% .1 82); --color-star-2:oklch(72% .11 78); --color-star-3:oklch(63% .1 72); --color-star-4:oklch(56% .095 68);
+  --color-focus:oklch(47% .165 262);
+}
+
+/* ---------- DARK · midnight navy, brass glow ---------- */
+[data-theme="dark"]{
+  color-scheme:dark;
+  --color-paper:oklch(16.5% .045 264);
+  --color-paper-2:oklch(20.5% .05 264);
+  --color-paper-3:oklch(25% .055 264);
+  --color-ink:oklch(95% .015 85);
+  --color-ink-2:oklch(82% .02 85);
+  --color-mute:oklch(70% .03 264);
+  --color-rule:oklch(95% .015 85 / .12);
+  --color-brass:oklch(80% .11 80);
+  --color-brass-soft:oklch(80% .11 80);
+  --color-royal:oklch(74% .12 255);
+  --color-on-solid:oklch(18% .05 264);
+  --color-solid:oklch(84% .1 80);
+  --color-solid-hover:oklch(90% .09 84);
+  --color-glow-a:oklch(70% .12 76 / .28);
+  --color-glow-b:oklch(50% .16 262 / .5);
+  --color-glow-c:oklch(55% .13 310 / .25);
+  --glass-bg:oklch(24% .05 264 / .5);
+  --glass-bg-strong:oklch(24% .05 264 / .78);
+  --glass-line:oklch(100% 0 0 / .12);
+  --glass-edge:oklch(100% 0 0 / .08);
+  --glass-shadow:0 1px 0 oklch(100% 0 0 / .1) inset,0 24px 60px -20px oklch(5% .03 264 / .7),0 2px 10px -2px oklch(5% .03 264 / .4);
+  --card-ink-bg:oklch(30% .07 264);
+  --card-ink-text:oklch(96% .012 85);
+  --tint-sun:oklch(30% .05 85); --tint-coral:oklch(28% .05 30); --tint-sky:oklch(27% .06 240); --tint-lilac:oklch(27% .06 300);
+  --scrim:oklch(16.5% .045 264 / .85);
+  --color-mark:oklch(94% .02 85);
+  --color-star-1:oklch(88% .1 86); --color-star-2:oklch(80% .115 80); --color-star-3:oklch(71% .11 74); --color-star-4:oklch(63% .1 70);
+  --color-focus:oklch(84% .1 80);
+}

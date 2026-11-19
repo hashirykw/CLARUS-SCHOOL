@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>The Clarus School · Learn Anywhere, Succeed Everywhere</title>
+<meta name="description" content="The Clarus School, founded 2026. Nursery to Class 2 now, growing class by class to Matric.">
+<meta name="theme-color" content="#F6F1E6" id="meta-theme">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<!-- Theme and loader state are set before first paint, so nothing flashes -->
+<script>
+(function(){var d=document.documentElement,t,seen;try{t=localStorage.getItem('clarus-theme');seen=sessionStorage.getItem('clarus-loaded')}catch(e){}
+if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+d.dataset.theme=t;document.getElementById('meta-theme').content=t==='dark'?'#0B132B':'#F6F1E6';
+if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('no-loader');else d.classList.add('loading');})();
+</script>
+<link rel="preload" href="fonts/cinzel-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/cormorant-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/manrope-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/manrope-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="modulepreload" href="vendor/three/three.min.js">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="vendor/lenis/lenis.css">
+<link rel="stylesheet" href="css/home.css">
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/three.min.js", "three/addons/": "./vendor/three/addons/" } }
+</script>
+</head>
+<body>
+{{DEFS}}
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ============ PRELOADER · the book opens, the star rises ============ -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="ld-half ld-a"></div><div class="ld-half ld-b"></div>
+  <div class="ld-in">
+    {{LOADER}}
+    <p class="ld-word"><span style="--i:1">C</span><span style="--i:2">L</span><span style="--i:3">A</span><span style="--i:4">R</span><span style="--i:5">U</span><span style="--i:6">S</span><span style="--i:7" class="sp"> </span><span style="--i:8">S</span><span style="--i:9">C</span><span style="--i:10">H</span><span style="--i:11">O</span><span style="--i:12">O</span><span style="--i:13">L</span></p>
+    <p class="ld-tag"><i></i><span>Learn anywhere, succeed everywhere</span><i></i></p>
+  </div>
+</div>
+
+<!-- one continuous 3D world sits behind the first three chapters -->
+<canvas class="world" id="world" aria-hidden="true"></canvas>
+<div class="wash wash-l" id="wash-l" aria-hidden="true"></div><div class="wash wash-t" aria-hidden="true"></div>
+
+<!-- ============ NAV · floating glass ============ -->
+<header class="nav" id="nav">
+  <div class="nav-in glass">
+    <a class="logo" href="#top" aria-label="Clarus School, home">
+      <svg class="logo-mark" viewBox="14 6 465 398" aria-hidden="true"><use href="#cmark"/></svg>
+      <span class="logo-txt"><b>CLARUS SCHOOL</b><small>Learn anywhere · Succeed everywhere</small></span>
+    </a>
+    <nav class="links" aria-label="Main">
+      <a href="#grow">Classes</a>
+      <a href="#campuses">Campuses</a>
+      <a href="#way">The Clarus way</a>
+      <a href="#admissions">Admissions</a>
+      <a href="junior.html" class="to-junior">Clarus Junior</a>
+    </nav>
+    <div class="nav-end">
+      <button class="theme-btn" id="theme-btn" type="button" aria-label="Switch theme">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.6A8.3 8.3 0 0 1 9.4 4a8.3 8.3 0 1 0 10.6 10.6Z"/></svg>
+      </button>
+      <a class="btn btn-solid nav-cta" href="#admissions">Book a visit</a>
+      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="sheet" aria-label="Open menu"><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-in glass">
+    <nav aria-label="Mobile">
+      <a href="#grow"><span>Classes</span><i>01</i></a>
+      <a href="#campuses"><span>Campuses</span><i>02</i></a>
+      <a href="#way"><span>The Clarus way</span><i>03</i></a>
+      <a href="#admissions"><span>Admissions</span><i>04</i></a>
+      <a href="junior.html" class="to-junior"><span>Clarus Junior</span><i>↗</i></a>
+    </nav>
+    <a class="btn btn-solid btn-lg" href="#admissions">Book a campus visit</a>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ============ 1 · HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-in">
+    <p class="chip glass"><i class="dot"></i>Admissions open · Nursery to Class 2</p>
+    <h1 class="hero-h">Learn anywhere.<br><span>Succeed everywhere.</span></h1>
+    <p class="hero-p">A warm, serious school for little ones, opening in 2026 and growing with your child, class by class, all the way to Matric.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-solid btn-lg" href="#admissions">Book a campus visit</a>
+      <a class="btn btn-glass btn-lg" href="#grow">Follow the star <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+    </div>
+  </div>
+  <div class="hero-facts glass">
+    <div><b>2026</b><span>Founded</span></div>
+    <div><b>Nursery – Class 2</b><span>Open now</span></div>
+    <div><b>Up to Matric</b><span>Planned, class by class</span></div>
+  </div>
+  <div class="cue" aria-hidden="true"><span></span>Scroll</div>
+</section>
+
+<!-- ============ 2 · GROW · the star climbs the books ============ -->
+<section class="grow" id="grow" aria-label="Classes at Clarus">
+  <div class="pin">
+    <div class="grow-head">
+      <h2 class="h2">A school that grows<br><span>with your child.</span></h2>
+    </div>
+    <div class="g-card glass" id="g-card">
+      <p class="g-tag" id="g-tag"><i class="dot"></i><span>Open now</span></p>
+      <p class="g-count" id="g-count">Step 1 of 7</p>
+      <h3 class="g-title" id="g-title">Nursery</h3>
+      <p class="g-desc" id="g-desc">Play, songs, stories and first friends. A gentle start where little ones learn by doing.</p>
+      <p class="g-age" id="g-age">Ages to confirm</p>
+    </div>
+    <ol class="g-dots" id="g-dots" aria-hidden="true"></ol>
+  </div>
+</section>
+
+<!-- ============ 3 · CAMPUSES ============ -->
+<section class="campus" id="campuses" aria-labelledby="campus-h">
+  <div class="pin">
+    <div class="c-head">
+      <h2 class="h2" id="campus-h">Our campuses,<br><span>one Clarus.</span></h2>
+      <div class="c-tabs glass" role="tablist" aria-label="Campuses" id="c-tabs"></div>
+    </div>
+    <article class="c-card glass" id="c-card" role="tabpanel">
+      <div class="c-swap" id="c-swap">
+        <p class="c-status" id="c-status"><i class="dot"></i><span>Open for admissions</span></p>
+        <h3 class="c-name" id="c-name">Flagship Campus</h3>
+        <p class="c-area" id="c-area">Area to confirm</p>
+        <p class="c-text" id="c-text">The first Clarus campus, home to every class from Nursery to Class 2.</p>
+        <dl class="c-meta">
+          <div><dt>Classes</dt><dd id="c-classes">Nursery – Class 2</dd></div>
+          <div><dt>Timings</dt><dd id="c-time">To confirm</dd></div>
+          <div><dt>Phone</dt><dd id="c-phone">To confirm</dd></div>
+        </dl>
+      </div>
+      <div class="c-actions">
+        <a class="btn btn-solid" href="#admissions" id="c-visit">Book a visit</a>
+        <a class="btn btn-glass" href="#campuses" id="c-map">Directions</a>
+      </div>
+      <div class="c-foot">
+        <span class="c-count"><b id="c-num">01</b> / <span id="c-total">03</span></span>
+        <span class="c-arrows">
+          <button type="button" class="arrow" id="c-prev" aria-label="Previous campus"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button type="button" class="arrow" id="c-next" aria-label="Next campus"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        </span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ the page rises over the world like a sheet of paper ============ -->
+<div class="paper" id="paper">
+
+<section class="way" id="way">
+  <div class="sec-head">
+    <h2 class="h2">The Clarus way.</h2>
+    <p class="lead">What every parent can expect, on every campus.</p>
+  </div>
+  <div class="bento">
+    <article class="b-card b-a reveal">
+      <svg class="b-ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 13c-5-4-12-5-18-4v27c6-1 13 0 18 4 5-4 12-5 18-4V9c-6-1-13 0-18 4Zm0 0v27"/></svg>
+      <h3>Reading comes first</h3>
+      <p>Every day starts with books. Children who love reading learn everything else faster, so we build that habit from Nursery.</p>
+      <svg class="b-art" viewBox="0 0 260 120" aria-hidden="true"><rect x="10" y="40" width="34" height="80" rx="5"/><rect x="50" y="22" width="30" height="98" rx="5"/><rect x="86" y="52" width="38" height="68" rx="5"/><rect x="130" y="30" width="28" height="90" rx="5" transform="rotate(8 144 75)"/><rect x="172" y="62" width="40" height="58" rx="5"/><rect x="218" y="44" width="32" height="76" rx="5"/></svg>
+    </article>
+    <article class="b-card b-b reveal">
+      <svg class="b-ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="17" cy="16" r="6"/><circle cx="33" cy="20" r="4.5"/><path d="M6 40c1-8 6-12 11-12s10 4 11 12M27 40c.8-6 3.5-9 6-9 3 0 6 3 7 9"/></svg>
+      <h3>Small classes, known by name</h3>
+      <p>Teachers who know each child, their pace, and what makes them light up.</p>
+      <p class="b-num"><b>—</b><span>Children per class, to confirm</span></p>
+    </article>
+    <article class="b-card b-c reveal">
+      <svg class="b-ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="12" y="5" width="24" height="38" rx="5"/><path d="M20 37h8M18 18l4 4 8-8"/></svg>
+      <h3>Parents in the loop</h3>
+      <p>Attendance, progress and notices on your phone, not lost in a school bag.</p>
+    </article>
+    <article class="b-card b-d reveal">
+      <svg class="b-ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6 8 12v11c0 10 7 17 16 19 9-2 16-9 16-19V12Z"/><path d="M17 24l5 5 9-10"/></svg>
+      <h3>Safe, calm campuses</h3>
+      <p>Secure gates, known pick-up faces, and quiet classrooms built for small children.</p>
+    </article>
+    <article class="b-card b-e reveal">
+      <svg class="b-ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="16"/><path d="M8 24h32M24 8c5 5 7 10 7 16s-2 11-7 16c-5-5-7-10-7-16s2-11 7-16Z"/></svg>
+      <h3>Learn anywhere</h3>
+      <p>Lessons, notes and homework stay reachable from home, so learning never stops at the gate.</p>
+    </article>
+  </div>
+</section>
+
+<section class="junior">
+  <a class="jr-card reveal to-junior" href="junior.html">
+    <div class="jr-text">
+      <p class="jr-kicker"><svg viewBox="14 6 465 398" aria-hidden="true"><use href="#cstar"/></svg>Clarus Junior</p>
+      <h2 class="jr-h">Walk through the little ones' world.</h2>
+      <p>A playful 3D walk through Nursery, KG, Class 1 and Class 2, made for parents of our youngest learners.</p>
+      <span class="btn btn-jr">Take the walk <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </div>
+    <div class="jr-art"><img src="assets/junior-nursery.webp" width="1200" height="750" alt="Clarus Junior nursery scene: children at a table, a painting easel and a bookshelf" loading="lazy" decoding="async"></div>
+  </a>
+</section>
+
+<section class="adm" id="admissions">
+  <div class="sec-head">
+    <h2 class="h2">Admissions in <span>four calm steps.</span></h2>
+    <p class="lead">Fees and seats are confirmed with you directly, on WhatsApp or at your visit.</p>
+  </div>
+  <div class="adm-grid">
+    <ol class="steps">
+      <li class="step reveal"><span class="step-n">1</span><div><h3>Say hello</h3><p>Send a message or fill in the short form.</p></div></li>
+      <li class="step reveal"><span class="step-n">2</span><div><h3>Visit a campus</h3><p>Walk the classrooms and meet the teachers.</p></div></li>
+      <li class="step reveal"><span class="step-n">3</span><div><h3>A friendly meeting</h3><p>A relaxed chat with your child. No exam for little ones.</p></div></li>
+      <li class="step reveal"><span class="step-n">4</span><div><h3>Welcome to Clarus</h3><p>Uniform, books and first-day details, sorted together.</p></div></li>
+    </ol>
+    <form class="enq glass reveal" id="enq" novalidate>
+      <h3 class="enq-h">Book a campus visit</h3>
+      <label class="field"><span>Parent's name</span><input name="parent" autocomplete="name" required></label>
+      <label class="field"><span>Phone / WhatsApp</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
+      <div class="f-row">
+        <label class="field"><span>Class</span><select name="class" required><option value="">Choose</option><option>Nursery</option><option>KG</option><option>Class 1</option><option>Class 2</option></select></label>
+        <label class="field"><span>Campus</span><select name="campus" id="enq-campus"></select></label>
+      </div>
+      <button class="btn btn-solid btn-lg" type="submit" id="enq-btn"><span>Request a visit</span></button>
+      <p class="enq-note" id="enq-note" aria-live="polite">We reply within one working day.</p>
+    </form>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="foot-top">
+    <svg class="foot-mark" viewBox="14 6 465 398" aria-hidden="true"><use href="#cmark"/></svg>
+    <p class="foot-word">CLARUS SCHOOL</p>
+    <p class="foot-tag"><i></i>Learn anywhere, succeed everywhere<i></i></p>
+  </div>
+  <nav class="foot-links" aria-label="Footer">
+    <a href="#grow">Classes</a><a href="#campuses">Campuses</a><a href="#way">The Clarus way</a><a href="#admissions">Admissions</a><a href="junior.html" class="to-junior">Clarus Junior</a>
+  </nav>
+  <div class="foot-base">
+    <span>© 2026 Clarus School</span>
+    <a class="nexlyr" href="https://nexlyr.solutions" target="_blank" rel="noopener">
+      {{NEXLYR}}
+      <span class="nx-txt"><small>Designed &amp; built by</small><b>NEXLYR</b></span>
+      <span class="nx-go">Connect</span>
+    </a>
+  </div>
+</footer>
+
+</div>
+</main>
+
+<script src="vendor/gsap/gsap.min.js"></script>
+<script src="vendor/gsap/ScrollTrigger.min.js"></script>
+<script src="vendor/lenis/lenis.min.js"></script>
+<script type="module" src="js/home.js"></script>
+</body>
+</html>
