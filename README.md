@@ -44,6 +44,13 @@ The mark (book pages + four-point star) is re-drawn as a vector from the sample 
 - Campus names and details (Flagship / Junior / Next are placeholders)
 - WhatsApp number for the form (until then it says online booking opens soon)
 
+## Sharing, icons and hosting
+
+- Link previews (WhatsApp, Facebook, X, LinkedIn): `assets/og.jpg` for the main page, `assets/og-junior.jpg` for Clarus Junior, 1200×630. The site address in the tags is `https://clarus.nexlyr.solutions`.
+- Icons: `favicon.ico`, `assets/favicon.svg`, `apple-touch-icon.png`, `assets/icon-192.png`, `assets/icon-512.png`, listed in `site.webmanifest` (the site can be added to a phone's home screen).
+- `vercel.json`: clean URLs (`/junior`), long caching for fonts, libraries and models, and basic security headers. `404.html` is the branded not-found page.
+- Both pages still carry `noindex`, so search engines skip them; remove that tag when the school is ready to be found on Google.
+
 ## Notes
 
 - Preloader plays once per browser session; reduced-motion users skip it.
