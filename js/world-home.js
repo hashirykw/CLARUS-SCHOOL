@@ -13,16 +13,16 @@ const sh = (m, cast = true, recv = true) => { m.castShadow = cast; m.receiveShad
 
 /* ---------- colours per theme (lerped on switch) ---------- */
 const THEMES = {
-  light: { bg:0xF4F4F1, pages:0x161B26, pagesSheen:0x2C3A55, star:0xC8A262, starGlow:0x000000, ribbon:0xC9AD78, ribbonGlow:0x000000,
-           wall:0xFAF9F6, roof:0x3A3A3E, trim:0xC9AD78, lawn:0xE4E2DB, plinth:0xEDECE7, leaf:0x8E987E, trunk:0xB5A48E, page:0xFFFDF8,
-           win:0x2E3036, winGlow:0x000000, sketch:0xB59457, shadow:.12, hemi:.85, key:1.75, env:.7, starLight:0, glass:0xFFFFFF },
-  dark:  { bg:0x0B0B0C, pages:0xEDE6D6, pagesSheen:0xFFFFFF, star:0xDDBB78, starGlow:0x4A3410, ribbon:0xD9BC82, ribbonGlow:0x3A2C12,
-           wall:0x2B2B2E, roof:0x161618, trim:0xD9BC82, lawn:0x1D211C, plinth:0x1A1A1C, leaf:0x2F3A30, trunk:0x3A342E, page:0xD6D0C2,
-           win:0xFFD08A, winGlow:0xD9963A, sketch:0xD9BC82, shadow:.42, hemi:.38, key:.85, env:.4, starLight:8, glass:0x8A8A90 }
+  light: { bg:0xF3EEE4, pages:0x1F2A44, pagesSheen:0x2C3A5A, star:0xC9A15A, starGlow:0x000000, ribbon:0xC4A162, ribbonGlow:0x000000,
+           wall:0xF4EEE2, roof:0x27314A, trim:0xC4A162, lawn:0xE7E0D0, plinth:0xEAE3D4, leaf:0x46594A, trunk:0x6B5A48, page:0xFBF6EA,
+           win:0x1F2A44, winGlow:0x000000, sketch:0xA88A4E, shadow:.13, hemi:.95, key:1.9, env:.75, starLight:0, glass:0xFFFFFF },
+  dark:  { bg:0x0D1015, pages:0xEDE5D3, pagesSheen:0xFFFFFF, star:0xDCBA74, starGlow:0x4A3410, ribbon:0xD3B272, ribbonGlow:0x3A2C12,
+           wall:0x2B2E36, roof:0x14171E, trim:0xD3B272, lawn:0x1E2128, plinth:0x1A1D24, leaf:0x24342B, trunk:0x3A3128, page:0xD6CFBE,
+           win:0xFFD08A, winGlow:0xD9963A, sketch:0xD3B272, shadow:.42, hemi:.38, key:.85, env:.4, starLight:8, glass:0x8A8A90 }
 };
 const STAR_BOOK = .34;   // star size on the books, relative to its size in the logo
 const STAR_REST = .82;   // how high the star floats above a book's cover (clears its points)
-const CLASS_COLORS = [0xD8C6A2, 0xC08B72, 0x939F88, 0xC6A097];   // sand, clay, sage, rose
+const CLASS_COLORS = [0x9A6E45, 0x6E2A26, 0x2C4A3C, 0x24304F];   // tan, oxblood, forest, navy leather
 
 export async function createHomeWorld(canvas, markEls) {
   const isPhone = () => innerWidth < 820;
@@ -35,8 +35,8 @@ export async function createHomeWorld(canvas, markEls) {
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
   scene.environmentIntensity = .9;
-  scene.fog = new THREE.Fog(0xF4F4F1, 22, 58);
-  const bg = new THREE.Color(0xF4F4F1); scene.background = bg;
+  scene.fog = new THREE.Fog(0xF3EEE4, 22, 58);
+  const bg = new THREE.Color(0xF3EEE4); scene.background = bg;
 
   const camera = new THREE.PerspectiveCamera(34, 1, .1, 200);
 
@@ -51,7 +51,7 @@ export async function createHomeWorld(canvas, markEls) {
 
   /* materials (shared, so a theme switch is just a few colour lerps) */
   const mat = {
-    pages: new THREE.MeshPhysicalMaterial({ color:0x161B26, roughness:.62, metalness:.0, clearcoat:.15, clearcoatRoughness:.4, envMapIntensity:.12, sheen:0, sheenColor:new THREE.Color(0x2A4683) }),
+    pages: new THREE.MeshPhysicalMaterial({ color:0x1F2A44, roughness:.62, metalness:.0, clearcoat:.15, clearcoatRoughness:.4, envMapIntensity:.12, sheen:0, sheenColor:new THREE.Color(0x2A4683) }),
     star:  new THREE.MeshStandardMaterial({ color:0xD3A85C, metalness:1, roughness:.3, emissive:0x000000, flatShading:true }),
     ribbon:new THREE.MeshStandardMaterial({ color:0xC9A257, metalness:.6, roughness:.35, emissive:0x000000 }),
     halo:  new THREE.MeshBasicMaterial({ color:0xC9A257, transparent:true, opacity:.12, depthWrite:false }),
@@ -68,7 +68,7 @@ export async function createHomeWorld(canvas, markEls) {
     sketch:new THREE.LineDashedMaterial({ color:0xB8914A, dashSize:.07, gapSize:.07, transparent:true, opacity:.95 }),
     shadow:new THREE.ShadowMaterial({ opacity:.11 }),
   };
-  const classMats = CLASS_COLORS.map(c => new THREE.MeshStandardMaterial({ color:c, roughness:.72, metalness:0 }));
+  const classMats = CLASS_COLORS.map(c => new THREE.MeshStandardMaterial({ color:c, roughness:.5, metalness:.05 }));   // leather, a soft sheen
 
   /* ground: only shadows, so the floor melts into the page colour in both themes */
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), mat.shadow);
@@ -139,12 +139,13 @@ export async function createHomeWorld(canvas, markEls) {
   }
   scene.add(ribbon(pathCurve, .07, .006, mat.ribbon));
 
-  /* soft trees, round and friendly */
+  /* cypress trees: slender and classical */
+  const cypressGeo = (() => { const pts = []; for (let k = 0; k <= 14; k++) { const y = k / 14; pts.push(new THREE.Vector2(Math.sin(Math.PI * Math.pow(y, .72)) * .3 * (1 - y * .15), y * 1.9)); }
+    return new THREE.LatheGeometry(pts, 18); })();
   function tree(x, z, s = 1) {
     const g = new THREE.Group(); g.position.set(x, 0, z); g.scale.setScalar(s);
-    g.add(sh(new THREE.Mesh(new THREE.CylinderGeometry(.06, .09, .7, 10), mat.trunk)).translateY(.35));
-    const crown = sh(new THREE.Mesh(new THREE.SphereGeometry(.48, 22, 16), mat.leaf)); crown.position.y = 1.02; crown.scale.set(1, 1.18, 1); g.add(crown);
-    const c2 = sh(new THREE.Mesh(new THREE.SphereGeometry(.3, 18, 12), mat.leaf)); c2.position.set(.3, .78, .12); g.add(c2);
+    g.add(sh(new THREE.Mesh(new THREE.CylinderGeometry(.045, .06, .3, 8), mat.trunk)).translateY(.15));
+    const c = sh(new THREE.Mesh(cypressGeo, mat.leaf)); c.position.y = .22; g.add(c);
     return g;
   }
 
@@ -175,7 +176,7 @@ export async function createHomeWorld(canvas, markEls) {
       g.add(sh(new THREE.Mesh(new RoundedBoxGeometry(W, .06, D, 3, .025), cover)).translateY(H - .03));
       const block = sh(new THREE.Mesh(new THREE.BoxGeometry(W - .1, H - .1, D - .1), pageMat)); block.position.set(0, H/2, -.03); g.add(block);
       const spine = sh(new THREE.Mesh(new RoundedBoxGeometry(W, H, .16, 4, .07), cover)); spine.position.set(0, H/2, D/2 - .06); g.add(spine);
-      const lab = new THREE.Mesh(new THREE.PlaneGeometry(W*.78, W*.78*160/1024), new THREE.MeshStandardMaterial({ map:labelTexture(NAMES[i], '#8A6A30', '#' + CLASS_COLORS[i].toString(16).padStart(6,'0')), roughness:.6 }));
+      const lab = new THREE.Mesh(new THREE.PlaneGeometry(W*.78, W*.78*160/1024), new THREE.MeshStandardMaterial({ map:labelTexture(NAMES[i], '#D9B877', '#' + CLASS_COLORS[i].toString(16).padStart(6,'0')), roughness:.6 }));
       lab.position.set(0, H/2, D/2 + .025); g.add(lab);
       // brass bands on the spine
       for (const s of [-1, 1]) { const b = new THREE.Mesh(new THREE.BoxGeometry(.05, H*.9, .02), mat.trim); b.position.set(s*W*.45, H/2, D/2 + .025); g.add(b); }
@@ -183,7 +184,7 @@ export async function createHomeWorld(canvas, markEls) {
       // planned classes: drawn, not built yet — a dotted sketch, like the logo before it fills in
       const ghost = new THREE.Mesh(new RoundedBoxGeometry(W, H, D, 3, .05), mat.ghost); ghost.position.y = H/2; g.add(ghost);
       const edges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W, H, D)), mat.sketch); edges.position.y = H/2; edges.computeLineDistances(); g.add(edges);
-      const lab = new THREE.Mesh(new THREE.PlaneGeometry(W*.78, W*.78*160/1024), new THREE.MeshBasicMaterial({ map:labelTexture(NAMES[i], '#B8914A', 'rgba(0,0,0,0)'), transparent:true, depthWrite:false }));
+      const lab = new THREE.Mesh(new THREE.PlaneGeometry(W*.78, W*.78*160/1024), new THREE.MeshBasicMaterial({ map:labelTexture(NAMES[i], '#A88A4E', 'rgba(0,0,0,0)'), transparent:true, depthWrite:false }));
       lab.position.set(0, H/2, D/2 + .01); g.add(lab);
     }
     scene.add(g); books.push(g);
@@ -194,9 +195,13 @@ export async function createHomeWorld(canvas, markEls) {
 
   /* ================= CHAPTER 3 · CAMPUSES ON A TURNTABLE ================= */
   const turn = new THREE.Group(); turn.position.copy(PLINTH); scene.add(turn);
-  turn.add(sh(new THREE.Mesh(new THREE.CylinderGeometry(4.4, 4.55, .34, 96), mat.plinth), true, true).translateY(.17));
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(4.42, .045, 10, 120), mat.trim); rim.rotation.x = Math.PI/2; rim.position.y = .34; turn.add(rim);
-  const lawn = sh(new THREE.Mesh(new THREE.CylinderGeometry(4.15, 4.15, .05, 96), mat.lawn), false, true); lawn.position.y = .36; turn.add(lawn);
+  // a square stone base, stepped, with a gold inlay — like an architect's model
+  turn.add(sh(new THREE.Mesh(new RoundedBoxGeometry(8.4, .2, 8.4, 2, .04), mat.plinth)).translateY(.1));
+  turn.add(sh(new THREE.Mesh(new RoundedBoxGeometry(7.9, .18, 7.9, 2, .04), mat.plinth)).translateY(.29));
+  for (const [w, d, x, z] of [[7.3, .04, 0, 3.63], [7.3, .04, 0, -3.63], [.04, 7.3, 3.63, 0], [.04, 7.3, -3.63, 0]]) {
+    const b = new THREE.Mesh(new THREE.BoxGeometry(w, .012, d), mat.trim); b.position.set(x, .386, z); turn.add(b);
+  }
+  const lawn = sh(new THREE.Mesh(new THREE.BoxGeometry(7.1, .01, 7.1), mat.lawn), false, true); lawn.position.y = .384; turn.add(lawn);
   const campusSets = [];
 
   const box = (w,h,d,m,x,y,z,r=.03) => { const o = sh(new THREE.Mesh(new RoundedBoxGeometry(w,h,d,2,Math.min(r, w/2-.001, h/2-.001, d/2-.001)), m)); o.position.set(x,y,z); return o; };
@@ -223,14 +228,10 @@ export async function createHomeWorld(canvas, markEls) {
     for (let c = 0; c < 6; c++) add(cyl(.07, .08, 1.18, mat.wall, -.95 + c*.38, BASE + .84, .66, 16));
     add(box(2.3, .1, .62, mat.wall, 0, BASE + 1.47, .6));
     const ped = add(prism(2.4, .62, .64, mat.roof)); ped.position.set(0, BASE + 1.52, .6);
-    const slot = new THREE.Object3D(); slot.position.set(0, BASE + 2.42, .25); g.add(slot);
+    const slot = new THREE.Object3D(); slot.position.set(0, BASE + 2.95, .1); g.add(slot);   // clear above the pediment
     const door = new THREE.Mesh(new THREE.PlaneGeometry(.42, .72), mat.roof); door.position.set(0, BASE + .5, .56); add(door);
     const wg = new THREE.Group(); windows(wg, 2.6, 2, 6, BASE + .5, .62, .56); for (const s of [-1,1]) windows(wg, 1, 1, 2, BASE + .55, 0, .46, s*2.2); add(wg);
-    // flag
-    add(cyl(.02, .02, 1.3, mat.trim, 1.5, BASE + 2.25, -.6, 8));
-    const flag = new THREE.Mesh(new THREE.PlaneGeometry(.5, .32, 8, 1), new THREE.MeshStandardMaterial({ color:0x1C2638, side:THREE.DoubleSide, roughness:.7 }));
-    flag.position.set(1.76, BASE + 2.72, -.6); flag.userData.flag = true; add(flag);
-    [[-3.2,1.6,.8],[3.3,1.5,.9],[-2.9,-1.9,.75],[3,-2,.7]].forEach(t => add(tree(...t)));
+    [[-2.4,-2.9,1.05],[2.4,-2.9,1.05],[-3.25,-2.9,.85],[3.25,-2.9,.85]].forEach(t => add(tree(...t)));
     return { g, parts, slot };
   }
   // 1 · Junior: friendly, rounded, coloured windows and a playground
@@ -241,7 +242,7 @@ export async function createHomeWorld(canvas, markEls) {
     add(box(3, .14, 1.8, mat.roof, -.4, BASE + 1.57, -.4, .07));
     const tower = add(cyl(.62, .62, 2.1, mat.wall, 1.4, BASE + 1.05, -.3, 32));
     const cone = add(sh(new THREE.Mesh(new THREE.ConeGeometry(.78, .9, 32), mat.roof))); cone.position.set(1.4, BASE + 2.55, -.3);
-    const slot = new THREE.Object3D(); slot.position.set(1.4, BASE + 3.3, -.3); g.add(slot);
+    const slot = new THREE.Object3D(); slot.position.set(1.4, BASE + 3.72, -.3); g.add(slot);   // clear above the tower's point
     for (let c = 0; c < 4; c++) for (let r = 0; r < 2; r++) {
       const f = box(.42, .42, .06, classMats[(c + r) % 4], -1.45 + c*.7, BASE + .52 + r*.62, .42, .08); add(f);
       const w = new THREE.Mesh(new THREE.PlaneGeometry(.3, .3), mat.win); w.position.set(-1.45 + c*.7, BASE + .52 + r*.62, .455); add(w);
@@ -254,7 +255,7 @@ export async function createHomeWorld(canvas, markEls) {
     for (const s of [-1,1]) { const leg = cyl(.03, .03, 1.05, mat.trim, s*.5, .5, 0, 8); leg.rotation.z = s*.12; sw.add(leg); }
     sw.add(cyl(.03, .03, 1.1, mat.trim, 0, 1.02, 0, 8)); sw.children[2].rotation.z = Math.PI/2;
     sw.add(box(.32, .04, .16, classMats[1], 0, .32, 0, .02)); add(sw);
-    [[-3.1,1,.9],[-2.6,-2.2,.8],[3.2,-1.4,.85]].forEach(t => add(tree(...t)));
+    [[-2.6,-2.9,1],[-3.3,-2.9,.85],[3.2,-2.9,.9]].forEach(t => add(tree(...t)));
     return { g, parts, slot };
   }
   // 2 · Coming soon: the same hall, only sketched in dotted brass
@@ -273,8 +274,8 @@ export async function createHomeWorld(canvas, markEls) {
     const crane = new THREE.Group(); crane.position.set(-2.6, BASE, 1.2);
     crane.add(box(.08, 2.8, .08, mat.trim, 0, 1.4, 0, .01)); crane.add(box(2.2, .06, .06, mat.trim, .8, 2.8, 0, .01));
     const hook = cyl(.012, .012, .9, mat.trim, 1.7, 2.35, 0, 6); crane.add(hook); add(crane);
-    const slot = new THREE.Object3D(); slot.position.set(1.7 - 2.6, BASE + 1.45, 1.2); g.add(slot);
-    [[3.2,1.4,.8],[-3.2,-1.6,.75]].forEach(t => add(tree(...t)));
+    const slot = new THREE.Object3D(); slot.position.set(1.7 - 2.6, BASE + 1.46, 1.2); g.add(slot);   // hangs just under the crane hook
+    [[3.2,-2.9,1],[2.5,-2.9,.85]].forEach(t => add(tree(...t)));
     return { g, parts, slot };
   }
   for (const make of [flagship, junior, soon]) {
@@ -321,7 +322,7 @@ export async function createHomeWorld(canvas, markEls) {
   /* ================= STATE + FRAME ================= */
   const state = { t:0, intro:0, pointer:{ x:0, y:0 }, drag:0, dragV:0, theme:'light', visible:true };
   const cam = { pos:V(), tgt:V(), ox:.5, oy:.5 };
-  const tmpA = V(), tmpB = V();
+  const tmpA = V(), tmpB = V(), camCtrl = V();
   const smooth = x => x*x*x*(x*(x*6-15)+10);
   const hold = (f, h) => smooth(Math.min(1, Math.max(0, (f - h)/(1 - 2*h))));
   // the scroll "t": 0 = hero, 1..7 = classes, 8..10 = campuses (set by home.js from scroll position)
@@ -331,15 +332,22 @@ export async function createHomeWorld(canvas, markEls) {
     if (i <= 7) return tread(i-1).add(V(0, STAR_REST, 0));
     const k = Math.min(2, i-8); turn.updateMatrixWorld(); return campusSets[k].slot.getWorldPosition(V());
   }
-  const starPos = V(), starTarget = V();
+  const starPos = V(), starTarget = V(), ctrl = V();
   function frame(time) {
     const t = state.t, i = Math.min(Math.floor(t), 9), f = t - i;
     const h = i === 0 ? .0 : .2;
     const e = hold(f, h);
     const a = keyAt(i), b = keyAt(i+1);
-    cam.pos.lerpVectors(a.pos, b.pos, e); cam.tgt.lerpVectors(a.tgt, b.tgt, e);
-    // lift the camera a little mid-flight so moves feel like a glide, not a slide
-    cam.pos.y += Math.sin(Math.PI*e) * (i === 7 ? 2.2 : i === 0 ? .9 : .25);
+    cam.tgt.lerpVectors(a.tgt, b.tgt, e);
+    if (i === 0) {
+      // from the logo to the books: swing up and out in front, never through the logo
+      camCtrl.set((a.pos.x + b.pos.x) / 2 + 1, Math.max(a.pos.y, b.pos.y) + 3.4, Math.max(a.pos.z, b.pos.z) + 2.5);
+      const u = 1 - e; cam.pos.set(0, 0, 0).addScaledVector(a.pos, u*u).addScaledVector(camCtrl, 2*u*e).addScaledVector(b.pos, e*e);
+    } else {
+      cam.pos.lerpVectors(a.pos, b.pos, e);
+      // lift the camera a little mid-flight so moves feel like a glide, not a slide
+      cam.pos.y += Math.sin(Math.PI*e) * (i === 7 ? 2.2 : .25);
+    }
     cam.ox = a.ox + (b.ox - a.ox)*e; cam.oy = a.oy + (b.oy - a.oy)*e;
     // campus orbit + drag
     if (i >= 8) { state.dragV *= .93; state.drag += state.dragV; turn.rotation.y = state.drag + (t - 8) * .35; }
@@ -353,22 +361,32 @@ export async function createHomeWorld(canvas, markEls) {
     const w = renderer.domElement.clientWidth, hh = renderer.domElement.clientHeight;
     camera.setViewOffset(w, hh, -(cam.ox - .5) * w, -(cam.oy - .5) * hh, w, hh);
 
-    // pages open (intro) + close a little as the star leaves
-    const leave = Math.min(1, t);
+    // pages open (intro); once the star has left, the book closes and steps out of the way
+    const leave = smooth(Math.min(1, Math.max(0, (t - .04) / .36)));
+    emblem.visible = leave < .999;
+    emblem.position.y -= leave * .4;
+    emblem.scale.setScalar(Math.max(.001, 1 - leave));
     pagePivots.forEach(p => {
       const { side, i:k } = p.userData;
       const open = Math.min(1, Math.max(0, state.intro*1.35 - k*.1));
       const eo = 1 - Math.pow(1 - open, 3);
       const closed = side * (Math.PI/2 - .05);
-      const rest = side * (.16 + k*.05) * (1 - leave*.4);
-      p.rotation.y = closed + (rest - closed) * eo;
+      const rest = side * (.16 + k*.05);
+      const opened = closed + (rest - closed) * eo;
+      p.rotation.y = opened + (closed - opened) * leave;
     });
 
     // star: rises out of the book, then follows the chapters, hopping from book to book
     tmpA.copy(starAt(i)); tmpB.copy(starAt(i+1));
     const se = i === 0 ? smooth(Math.min(1, f*1.1)) : hold(f, .16);
-    starTarget.lerpVectors(tmpA, tmpB, se);
-    starTarget.y += Math.sin(Math.PI*se) * (i === 0 ? 1.4 : i === 7 ? 2.6 : .95);
+    if (i === 0 || i === 7) {
+      // a curve with its handle high above both ends: the star lifts clear before it travels
+      ctrl.lerpVectors(tmpA, tmpB, i === 0 ? .25 : .5); ctrl.y = Math.max(tmpA.y, tmpB.y) + (i === 0 ? 2.6 : 3.2);
+      const u = 1 - se; starTarget.set(0, 0, 0).addScaledVector(tmpA, u*u).addScaledVector(ctrl, 2*u*se).addScaledVector(tmpB, se*se);
+    } else {
+      starTarget.lerpVectors(tmpA, tmpB, se);
+      starTarget.y += Math.sin(Math.PI*se) * (i >= 8 ? 1.4 : .95);
+    }
     const rise = smooth(Math.min(1, Math.max(0, (state.intro - .35) / .65)));
     const spineP = V(0, emblem.position.y + .1, 0);
     if (t < .001) starTarget.lerpVectors(spineP, STAR_SLOT, rise).y += emblem.position.y - .95;
@@ -393,12 +411,11 @@ export async function createHomeWorld(canvas, markEls) {
     starLight.position.copy(star.position);
 
     // the soon-campus star swings on the crane hook; flags wave
-    const fl = campusSets[0].parts.find(p => p.userData.flag);
-    if (fl) { const pa = fl.geometry.attributes.position; for (let k = 0; k < pa.count; k++) { const x = pa.getX(k); pa.setZ(k, Math.sin(x*9 + time*4) * .03 * (x + .25)); } pa.needsUpdate = true; }
 
     // shadows follow the camera's subject
     key.position.copy(cam.tgt).add(V(-5, 11, 7)); key.target.position.copy(cam.tgt); key.target.updateMatrixWorld();
 
+    books.forEach(b => { b.visible = t < 7.6; });
     // pick the campus model from the scroll position
     if (t >= 7.5) showCampus(Math.min(2, Math.max(0, Math.round(t - 8))));
     renderer.render(scene, camera);

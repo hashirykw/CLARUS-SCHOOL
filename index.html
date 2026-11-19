@@ -16,7 +16,7 @@ d.dataset.theme=t;document.getElementById('meta-theme').content=t==='dark'?'#0B0
 if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('no-loader');else d.classList.add('loading');})();
 </script>
 <link rel="preload" href="fonts/geist-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/geist-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/cormorant-garamond-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/cinzel-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="modulepreload" href="vendor/three/three.min.js">
 <link rel="stylesheet" href="css/tokens.css">
@@ -57,7 +57,7 @@ if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add(
       <a href="#admissions">Admissions</a>
       <a href="junior.html" class="to-junior">Junior</a>
     </nav>
-    <a class="btn btn-solid btn-sm nav-cta" href="#admissions">Book a visit</a>
+    <a class="btn btn-gold btn-sm nav-cta" href="#admissions" data-mag>Book a visit</a>
     <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><span></span><span></span></button>
   </div>
   <div class="menu glass" id="menu" hidden>
@@ -65,7 +65,7 @@ if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add(
     <a href="#campuses">Campuses</a>
     <a href="#admissions">Admissions</a>
     <a href="junior.html" class="to-junior">Clarus Junior</a>
-    <a href="#admissions" class="menu-cta">Book a visit</a>
+    <a href="#admissions" class="btn btn-gold menu-cta">Book a visit</a>
   </div>
 </header>
 
@@ -90,8 +90,16 @@ if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add(
     <h1 class="hero-h">Learn anywhere.<br><span>Succeed everywhere.</span></h1>
     <p class="hero-p">Nursery to Class 2. Opening 2026, growing to Matric.</p>
     <div class="hero-ctas">
-      <a class="btn btn-solid" href="#admissions">Book a visit</a>
-      <a class="link" href="#grow">Explore classes<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+      <a class="pbtn pbtn-gold" href="#admissions" data-mag>
+        <span class="pbtn-i" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8.5 14.5l2.2 2.2 4.6-4.6"/></svg></span>
+        <span class="pbtn-t">Book a visit</span>
+        <span class="pbtn-go" aria-hidden="true">&rsaquo;</span>
+      </a>
+      <a class="pbtn pbtn-line" href="#grow">
+        <span class="pbtn-i" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 6.5C10 4.8 6.8 4.2 3.5 4.6v13.6c3.3-.4 6.5.2 8.5 1.9 2-1.7 5.2-2.3 8.5-1.9V4.6c-3.3-.4-6.5.2-8.5 1.9Zm0 0v13.6"/></svg></span>
+        <span class="pbtn-t">Explore classes</span>
+        <span class="pbtn-go" aria-hidden="true">&rsaquo;</span>
+      </a>
     </div>
   </div>
 </section>
@@ -123,8 +131,8 @@ if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add(
       <h3 class="pn-title" id="c-name">Flagship Campus</h3>
       <p class="pn-text" id="c-text"></p>
       <div class="pn-actions">
-        <a class="btn btn-solid btn-sm" href="#admissions" id="c-visit">Book a visit</a>
-        <a class="link" href="#" id="c-map" hidden>Directions<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-gold btn-sm" href="#admissions" id="c-visit" data-mag>Book a visit</a>
+        <a class="btn btn-line btn-sm" href="#" id="c-map" hidden>Directions</a>
       </div>
     </div>
   </div>
@@ -160,7 +168,7 @@ if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add(
       <label class="field"><span>Class</span><select name="class" required><option value="">Choose</option><option>Nursery</option><option>KG</option><option>Class 1</option><option>Class 2</option></select></label>
       <label class="field"><span>Campus</span><select name="campus" id="enq-campus"></select></label>
     </div>
-    <button class="btn btn-solid btn-wide" type="submit" id="enq-btn">Request a visit</button>
+    <button class="btn btn-gold btn-wide" type="submit" id="enq-btn">Request a visit</button>
     <p class="enq-note" id="enq-note" aria-live="polite"></p>
   </form>
 </section>

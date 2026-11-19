@@ -49,6 +49,6 @@ The mark (book pages + four-point star) is re-drawn as a vector from the sample 
 - Preloader plays once per browser session; reduced-motion users skip it.
 - Theme follows the device the first time, then remembers the visitor's choice.
 - Pixel ratio is capped (1.6 on phones, 2 on desktop); the 3D stops rendering once the content sheet covers it.
-- Buttons use the same motion as the Sir Xahid Anwer site (rolling label, sliding arrow, colour flood), added by `enhanceBtn` in `js/home.js`.
+- Buttons follow the SMK site: gold gradient with a cut corner, a light sweep on hover, and a magnetic pull towards the pointer (`data-mag`).
 - Sounds play only after the visitor's first tap, and can be switched off from the side controls.
-- Vendors are local: Three.js r187 (minified to `vendor/three/three.min.js`), GSAP 3.15, Lenis 1.3. Fonts are self-hosted: Cinzel (logo wordmark) and Geist (everything else), plus Jost/Inter for the junior page.
+- Vendors are local: Three.js r187 (minified to `vendor/three/three.min.js`), GSAP 3.15, Lenis 1.3. Fonts are self-hosted: Cinzel (logo wordmark), Cormorant Garamond (headings) and Geist (text), plus Jost/Inter for the junior page.

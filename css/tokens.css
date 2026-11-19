@@ -1,92 +1,93 @@
-/* Hallmark · custom theme · vibe: "quiet graphite, champagne gold, logo navy" · tone: minimal, premium
- * light paper oklch(96.6% .004 95) · dark paper oklch(14.5% .002 285) · accent: champagne gold
- * display + body: Geist 400/500/600 (roman only) · logo wordmark: Cinzel 500
- * axes: light+dark / grotesk-sans / warm-gold */
+/* Hallmark · custom theme · vibe: "classical: ivory paper, logo navy ink, burnished gold, leather books"
+ * light paper oklch(95.6% .014 85) · dark paper oklch(15% .012 265) · accent: logo gold
+ * display: Cormorant Garamond 500/600 (roman only) · body: Geist 400/500/600 · wordmark: Cinzel 500
+ * axes: light+dark / classical-serif / warm-gold */
 
+@font-face{font-family:"Cormorant Garamond";font-weight:500;font-display:swap;src:url(../fonts/cormorant-garamond-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Cormorant Garamond";font-weight:600;font-display:swap;src:url(../fonts/cormorant-garamond-latin-600-normal.woff2) format("woff2")}
 @font-face{font-family:"Geist";font-weight:400;font-display:swap;src:url(../fonts/geist-latin-400-normal.woff2) format("woff2")}
 @font-face{font-family:"Geist";font-weight:500;font-display:swap;src:url(../fonts/geist-latin-500-normal.woff2) format("woff2")}
 @font-face{font-family:"Geist";font-weight:600;font-display:swap;src:url(../fonts/geist-latin-600-normal.woff2) format("woff2")}
 @font-face{font-family:"Cinzel";font-weight:500;font-display:swap;src:url(../fonts/cinzel-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Serif Fallback";src:local("Times New Roman"),local("Times"),local("Liberation Serif");size-adjust:92%;ascent-override:96%;descent-override:30%}
 @font-face{font-family:"Geist Fallback";src:local("Arial"),local("Helvetica"),local("Liberation Sans");size-adjust:100%;ascent-override:94%;descent-override:24%}
 
 :root{
+  --font-serif:"Cormorant Garamond","Serif Fallback",Georgia,serif;
   --font-sans:"Geist","Geist Fallback",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-  --font-mark:"Cinzel",Georgia,serif;   /* logo wordmark only */
+  --font-mark:"Cinzel",Georgia,serif;
 
-  --text-hero:clamp(40px,4.9vw,80px);
-  --text-h2:clamp(34px,4.2vw,64px);
-  --text-statement:clamp(28px,3.6vw,52px);
+  --text-hero:clamp(46px,6vw,96px);
+  --text-h2:clamp(38px,4.6vw,70px);
+  --text-statement:clamp(30px,3.8vw,56px);
 
   --space-xs:8px; --space-sm:12px; --space-md:20px; --space-lg:32px; --space-xl:56px; --space-2xl:96px; --space-3xl:160px;
   --gutter:clamp(20px,5vw,80px);
 
-  --radius-sm:10px; --radius-md:16px; --radius-lg:24px; --radius-xl:32px; --radius-pill:999px;
+  /* classical, squared shapes — no pills */
+  --radius-xs:6px; --radius-sm:9px; --radius-md:12px; --radius-lg:16px; --radius-xl:20px;
 
-  --ease-out:cubic-bezier(.22,1,.36,1);
+  --ease-out:cubic-bezier(.22,.8,.32,1);
   --ease-in:cubic-bezier(.55,0,1,.45);
   --ease-in-out:cubic-bezier(.65,0,.35,1);
+  --ease-spring:cubic-bezier(.34,1.4,.64,1);
   --dur-fast:.18s; --dur-mid:.4s; --dur-slow:.9s;
 
-  /* class colours (muted, shared by the UI and the 3D books) */
-  --color-sand:oklch(82% .05 82);
-  --color-clay:oklch(67% .075 45);
-  --color-sage:oklch(67% .035 135);
-  --color-rose:oklch(72% .045 28);
+  /* leather-bound class colours, shared by the UI and the 3D books */
+  --color-oxblood:oklch(40% .1 25);
+  --color-forest:oklch(40% .06 160);
+  --color-navy:oklch(34% .06 265);
+  --color-tan:oklch(60% .08 62);
 
-  /* Nexlyr credit strip (fixed brand colours) */
+  /* burnished gold (button gradient, from the logo's star) */
+  --color-gold-lo:oklch(60% .1 70);
+  --color-gold-hi:oklch(82% .095 84);
+  --color-on-gold:oklch(20% .03 70);
+
   --color-nx-a:oklch(76% .14 225); --color-nx-b:oklch(50% .14 250); --color-nx-card:oklch(17% .01 250);
 }
 
-/* ---------- LIGHT ---------- */
+/* ---------- LIGHT · ivory and logo navy ---------- */
 :root,[data-theme="light"]{
   color-scheme:light;
-  --color-paper:oklch(96.6% .004 95);
-  --color-surface:oklch(100% 0 0);
-  --color-ink:oklch(22.5% .004 285);
-  --color-ink-2:oklch(38% .005 285);
-  --color-mute:oklch(54% .008 285);
-  --color-faint:oklch(80% .004 285);
-  --color-rule:oklch(22.5% .004 285 / .09);
-  --color-gold:oklch(58% .095 76);
-  --color-gold-soft:oklch(76% .08 82);
-  --color-solid:oklch(22.5% .004 285);
-  --color-solid-hover:oklch(32% .005 285);
-  --color-on-solid:oklch(99% 0 0);
-  --color-mark:oklch(27% .05 262);
-  --color-star-1:oklch(83% .085 84); --color-star-2:oklch(74% .095 80); --color-star-3:oklch(64% .09 74); --color-star-4:oklch(56% .085 70);
-  --glass-bg:oklch(100% 0 0 / .62);
-  --glass-bg-strong:oklch(100% 0 0 / .82);
-  --glass-edge:oklch(0% 0 0 / .07);
-  --glass-hi:oklch(100% 0 0 / .9);
-  --glass-shadow:0 1px 1px oklch(0% 0 0 / .04),0 10px 30px -12px oklch(0% 0 0 / .14);
-  --scrim:oklch(96.6% .004 95 / .92);
-  --color-ok:oklch(62% .13 150);
-  --color-focus:oklch(58% .095 76);
+  --color-paper:oklch(95.6% .014 85);
+  --color-surface:oklch(98.4% .007 85);
+  --color-ink:oklch(23% .045 268);
+  --color-ink-2:oklch(36% .035 268);
+  --color-mute:oklch(50% .02 75);
+  --color-faint:oklch(82% .015 80);
+  --color-rule:oklch(23% .045 268 / .12);
+  --color-gold:oklch(56% .1 72);
+  --color-mark:oklch(27% .06 265);
+  --color-star-1:oklch(83% .09 84); --color-star-2:oklch(74% .1 80); --color-star-3:oklch(64% .095 74); --color-star-4:oklch(56% .09 70);
+  /* 3D chrome: lit from above */
+  --chrome-bg:linear-gradient(180deg,oklch(99.5% .005 85 / .9),oklch(95.5% .013 85 / .84));
+  --chrome-edge:oklch(23% .045 268 / .14);
+  --chrome-shadow:inset 0 1px 0 oklch(100% 0 0 / .95),inset 0 -1px 0 oklch(23% .045 268 / .08),0 1px 1px oklch(23% .045 268 / .06),0 3px 6px -2px oklch(23% .045 268 / .08),0 14px 30px -14px oklch(23% .045 268 / .28);
+  --chrome-press:inset 0 1px 2px oklch(23% .045 268 / .16),inset 0 -1px 0 oklch(100% 0 0 / .7);
+  --scrim:oklch(95.6% .014 85 / .94);
+  --color-ok:oklch(55% .1 150);
+  --color-focus:oklch(56% .1 72);
 }
 
-/* ---------- DARK ---------- */
+/* ---------- DARK · ink black and gold ---------- */
 [data-theme="dark"]{
   color-scheme:dark;
-  --color-paper:oklch(14.5% .002 285);
-  --color-surface:oklch(19.5% .003 285);
-  --color-ink:oklch(97% .002 285);
-  --color-ink-2:oklch(86% .004 285);
-  --color-mute:oklch(66% .008 285);
-  --color-faint:oklch(38% .004 285);
-  --color-rule:oklch(100% 0 0 / .1);
-  --color-gold:oklch(81% .08 82);
-  --color-gold-soft:oklch(81% .08 82);
-  --color-solid:oklch(97% .002 285);
-  --color-solid-hover:oklch(88% .003 285);
-  --color-on-solid:oklch(18% .003 285);
-  --color-mark:oklch(93% .015 85);
-  --color-star-1:oklch(90% .085 86); --color-star-2:oklch(82% .095 82); --color-star-3:oklch(72% .09 76); --color-star-4:oklch(64% .085 72);
-  --glass-bg:oklch(24% .003 285 / .5);
-  --glass-bg-strong:oklch(22% .003 285 / .82);
-  --glass-edge:oklch(100% 0 0 / .1);
-  --glass-hi:oklch(100% 0 0 / .14);
-  --glass-shadow:0 1px 1px oklch(0% 0 0 / .3),0 16px 40px -14px oklch(0% 0 0 / .7);
-  --scrim:oklch(14.5% .002 285 / .9);
-  --color-ok:oklch(72% .14 150);
-  --color-focus:oklch(81% .08 82);
+  --color-paper:oklch(15% .012 265);
+  --color-surface:oklch(19.5% .015 265);
+  --color-ink:oklch(94% .015 85);
+  --color-ink-2:oklch(84% .015 85);
+  --color-mute:oklch(68% .015 80);
+  --color-faint:oklch(36% .012 265);
+  --color-rule:oklch(94% .015 85 / .11);
+  --color-gold:oklch(80% .09 82);
+  --color-mark:oklch(93% .018 85);
+  --color-star-1:oklch(90% .09 86); --color-star-2:oklch(82% .1 82); --color-star-3:oklch(72% .095 76); --color-star-4:oklch(64% .09 72);
+  --chrome-bg:linear-gradient(180deg,oklch(25% .016 265 / .88),oklch(19% .014 265 / .84));
+  --chrome-edge:oklch(100% 0 0 / .1);
+  --chrome-shadow:inset 0 1px 0 oklch(100% 0 0 / .1),inset 0 -1px 0 oklch(0% 0 0 / .35),0 1px 1px oklch(0% 0 0 / .3),0 4px 8px -2px oklch(0% 0 0 / .35),0 18px 40px -16px oklch(0% 0 0 / .8);
+  --chrome-press:inset 0 1px 3px oklch(0% 0 0 / .5),inset 0 -1px 0 oklch(100% 0 0 / .06);
+  --scrim:oklch(15% .012 265 / .9);
+  --color-ok:oklch(72% .12 150);
+  --color-focus:oklch(80% .09 82);
 }

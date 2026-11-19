@@ -4,10 +4,10 @@ import { sound } from './sound.js';
 
 /* ---------- content: edit wording here ---------- */
 const CLASSES = [
-  { title:'Nursery',     open:true,  tag:'var(--color-sand)', text:'Where it all begins.' },
-  { title:'KG',          open:true,  tag:'var(--color-clay)', text:'Letters, numbers, first stories.' },
-  { title:'Class 1',     open:true,  tag:'var(--color-sage)', text:'Reading and writing with confidence.' },
-  { title:'Class 2',     open:true,  tag:'var(--color-rose)', text:'Thinking, speaking, sharing ideas.' },
+  { title:'Nursery',     open:true,  tag:'var(--color-tan)', text:'Where it all begins.' },
+  { title:'KG',          open:true,  tag:'var(--color-oxblood)', text:'Letters, numbers, first stories.' },
+  { title:'Class 1',     open:true,  tag:'var(--color-forest)', text:'Reading and writing with confidence.' },
+  { title:'Class 2',     open:true,  tag:'var(--color-navy)', text:'Thinking, speaking, sharing ideas.' },
   { title:'Classes 3–5', open:false, text:'Opening year by year.' },
   { title:'Classes 6–8', open:false, text:'Opening year by year.' },
   { title:'Matric',      open:false, text:'Where the staircase leads.' },
@@ -48,18 +48,16 @@ $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
   e.preventDefault(); closeMenu();
   scrollToY(id === '#top' ? 0 : el.getBoundingClientRect().top + scrollY);
 }));
-addEventListener('pointerdown', e => { if (e.target.closest('.btn, .link, .links a, .menu a, .logo, .jr-card, .nexlyr')) sound.tap(); });
+addEventListener('pointerdown', e => { if (e.target.closest('.btn, .pbtn, .link, .links a, .menu a, .logo, .jr-card, .nexlyr')) sound.tap(); });
 
-/* ---------- motion buttons: rolling label, arrow sliding through its disc, colour flood ---------- */
-const ARROW = '<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-function enhanceBtn(b) {
-  if (b.classList.contains('btn-x')) return;
-  const label = b.textContent.trim().replace(/\s+/g, ' '); if (!label) return;
-  const esc = label.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  b.innerHTML = `<span class="btn-l"><span>${esc}</span><span aria-hidden="true">${esc}</span></span><span class="btn-fill" aria-hidden="true"></span><span class="btn-i" aria-hidden="true">${ARROW}${ARROW}</span>`;
-  b.classList.add('btn-x');
-}
-$$('.btn').forEach(enhanceBtn);
+/* ---------- magnetic buttons (as on the SMK site): they lean towards the pointer ---------- */
+if (matchMedia('(pointer: fine)').matches && !REDUCE) $$('[data-mag]').forEach(el => {
+  el.addEventListener('pointermove', e => {
+    const r = el.getBoundingClientRect();
+    el.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .22}px,${(e.clientY - r.top - r.height / 2) * .32}px)`;
+  });
+  el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+});
 
 /* ---------- chapter anchors ---------- */
 const grow = $('#grow'), campus = $('#campuses'), paper = $('#paper'), washL = $('#wash-l');
