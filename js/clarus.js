@@ -107,7 +107,7 @@ function fitAll() {
 /* ═════════ smooth scroll ═════════ */
 let lenis = null;
 if (!REDUCE) {
-  lenis = new Lenis({ lerp: .09, wheelMultiplier: .95, touchMultiplier: 1.4 });
+  lenis = new Lenis({ lerp: .075, wheelMultiplier: .9, syncTouch: true, syncTouchLerp: .07, touchInertiaExponent: 1.75, touchMultiplier: 1.1, prevent: n => !!(n.closest && n.closest('#chat-log, dialog, .menu-pop')) });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add(t => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -263,7 +263,7 @@ async function load3D() {
           img.onload = () => {
             const d = document.createElement('i'); d.className = 'ev-3d'; d.setAttribute('aria-hidden', 'true');
             d.style.backgroundImage = `url(${urls[i]})`;
-            card.querySelector('.ev-ic').after(d); card.classList.add('has-3d');
+            card.querySelector('.ev-ic').after(d); card.classList.add('has-3d'); o.spinSprite(d);
             popIO.observe(card);
           };
           img.src = urls[i];

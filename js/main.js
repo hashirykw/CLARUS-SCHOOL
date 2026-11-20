@@ -90,7 +90,7 @@ if(CAPTURE){
   window.__ready = true;
 } else {
   if(!REDUCE && Lenis){
-    const lenis = new Lenis({ lerp:.09 });
+    const lenis = new Lenis({ lerp:.075, syncTouch:true, syncTouchLerp:.07, touchInertiaExponent:1.75, touchMultiplier:1.1, prevent: n => !!(n.closest && n.closest('#chat-log, dialog, .menu-pop')) });
     window.__lenis = lenis;
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add(t => lenis.raf(t*1000));

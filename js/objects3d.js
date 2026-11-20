@@ -4,6 +4,7 @@
 //   eventStills():  Science Week, Sports Day, Annual Show and Colour Day as small 3D objects, rendered once to images
 // Live canvases render only while on screen and only when something moves.
 import * as THREE from 'three';
+import { Turntable } from './turn.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
@@ -147,12 +148,13 @@ export async function books(canvas, classes) {
 
   const camera = new THREE.PerspectiveCamera(26, 2.6, .5, 80);
   const state = { turn: 0, sc: 0, spin: 0 }; let lastT = 0;
+  const tt = new Turntable(canvas, { center: 0, range: .5, sweep: 7, hold: 2.4 });
   const place = () => {
     root.rotation.y = -.26 + state.sc * .4 + state.turn + state.spin;
     const narrow = camera.aspect < 1.8, d = narrow ? 15 : 11.5;
     camera.position.set(1.0, narrow ? 6.2 : 5.0, d); camera.lookAt(0, narrow ? 1.4 : 1.6, 0);
   };
-  const live = liveCanvas(canvas, scene, camera, { onFrame: t => { const dt = Math.min(.05, t - (lastT || t)); lastT = t; if (!REDUCE) state.spin += dt * Math.PI * 2 / 36; st.rotation.y = .35 + Math.sin(t * .9) * .5 - state.spin * 0; place(); return true; } });
+  const live = liveCanvas(canvas, scene, camera, { onFrame: t => { const dt = Math.min(.05, t - (lastT || t)); lastT = t; state.spin = tt.update(dt); st.rotation.y = .35 + Math.sin(t * .9) * .5; place(); return true; } });
   place();
   const tl = gsap.timeline({ paused: true, onUpdate: live.invalidate });
   if (!REDUCE) {
@@ -296,4 +298,24 @@ export async function eventStills(size = 300) {
   }
   r.dispose(); r.forceContextLoss();
   return out;
+}
+
+/* the school-life objects: drag to turn the pre-rendered turntable, otherwise they sway across their front */
+const sprites = [];
+export function spinSprite(el) {
+  const F = SPIN_FRAMES, tt = new Turntable(el, { center: 0, range: 1.0, sweep: 6, hold: 1.8, perPx: Math.PI * 2 / 420 });
+  tt.t += sprites.length * 1.7;
+  const s = { el, tt, f: -1, vis: false }; sprites.push(s);
+  new IntersectionObserver(es => { s.vis = es[0].isIntersecting; }).observe(el);
+  if (sprites.length === 1) {
+    let last = 0;
+    gsap.ticker.add(time => {
+      const dt = time - (last || time); last = time;
+      for (const o of sprites) {
+        if (!o.vis) continue;
+        const a = o.tt.update(dt), f = ((Math.round(a / (Math.PI * 2) * F) % F) + F) % F;
+        if (f !== o.f) { o.f = f; o.el.style.backgroundPositionX = (f / (F - 1) * 100).toFixed(3) + '%'; }
+      }
+    });
+  }
 }

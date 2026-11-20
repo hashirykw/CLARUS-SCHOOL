@@ -3,6 +3,7 @@
 // Campuses: the Senior and Junior buildings are rendered once as stills for the two campus cards.
 // Everything is built here from simple shapes (no downloads) and merged per material, so it draws in a handful of calls.
 import * as THREE from 'three';
+import { Turntable } from './turn.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -167,6 +168,11 @@ export function seniorStages(M) {
     balustrade(0, 4.9, 2.0, 4.8);
     // quoins on the centre block corners
     for (const x of [-2.45, 2.45]) for (let i = 0; i < 12; i++) k.box('trim', i % 2 ? .22 : .32, .15, .05, x + (x < 0 ? .1 : -.1), .4 + i * .33, 2.07);
+    // the back of the building is finished too, now that it can be turned round by hand
+    for (const x of [-1.85, -.92, 0, .92, 1.85]) { windowAt(k, .5, 1.05, x, 2.7, -2.28); windowAt(k, .5, 1.05, x, .85, -2.28); pedi(x, 3.82, -2.36, .7); }
+    for (const s of [-1, 1]) for (const x of [-1.2, -.4, .4, 1.2]) { windowAt(k, .46, .95, s * 4.25 + x, .72, -2.23); windowAt(k, .46, .95, s * 4.25 + x, 2.2, -2.23); }
+    for (const x of [-2.45, 2.45]) for (let i = 0; i < 12; i++) k.box('trim', i % 2 ? .22 : .32, .15, .05, x + (x < 0 ? .1 : -.1), .4 + i * .33, -2.27);
+    k.box('wood', .8, 1.3, .06, 0, .32, -2.28);
     // door
     k.box('wood', .9, 1.55, .06, 0, .32, 2.08); k.box('frame', 1.06, .08, .08, 0, 1.87, 2.08);
     k.box('frame', .03, 1.55, .08, 0, .32, 2.1);
@@ -251,10 +257,16 @@ export function juniorStages(M) {
       windowAt(k, .78, .78, x - .75, .35, 1.02); windowAt(k, .78, .78, x + .75, .35, 1.02);
       windowAt(k, .62, .62, x - .75, 1.42, 1.02); windowAt(k, .62, .62, x + .75, 1.42, 1.02);
       const rw = new THREE.CylinderGeometry(.3, .3, .05, 24); rw.rotateX(Math.PI / 2); rw.translate(x, 2.75, 1.0); k.geo('glass', rw);
+      // back and outer side windows
+      windowAt(k, .7, .7, x - .75, .4, -2.22); windowAt(k, .7, .7, x + .75, .4, -2.22); windowAt(k, .58, .58, x - .75, 1.45, -2.22); windowAt(k, .58, .58, x + .75, 1.45, -2.22);
+      const tb = new THREE.ExtrudeGeometry(tri, { depth: .02, bevelEnabled: false }); tb.translate(x, 2.3, -2.22); k.geo('card', tb);
+      const rb = new THREE.CylinderGeometry(.26, .26, .05, 24); rb.rotateX(Math.PI / 2); rb.translate(x, 2.75, -2.2); k.geo('glass', rb);
     }
     // link block with the entrance and a canopy
     k.box('card', 2.6, 1.7, 2.4, 3.3, 0, -.3); k.box('trim', 2.8, .14, 2.6, 3.3, 1.7, -.3);
     windowAt(k, 1.6, .7, 3.3, .75, .92);
+    windowAt(k, 1.6, .7, 3.3, .75, -1.52); windowAt(k, .7, .7, 4.62, .75, -.3, 'x');
+    for (const z of [-1.2, 0]) { windowAt(k, .62, .7, -5.07, .4, z - .6, '-x'); windowAt(k, .62, .7, 1.67, .4, z - .6, 'x'); }
     k.box('wood', .8, 1.2, .06, -1.7, 0, .9); k.box('crimson', 1.4, .08, .7, -1.7, 1.3, 1.15);
     k.cyl('frame', .02, .02, 1.3, -2.3, 0, 1.45, 6); k.cyl('frame', .02, .02, 1.3, -1.1, 0, 1.45, 6);
     k.box('card', 1.1, 1.9, 1.3, -1.7, 0, .2);
@@ -347,14 +359,15 @@ export async function heroModel(canvas, { onReady } = {}) {
   const { scene } = stageScene(renderer, stages, { shadowSize: SMALL() ? 1024 : 2048 });
   const camera = new THREE.PerspectiveCamera(24, 1.5, .5, 120);
   const flag = scene.getObjectByName('flag');
-  const state = { turn: 0, scroll: 0, mx: 0, my: 0, tmx: 0, tmy: 0, spin: 0 };
+  const state = { turn: 0, scroll: 0, mx: 0, my: 0, tmx: 0, tmy: 0, a: 0 };
   let dirty = true;
   function size() {
     const r = canvas.getBoundingClientRect(); renderer.setSize(Math.max(1, r.width), Math.max(1, r.height), false);
     camera.aspect = r.width / Math.max(1, r.height); camera.fov = camera.aspect < 1.2 ? 30 : 24; camera.updateProjectionMatrix(); dirty = true;
   }
   size(); addEventListener('resize', size);
-  const place = () => orbitCamera(camera, .55 + state.spin + state.scroll * 1.2 + state.mx * .18 + state.turn, camera.aspect < 1.2 ? 33 : 34, .42 + state.my * .05 - state.scroll * .06, 1.3);
+  const tt = new Turntable(canvas, { center: -.35, range: .72, sweep: 8, hold: 2.4 });
+  const place = () => orbitCamera(camera, -state.a + state.scroll * .5 + state.turn, camera.aspect < 1.2 ? 33 : 34, .42 + state.my * .05 - state.scroll * .06, 1.3);
 
   // assembly: board slides in, the building rises floor by floor, the dome drops on, the gardens grow
   const tl = window.gsap.timeline({ paused: true, defaults: { ease: 'expo.out' }, onUpdate: () => { dirty = true; renderer.shadowMap.needsUpdate = true; }, onComplete: () => { renderer.shadowMap.needsUpdate = true; } });
@@ -369,7 +382,7 @@ export async function heroModel(canvas, { onReady } = {}) {
   let last = 0, t0 = 0;
   liveLoop(canvas, renderer, scene, camera, time => {
     const dt = Math.min(.05, time - (last || time)); last = time;
-    if (!REDUCE) state.spin += dt * (Math.PI * 2 / 36);            // one full turn every ~36s
+    state.a = tt.update(dt);
     state.mx += (state.tmx - state.mx) * .06; state.my += (state.tmy - state.my) * .06;
     if (flag && !REDUCE && time - t0 > 1 / 30) { t0 = time; const p = flag.geometry.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i) + .31; p.setZ(i, Math.sin(x * 7 - time * 4) * .03 * x); } p.needsUpdate = true; }
     if (REDUCE && !dirty) return false;
@@ -397,17 +410,17 @@ export async function campusLive(canvas, kind, { start = 0, speed = 1 } = {}) {
     tl.progress(0);
     window.ScrollTrigger.create({ trigger: canvas, start: 'top 85%', once: false, onEnter: () => { if (!tl.isActive() && tl.progress() === 0) tl.play(); } });
   }
-  let a = start, last = 0, hover = 0, th = 0;
+  const tt = new Turntable(canvas, { center: -start, range: .7, sweep: 7 + speed, hold: 2.2 });
+  let last = 0, hover = 0, th = 0;
   canvas.parentElement.addEventListener('pointerenter', () => { th = 1; });
   canvas.parentElement.addEventListener('pointerleave', () => { th = 0; });
   liveLoop(canvas, renderer, scene, camera, time => {
     const dt = Math.min(.05, time - (last || time)); last = time;
     hover += (th - hover) * .08;
-    if (!REDUCE) a += dt * (Math.PI * 2 / 30) * speed * (1 + hover * 1.5);
-    orbitCamera(camera, a, d * (1 - hover * .08), .4, look);
+    orbitCamera(camera, -tt.update(dt), d * (1 - hover * .08), .4, look);
     return true;
   });
-  orbitCamera(camera, a, d, .4, look); renderer.render(scene, camera);
+  orbitCamera(camera, start, d, .4, look); renderer.render(scene, camera);
 }
 
 /* ───────── for the Clarus Junior walk: the Senior building as a small model at the end of the path ───────── */
