@@ -13,7 +13,7 @@
 .copy-main{position:absolute;left:var(--gutter);right:calc(var(--gutter) + min(22rem,34vw) + 2rem);top:calc(var(--nav-h) + 3.6rem)}
 .lab{display:inline-flex;align-items:center;gap:.55rem;color:var(--ink-3)}
 .lab::before{content:"";width:.55rem;height:.55rem;background:var(--crimson)}
-.title{font-size:clamp(2.6rem,1.6rem + 4.2vw,6.4rem);line-height:.88;margin-top:.8rem;min-height:.9em;color:var(--ink);overflow-wrap:normal;word-break:normal}
+.title{font-size:clamp(2.3rem,1.4rem + 3.6vw,5.4rem);line-height:.88;margin-top:.8rem;min-height:.9em;color:var(--ink);overflow-wrap:normal;word-break:normal}
 .copy-side{position:absolute;right:var(--gutter);top:calc(var(--nav-h) + 3.6rem);width:min(22rem,34vw);padding:1.3rem 1.4rem 1.4rem;display:flex;flex-direction:column;align-items:flex-start;gap:1rem;
   background:var(--paper-hi);border-top:5px solid var(--ink);box-shadow:0 1px 0 var(--rule),0 24px 50px -30px var(--shadow)}
 .desc{color:var(--ink-2);font-size:.98rem;line-height:1.55;min-height:4.7em}
@@ -28,11 +28,11 @@
 .j-about{padding-bottom:clamp(4rem,9vw,7rem)}
 .j-about .wrap{padding-top:clamp(3.5rem,8vw,6rem)}
 .j-about-head{max-width:52rem}
-.j-statement{font-size:clamp(2rem,1.2rem + 3.6vw,4.8rem)}
+.j-statement{font-size:clamp(1.8rem,1rem + 3vw,4rem)}
 .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:clamp(2.5rem,5vw,4rem);border-top:1.5px solid var(--ink)}
-.tile{display:flex;flex-direction:column;justify-content:space-between;gap:2rem;min-height:12rem;padding:1.4rem 1.4rem 1.3rem 0;border-bottom:1px solid var(--rule)}
+.tile{display:flex;flex-direction:column;justify-content:space-between;gap:1.6rem;min-height:10rem;padding:1.4rem 1.4rem 1.3rem 0;border-bottom:1px solid var(--rule)}
 .tile+.tile{padding-left:1.4rem;border-left:1px solid var(--rule)}
-.tile b{font:900 clamp(3rem,2rem + 3vw,5rem)/.85 var(--font-display);color:transparent;-webkit-text-stroke:1.4px var(--ink)}
+.tile b{font:900 clamp(2.6rem,1.8rem + 2.5vw,4.2rem)/.85 var(--font-display);color:transparent;-webkit-text-stroke:1.4px var(--ink)}
 .tile:nth-child(1) b{color:var(--crimson);-webkit-text-stroke:0}
 .tile span{font:700 .68rem/1.4 var(--font-display);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-2)}
 .j-cta{display:flex;align-items:center;flex-wrap:wrap;gap:1.2rem 1.6rem;margin-top:clamp(2.5rem,5vw,3.5rem)}
