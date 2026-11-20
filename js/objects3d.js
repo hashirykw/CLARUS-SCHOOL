@@ -277,10 +277,10 @@ export async function eventStills(size = 300) {
   const items = [
     [flask(), [0, 1.2, 0], .1, 7.2],
     [trophy(), [0, 1.3, 0], -.2, 7.6],
-    [stage(), [0, 1.3, 0], -.35, 8.6],
+    [stage(), [0, 1.2, 0], -.35, 10.6],
     [palette(), [0, .2, 0], .35, 6.4],
   ];
-  const breathe = () => new Promise(res => (window.requestIdleCallback || setTimeout)(res));
+  const breathe = () => new Promise(res => setTimeout(res, 0));
   for (const [obj, look, turn, dist] of items) {
     const scene = lightScene(r, { env: .8, span: 4, key: [-4, 8, 6] });
     cast(obj); scene.add(obj);

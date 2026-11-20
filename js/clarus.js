@@ -37,6 +37,18 @@ const root = document.documentElement;
 const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isSmall = () => innerWidth <= 820;
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+function tiltCards() {
+  if (REDUCE || !matchMedia('(hover:hover)').matches) return;
+  $$('.ev').forEach(card => {
+    let raf = 0, e0 = null;
+    const apply = () => { raf = 0; const r = card.getBoundingClientRect(), x = (e0.clientX - r.left) / r.width, y = (e0.clientY - r.top) / r.height;
+      card.style.setProperty('--ry', ((x - .5) * 14).toFixed(2) + 'deg'); card.style.setProperty('--rx', ((.5 - y) * 10).toFixed(2) + 'deg');
+      card.style.setProperty('--gx', (x * 100).toFixed(1) + '%'); card.style.setProperty('--gy', (y * 100).toFixed(1) + '%'); };
+    card.addEventListener('pointerenter', () => { card.classList.add('tilting'); setTimeout(() => card.classList.remove('tilting'), 10); });
+    card.addEventListener('pointermove', e => { e0 = e; card.classList.add('tilting'); if (!raf) raf = requestAnimationFrame(apply); });
+    card.addEventListener('pointerleave', () => { card.classList.remove('tilting'); card.style.setProperty('--rx', '0deg'); card.style.setProperty('--ry', '0deg'); });
+  });
+}
 const ARW = '<svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>';
 
 /* ═════════ build: staircase, campuses, form options ═════════ */
@@ -147,7 +159,8 @@ function reveals() {
   });
   $$('.reveal-img').forEach(el => gsap.to(el, { clipPath: 'inset(0% 0 0 0)', duration: 1.4, ease: 'expo.inOut', scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' } }));
   $$('.reveal-img img').forEach(img => gsap.fromTo(img, { scale: 1.18 }, { scale: 1, duration: 1.8, ease: 'expo.out', scrollTrigger: { trigger: img, start: 'top 85%', toggleActions: 'play none none none' } }));
-  $$('.uni-card, .tcard, .ev, .enq, .fees, .msg-pol').forEach((el, i) => gsap.from(el, { y: 40, opacity: 0, duration: 1, ease: 'expo.out', delay: (i % 4) * .08, scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' } }));
+  $$('.ev').forEach((el, i) => gsap.fromTo(el, { '--ty': '40px', opacity: 0 }, { '--ty': '0px', opacity: 1, duration: 1, ease: 'expo.out', delay: (i % 4) * .08, scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' } }));
+  $$('.uni-card, .tcard, .enq, .fees, .msg-pol').forEach((el, i) => gsap.from(el, { y: 40, opacity: 0, duration: 1, ease: 'expo.out', delay: (i % 4) * .08, scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' } }));
   $$('.uni-art svg').forEach(svg => gsap.from(svg, { y: -26, rotate: -3, transformOrigin: '50% 0%', duration: 1.4, ease: 'elastic.out(1,.55)', scrollTrigger: { trigger: svg, start: 'top 85%', toggleActions: 'play none none none' } }));
   $$('.campus-ph .ph-photo').forEach(img => gsap.fromTo(img, { yPercent: -9 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }));
   $$('.campus').forEach(c => gsap.from($$('.campus-txt > *', c), { y: 22, opacity: 0, duration: .9, ease: 'power3.out', stagger: .07, scrollTrigger: { trigger: c, start: 'top 70%', toggleActions: 'play none none none' } }));
@@ -362,7 +375,7 @@ $$('input, select', form).forEach(f => f.addEventListener('input', () => f.close
 const start = () => {
   fitAll();
   load3D();
-  reveals(); classes(); events(); heroScroll();
+  reveals(); classes(); events(); tiltCards(); heroScroll();
   opening();
   let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { fitAll(); ScrollTrigger.refresh(); }, 150); });
 };
