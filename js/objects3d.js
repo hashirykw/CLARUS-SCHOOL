@@ -156,8 +156,16 @@ export async function books(canvas, classes) {
   place();
   const tl = gsap.timeline({ paused: true, onUpdate: live.invalidate });
   if (!REDUCE) {
-    cols.forEach((c, i) => tl.from(c.position, { y: base + 3.6, duration: 1.2, ease: 'expo.out' }, i * .1).from(c.children.map(v => v.rotation), { z: (k) => (k % 2 ? .12 : -.12), duration: 1.2, ease: 'expo.out' }, i * .1));
-    tl.from(holder.scale, { x: .001, y: .001, z: .001, duration: .9, ease: 'back.out(2)' }, n * .1 + .3);
+    // volumes are gathered one at a time and stacked, class by class, bottom to top
+    let k = 0;
+    tl.from([p1.scale, p2.scale], { x: .001, duration: 1.1, ease: 'expo.out', stagger: .08 }, 0).from(inlay.scale, { x: .001, duration: 1.2, ease: 'expo.out' }, .3)
+      .from([cl.scale, cr.scale], { y: .001, duration: 1.2, ease: 'expo.out', stagger: .1 }, .25);
+    cols.forEach((c, i) => c.children.forEach((v, j) => {
+      const at = .5 + k++ * .045, side = (i + j) % 2 ? 1 : -1;
+      tl.from(v.position, { y: `+=${2.4 + j * .15}`, x: `+=${side * 1.6}`, z: '+=1.2', duration: .9, ease: 'power4.out' }, at)
+        .from(v.rotation, { z: side * .9, y: side * .6, duration: .9, ease: 'power4.out' }, at);
+    }));
+    tl.from(holder.position, { y: '+=2.5', duration: 1, ease: 'bounce.out' }, .5 + k * .045 + .1).from(holder.scale, { x: .001, y: .001, z: .001, duration: .5, ease: 'back.out(2)' }, .5 + k * .045 + .1);
     tl.from(state, { turn: -.45, duration: 2.4, ease: 'power3.out' }, 0);
     ScrollTrigger.create({ trigger: canvas, start: 'top 80%', onEnter: () => tl.play(), toggleActions: 'play none none none' });
     ScrollTrigger.create({ trigger: canvas, start: 'top bottom', end: 'bottom top', onUpdate: s => { state.sc = s.progress; } });

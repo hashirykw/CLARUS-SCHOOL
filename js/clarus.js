@@ -242,14 +242,16 @@ async function load3D() {
       const bc = $('#books3d');
       if (bc) { await o.books(bc, CLASSES); bc.closest('.cls-3d').classList.add('on'); }
       idle(async () => {
+        const popIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('pop'); popIO.unobserve(e.target); } }), { threshold: .35 });
         const urls = await o.eventStills();
         $$('.ev[data-ev]').forEach((card, i) => {
           if (!urls[i]) return;
           const img = new Image();
           img.onload = () => {
             const d = document.createElement('i'); d.className = 'ev-3d'; d.setAttribute('aria-hidden', 'true');
-            d.style.backgroundImage = `url(${urls[i]})`; d.style.animationDelay = `${-i * 1.3}s`;
+            d.style.backgroundImage = `url(${urls[i]})`;
             card.querySelector('.ev-ic').after(d); card.classList.add('has-3d');
+            popIO.observe(card);
           };
           img.src = urls[i];
         });

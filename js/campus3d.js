@@ -307,6 +307,24 @@ export function stageScene(renderer, stages, { shadowSize = 2048, span = 11 } = 
   return { scene, model, key };
 }
 
+/* ───────── construction: the board slides in, pieces gather from around the site and rise into place,
+ * the roof drops on last. Shared by the hero and the campus cards. ───────── */
+function assemble(tl, stages, { scatter = false } = {}) {
+  const board = stages[0], rest = stages.slice(1);
+  tl.from(board.position, { y: -1.2, duration: 1.4, ease: 'expo.out' }, 0).from(board.scale, { x: .9, z: .9, duration: 1.4, ease: 'expo.out' }, 0);
+  rest.forEach((s, i) => {
+    const at = .45 + i * .18;
+    if (s.name === 'roof') { tl.from(s.position, { y: '+=3', duration: 1.2, ease: 'bounce.out' }, 1.15); return; }
+    tl.from(s.scale, { y: .001, duration: 1.3, ease: 'expo.out' }, at);
+    if (scatter) {
+      const a = i * 2.1 + 1, r = 5 + i;
+      tl.from(s.position, { x: `+=${Math.sin(a) * r}`, z: `+=${Math.cos(a) * r}`, y: '+=2.5', duration: 1.5, ease: 'power4.out' }, at - .1);
+      tl.from(s.rotation, { y: (i % 2 ? 1 : -1) * .9, duration: 1.5, ease: 'power4.out' }, at - .1);
+    }
+  });
+  return tl;
+}
+
 /* ───────── the camera walks a full circle around the model; light and model stay put,
  * so the shadow map is drawn once (and again only while the model is assembling) ───────── */
 function orbitCamera(camera, angle, d, el, look) {
@@ -340,13 +358,8 @@ export async function heroModel(canvas, { onReady } = {}) {
 
   // assembly: board slides in, the building rises floor by floor, the dome drops on, the gardens grow
   const tl = window.gsap.timeline({ paused: true, defaults: { ease: 'expo.out' }, onUpdate: () => { dirty = true; renderer.shadowMap.needsUpdate = true; }, onComplete: () => { renderer.shadowMap.needsUpdate = true; } });
-  const board = stages[0], rest = stages.slice(1);
   if (!REDUCE) {
-    tl.from(board.position, { y: -1.2, duration: 1.4 }, 0).from(board.scale, { x: .9, z: .9, duration: 1.4 }, 0);
-    rest.forEach((s, i) => {
-      if (s.name === 'roof') tl.from(s.position, { y: '+=3', duration: 1.2, ease: 'bounce.out' }, 1.15);
-      else tl.from(s.scale, { y: .001, duration: 1.3 }, .45 + i * .18);
-    });
+    assemble(tl, stages);
     tl.from(state, { turn: -1.4, duration: 3.4, ease: 'power3.out' }, 0);
   }
   if (!REDUCE) {
@@ -379,6 +392,11 @@ export async function campusLive(canvas, kind, { start = 0, speed = 1 } = {}) {
   const size = () => { const r = canvas.getBoundingClientRect(); renderer.setSize(Math.max(1, r.width), Math.max(1, r.height), false); camera.aspect = r.width / Math.max(1, r.height); camera.updateProjectionMatrix(); };
   size(); addEventListener('resize', size);
   const d = kind === 'junior' ? 28 : 30, look = kind === 'junior' ? 1.1 : 1.4;
+  if (!REDUCE) {
+    const tl = assemble(window.gsap.timeline({ paused: true, onUpdate: () => { renderer.shadowMap.needsUpdate = true; }, onComplete: () => { renderer.shadowMap.needsUpdate = true; } }), stages, { scatter: true });
+    tl.progress(0);
+    window.ScrollTrigger.create({ trigger: canvas, start: 'top 85%', once: false, onEnter: () => { if (!tl.isActive() && tl.progress() === 0) tl.play(); } });
+  }
   let a = start, last = 0, hover = 0, th = 0;
   canvas.parentElement.addEventListener('pointerenter', () => { th = 1; });
   canvas.parentElement.addEventListener('pointerleave', () => { th = 0; });
