@@ -6,7 +6,7 @@ Two pages, one feel: both scroll through a continuous 3D world with smooth scrol
 
 | Page | What it is |
 | --- | --- |
-| `index.html` | The main school site. Opening (star, ring, name) → ink-navy hero with the 3D logo, orbit rings and floating books → a 3D student climbs a staircase of books, growing at each class → waves at each campus → content sections. Light and dark themes. |
+| `index.html` | The main school site, in the paper-and-ink style: torn-paper opening (logo draws itself, star lands, counter to 100, the sheet tears open) → hero with the full-width CLARUS word and a framed photo → class staircase with a climbing star → Junior and Senior campuses → placeholder uniforms → Clarus Junior, principal, teachers, school life, admissions, footer. |
 | `junior.html` | Clarus Junior: the playful 3D walk through Nursery, KG, Class 1 and Class 2. |
 
 ## Run it
@@ -23,14 +23,11 @@ Open http://localhost:8000. On Vercel it works as-is: static files, no build on 
 
 | What | Where |
 | --- | --- |
-| Class names and wording on the main page | `CLASSES` at the top of `js/home.js` |
-| Campus names, details and map links (empty fields are hidden) | `CAMPUSES` at the top of `js/home.js` |
-| School WhatsApp number for the visit form | `WHATSAPP` at the top of `js/home.js` |
+| Class names and wording on the main page | `CLASSES` at the top of `js/clarus.js` |
+| Campus names, classes, address, hours, map links | `CAMPUSES` at the top of `js/clarus.js` (empty address/hours show "To be announced") |
+| School WhatsApp number for the visit form | `WHATSAPP` at the top of `js/clarus.js` |
 | Page text | `src/index.template.html`, then run `python3 src/build.py` to rebuild `index.html` |
-| Colours, fonts, spacing (both themes) | `css/tokens.css` |
-| Sound effects (synthesised, no files) | `js/sound.js` |
-| Layout and styles | `css/home.css` |
-| The 3D world (emblem, books, campuses, camera path) | `js/world-home.js` |
+| Main page colours, fonts, layout | `css/clarus.css` (tokens at the top) |
 | Junior page | `junior.html`, `css/style.css`, `js/main.js`, `js/world.js` |
 
 `index.html` is generated: edit `src/index.template.html` and run `python3 src/build.py`. The build only pastes in the logo shapes (`src/defs.html`), the preloader (`src/loader.html`) and the Nexlyr credit (`src/nexlyr.html`). `src/` is not deployed.
@@ -52,7 +49,16 @@ The mark (book pages + four-point star) is re-drawn as a vector from the sample 
 
 ## Photographs
 
-Event, footer and phone-hero photos in `assets/photos/` are free stock photos from Unsplash (Unsplash License: free to use, no attribution required). Swap them for the school's own photos when they exist, keeping the same file names.
+Main page photos (`classroom-sun`, `books-light`, `junior-room`, `hallway`, `pencils` in `assets/photos/`) are sample photos from Unsplash (Unsplash License: free to use, no attribution required). No people are shown on purpose. Swap them for the school's own photos when they exist, keeping the same file names. The older `ev-*` / `ph-*` photos are no longer used on the main page.
+
+## Main page design
+
+- Palette: warm graph paper `oklch(96.4% .007 85)`, navy ink `oklch(19.5% .042 262)`, Clarus crimson `oklch(47% .16 20)` (one signal per screen), and the logo's star gold `oklch(80% .14 80)`. Junior Campus leans warm paper + gold highlighter; Senior Campus leans ink + crimson.
+- Type: Archivo Wide 900 caps for headings, Archivo Wide 700 for labels, Archivo for text, a handwritten face for notes.
+- Paper/ink textures and torn edges are in `assets/tex/`.
+- Buttons are square slabs (no pill shapes).
+- Uniforms are SVG placeholders drawn in the page (white shirt, crimson pinafore/tie, navy blazer with the gold crest); replace them once the school confirms its uniform.
+- `js/home.js`, `js/world-home.js` and `js/sound.js` belonged to the old main page and are no longer used; they can be deleted.
 
 ## Sharing, icons and hosting
 
