@@ -237,6 +237,21 @@ async function load3D() {
     $('.hero-photo').classList.add('has-3d');
     if (want3d) hero3d.play();
     const idle = window.requestIdleCallback || (f => setTimeout(f, 600));
+    // more of the world: the book staircase, the crest, the school-life objects
+    import('./objects3d.js').then(async o => {
+      const bc = $('#books3d'), cc = $('#crest3d');
+      if (bc) { await o.books(bc, CLASSES); bc.closest('.cls-3d').classList.add('on'); }
+      if (cc) { await o.crest(cc); cc.closest('.promise-ph').classList.add('has-3d'); }
+      idle(async () => {
+        const urls = await o.eventStills();
+        $$('.ev[data-ev]').forEach((card, i) => {
+          if (!urls[i]) return;
+          const img = new Image(); img.className = 'ev-3d'; img.alt = ''; img.decoding = 'async';
+          img.onload = () => card.classList.add('has-3d'); img.src = urls[i];
+          card.querySelector('.ev-ic').after(img);
+        });
+      }, { timeout: 4000 });
+    }).catch(e => console.warn('3D objects unavailable', e));
     idle(async () => {
       const urls = await m.campusStills([
         { id: 'jr', kind: 'junior', turn: -.42, dist: 29, w: 1400, h: 900 },

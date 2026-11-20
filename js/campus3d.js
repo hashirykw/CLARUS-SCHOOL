@@ -11,7 +11,7 @@ const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SMALL = () => innerWidth <= 820;
 
 /* ───────── materials (shared) ───────── */
-function makeMaterials() {
+export function makeMaterials() {
   const std = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: .82, metalness: 0, ...o });
   return {
     card:   std(0xF4F0E7, { roughness: .9 }),
@@ -77,7 +77,7 @@ function treeAt(k, x, z, s = 1, y = 0) {
 }
 
 // the eight-point Clarus star (from the logo), centred, size 1
-function starShape() {
+export function starShape() {
   const P = [[246.25,78],[255.43,147.83],[278.78,137.47],[268.42,160.82],[338.25,170],[268.42,179.18],[278.78,202.53],[255.43,192.17],[246.25,262],[237.07,192.17],[213.72,202.53],[224.08,179.18],[154.25,170],[224.08,160.82],[213.72,137.47],[237.07,147.83]];
   const s = new THREE.Shape(); P.forEach(([x, y], i) => { const X = (x - 246.25) / 184, Y = -(y - 170) / 184; i ? s.lineTo(X, Y) : s.moveTo(X, Y); });
   return s;
@@ -233,7 +233,7 @@ function juniorStages(M) {
 }
 
 /* ───────── a small renderer kit ───────── */
-function makeRenderer(canvas, pr) {
+export function makeRenderer(canvas, pr) {
   const r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: false });
   r.setClearColor(0x000000, 0);
   r.setPixelRatio(pr);
@@ -242,7 +242,7 @@ function makeRenderer(canvas, pr) {
   r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFShadowMap;
   return r;
 }
-function stageScene(renderer, stages, { shadowSize = 2048, span = 11 } = {}) {
+export function stageScene(renderer, stages, { shadowSize = 2048, span = 11 } = {}) {
   const scene = new THREE.Scene();
   const pm = new THREE.PMREMGenerator(renderer);
   scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture; scene.environmentIntensity = .42;
