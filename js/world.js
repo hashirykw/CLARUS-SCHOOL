@@ -2,6 +2,7 @@
 // Everything here is placeholder art made from simple shapes. To use real models later,
 // replace the body of a scene function with a GLTFLoader load of that scene's .glb file;
 // the camera, path, lighting and scroll logic do not need to change.
+import { seniorBuilding } from './campus3d.js';
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
@@ -313,6 +314,8 @@ export async function createWorld(renderer){
     if(!g){ g = fn(); sources[name] = 'code'; }
     g.name = name; g.position.x = i*SPACING; scene.add(g);
   }));
+  // beyond Junior: the Senior building, as a model on its board, waiting at the top of the steps
+  const hall = seniorBuilding(); hall.scale.setScalar(.27); hall.position.set(4*SPACING + 3.0, 0, -4.7); hall.rotation.y = -.55; scene.add(hall);
   const archGlow = new THREE.PointLight(0xFFD27A,10,9,1.6); archGlow.position.set(4*SPACING,.84+1.2,-3.4); scene.add(archGlow);
 
   // mascot guide

@@ -54,7 +54,7 @@ clsList.innerHTML = CLASSES.map((c, i) => `
 $('#campus-pair').innerHTML = CAMPUSES.map((c, i) => `
   <article class="campus campus-${c.id} ${i ? 'ink' : 'paper'}" aria-labelledby="cp-${c.id}">
     ${c.note ? `<p class="hand c-note" aria-hidden="true">${esc(c.note)}</p>` : ''}
-    <figure class="campus-ph"><img src="${c.photo}" width="${c.w}" height="${c.h}" alt="${esc(c.alt)}" loading="lazy" decoding="async"></figure>
+    <figure class="campus-ph"><img class="ph-photo" src="${c.photo}" width="${c.w}" height="${c.h}" alt="${esc(c.alt)}" loading="lazy" decoding="async"><img class="ph-model" id="model-${c.id}" alt="Concept model of the ${esc(c.name)}" hidden><span class="lbl ph-tag">Concept model</span></figure>
     <div class="campus-txt">
       <div class="campus-k"><span class="lbl">Campus 0${i + 1}</span><span class="lbl c-status">${esc(c.status)}</span></div>
       <h3 id="cp-${c.id}">${c.id === 'jr' ? `<mark>${esc(c.mark)}</mark> Campus` : esc(c.name)}</h3>
@@ -149,7 +149,7 @@ function reveals() {
   $$('.reveal-img img').forEach(img => gsap.fromTo(img, { scale: 1.18 }, { scale: 1, duration: 1.8, ease: 'expo.out', scrollTrigger: { trigger: img, start: 'top 85%', toggleActions: 'play none none none' } }));
   $$('.uni-card, .tcard, .ev, .enq, .fees, .msg-pol').forEach((el, i) => gsap.from(el, { y: 40, opacity: 0, duration: 1, ease: 'expo.out', delay: (i % 4) * .08, scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' } }));
   $$('.uni-art svg').forEach(svg => gsap.from(svg, { y: -26, rotate: -3, transformOrigin: '50% 0%', duration: 1.4, ease: 'elastic.out(1,.55)', scrollTrigger: { trigger: svg, start: 'top 85%', toggleActions: 'play none none none' } }));
-  $$('.campus-ph img').forEach(img => gsap.fromTo(img, { yPercent: -9 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }));
+  $$('.campus-ph .ph-photo').forEach(img => gsap.fromTo(img, { yPercent: -9 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }));
   $$('.campus').forEach(c => gsap.from($$('.campus-txt > *', c), { y: 22, opacity: 0, duration: .9, ease: 'power3.out', stagger: .07, scrollTrigger: { trigger: c, start: 'top 70%', toggleActions: 'play none none none' } }));
 }
 
@@ -226,17 +226,42 @@ function events() {
   });
 }
 
+/* ═════════ 3D: the campus model in the hero, campus stills in the cards ═════════ */
+let hero3d = null, want3d = false;
+const play3d = () => { want3d = true; if (hero3d) hero3d.play(); };
+async function load3D() {
+  const cv = $('#hero3d'); if (!cv) return;
+  try {
+    const m = await import('./campus3d.js');
+    hero3d = await m.heroModel(cv);
+    $('.hero-photo').classList.add('has-3d');
+    if (want3d) hero3d.play();
+    const idle = window.requestIdleCallback || (f => setTimeout(f, 600));
+    idle(async () => {
+      const urls = await m.campusStills([
+        { id: 'jr', kind: 'junior', turn: -.42, dist: 29, w: 1400, h: 900 },
+        { id: 'sr', kind: 'senior', turn: .55, dist: 35, w: 1400, h: 900 },
+      ]);
+      for (const id in urls) {
+        const img = $('#model-' + id); if (!img) continue;
+        img.onload = () => { img.closest('.campus-ph').classList.add('has-model'); };
+        img.src = urls[id]; img.hidden = false;
+      }
+    }, { timeout: 2500 });
+  } catch (e) { console.warn('3D unavailable', e); }
+}
+
 /* ═════════ hero entrance ═════════ */
 function heroIn(fast) {
   const d = fast ? .55 : 1;
   const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-  if (REDUCE) return tl;
+  if (REDUCE) { play3d(); return tl; }
   tl.from('.hw > span', { yPercent: 108, duration: 1.3 * d, stagger: .055 }, 0)
     .from('.hero-labels', { opacity: 0, y: -10, duration: .8 * d }, .1)
     .from('.hero-tag .ln > span', { yPercent: 105, duration: 1.1 * d, stagger: .08 }, .35 * d)
     .from('.hero-p, .hero-ctas, .hero-classes', { opacity: 0, y: 16, duration: .9 * d, stagger: .08 }, .55 * d)
+    .add(play3d, .1 * d)
     .from('.hero-photo picture', { clipPath: 'inset(0 0 100% 0)', duration: 1.4 * d, ease: 'expo.inOut' }, .2 * d)
-    .from('.hero-photo img', { scale: 1.22, duration: 2 * d }, .25 * d)
     .from('.hero-photo .h', { scale: 0, duration: .5 * d, stagger: .04, ease: 'back.out(3)' }, 1.0 * d)
     .from('.sel-tag', { opacity: 0, x: -10, duration: .6 * d }, 1.2 * d)
     .from('.hero-pol', { y: 90, rotate: 8, opacity: 0, duration: 1.3 * d, ease: 'elastic.out(1,.7)' }, 1.0 * d)
@@ -248,7 +273,6 @@ function heroIn(fast) {
 // a slow drift on the hero photo and the star as the page scrolls
 function heroScroll() {
   if (REDUCE) return;
-  gsap.to('.hero-photo img', { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
   gsap.to('.hero-word', { yPercent: -18, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
   gsap.to('.hero-star', { rotate: 120, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
   gsap.to('.hero-pol', { y: -60, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
@@ -321,6 +345,7 @@ $$('input, select', form).forEach(f => f.addEventListener('input', () => f.close
 /* ═════════ go ═════════ */
 const start = () => {
   fitAll();
+  load3D();
   reveals(); classes(); events(); heroScroll();
   opening();
   let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { fitAll(); ScrollTrigger.refresh(); }, 150); });

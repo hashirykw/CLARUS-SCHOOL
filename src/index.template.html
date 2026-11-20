@@ -47,6 +47,10 @@ d.classList.add('js');if(seen||matchMedia('(prefers-reduced-motion: reduce)').ma
 <script>(function(){try{if(sessionStorage.getItem('clarus-curtain')){document.documentElement.classList.add('arrive');sessionStorage.removeItem('clarus-curtain')}}catch(e){}})();</script>
 <link rel="stylesheet" href="vendor/lenis/lenis.css">
 <link rel="stylesheet" href="css/clarus.css">
+<link rel="modulepreload" href="vendor/three/three.min.js">
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/three.min.js", "three/addons/": "./vendor/three/addons/" } }
+</script>
 </head>
 <body data-page="home">
 {{DEFS}}
@@ -107,12 +111,13 @@ d.classList.add('js');if(seen||matchMedia('(prefers-reduced-motion: reduce)').ma
 
     <div class="hero-art">
       <figure class="hero-photo sel" data-sel>
+        <canvas id="hero3d" aria-label="A concept model of the Clarus main building: a white classical hall with columns, a red dome and a gold star, on a wooden board with lawns and trees" role="img"></canvas>
         <picture>
           <source media="(max-width:820px)" srcset="assets/photos/classroom-sun-m.webp">
           <img src="assets/photos/classroom-sun.webp" width="2000" height="1334" alt="A sunlit classroom with wooden desks and tall windows" fetchpriority="high" decoding="async">
         </picture>
         <span class="h hd1"></span><span class="h hd2"></span><span class="h hd3"></span><span class="h hd4"></span><span class="h hd5"></span><span class="h hd6"></span><span class="h hd7"></span><span class="h hd8"></span>
-        <span class="sel-tag lbl">Sample photo</span>
+        <span class="sel-tag lbl">Concept model · 3D</span>
       </figure>
       <figure class="polaroid hero-pol">
         <img src="assets/photos/junior-room.webp" width="1400" height="934" alt="A bright early-years room with small tables and star-shaped chairs" decoding="async">
