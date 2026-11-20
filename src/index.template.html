@@ -46,7 +46,7 @@ d.classList.add('js');if(seen||matchMedia('(prefers-reduced-motion: reduce)').ma
 <link rel="stylesheet" href="vendor/lenis/lenis.css">
 <link rel="stylesheet" href="css/clarus.css">
 </head>
-<body>
+<body data-page="home">
 {{DEFS}}
 <a class="skip" href="#main">Skip to content</a>
 
@@ -74,36 +74,7 @@ d.classList.add('js');if(seen||matchMedia('(prefers-reduced-motion: reduce)').ma
   </div>
 </div>
 
-<!-- ═══════════ NAV ═══════════ -->
-<header class="nav" id="nav">
-  <a class="brand" href="#top" aria-label="Clarus School, home">
-    <svg class="brand-mark" viewBox="14 6 465 398" aria-hidden="true"><use href="#cmark"/></svg>
-    <span class="brand-word">Clarus<small>School</small></span>
-  </a>
-  <nav class="links" aria-label="Main">
-    <a href="#classes">Classes</a>
-    <a href="#campuses">Campuses</a>
-    <a href="#uniform">Uniform</a>
-    <a href="#life">School life</a>
-    <a href="junior.html">Clarus Junior</a>
-  </nav>
-  <div class="nav-end">
-    <p class="lbl nav-open"><i class="live"></i>Admissions open</p>
-    <a class="btn" href="#admissions">Book a visit<svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
-    <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="sheet"><span class="lbl">Menu</span><i></i></button>
-  </div>
-</header>
-<div class="sheet ink" id="sheet" hidden>
-  <nav aria-label="Menu">
-    <a href="#classes"><small>01</small>Classes</a>
-    <a href="#campuses"><small>02</small>Campuses</a>
-    <a href="#uniform"><small>03</small>Uniform</a>
-    <a href="#life"><small>04</small>School life</a>
-    <a href="#admissions"><small>05</small>Admissions</a>
-    <a href="junior.html"><small>06</small>Clarus Junior</a>
-  </nav>
-  <a class="btn btn-paper" href="#admissions">Book a visit<svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
-</div>
+{{NAV}}
 
 <main id="main">
 
@@ -186,11 +157,10 @@ d.classList.add('js');if(seen||matchMedia('(prefers-reduced-motion: reduce)').ma
       <h2 class="h2" id="classes-h"><span class="ln"><span>A school that</span></span><span class="ln"><span>grows <em>with</em> your child.</span></span></h2>
       <p class="sec-p">Four classes open in 2026. Every year after, Clarus opens the next one, until the staircase reaches Matric.</p>
     </div>
-    <div class="stairs" id="stairs">
-      <svg class="stairs-star" id="stairs-star" viewBox="152 76 188.5 188" aria-hidden="true"><use href="#cstar"/></svg>
-      <ol class="steps" id="steps"></ol>
+    <div class="cls" id="cls">
+      <div class="cls-rail" aria-hidden="true"><i id="cls-fill"></i></div>
+      <ol class="cls-list" id="cls-list"></ol>
     </div>
-    <p class="hand stairs-note" aria-hidden="true">the star climbs one step every year</p>
   </div>
 </section>
 
@@ -286,9 +256,9 @@ d.classList.add('js');if(seen||matchMedia('(prefers-reduced-motion: reduce)').ma
       <p class="lbl sec-k"><i></i>Clarus Junior</p>
       <h2 class="h2" id="jr-h"><span class="ln"><span>Walk through</span></span><span class="ln"><span>the <em>early years.</em></span></span></h2>
       <p class="sec-p">Nursery, KG, Class 1 and Class 2, built in 3D for parents to explore from home.</p>
-      <a class="btn btn-paper" href="junior.html">Take the walk<svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      <a class="btn btn-paper" href="/junior">Take the walk<svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
     </div>
-    <a class="jr-shot" href="junior.html" aria-label="Open Clarus Junior">
+    <a class="jr-shot" href="/junior" aria-label="Open Clarus Junior">
       <img src="assets/junior-nursery.webp" width="1200" height="750" alt="Clarus Junior: the nursery classroom in 3D" loading="lazy" decoding="async">
       <span class="lbl jr-play">Open the walk ↗</span>
     </a>
@@ -340,10 +310,10 @@ d.classList.add('js');if(seen||matchMedia('(prefers-reduced-motion: reduce)').ma
       <p class="sec-p">The events planned for the first year. Dates will be shared with families.</p>
     </div>
     <div class="ev-grid">
-      <article class="ev ev-sci"><svg class="ev-ic" viewBox="0 0 120 120" aria-hidden="true"><path d="M46 14h28M52 14v30L28 92a8 8 0 0 0 7 12h50a8 8 0 0 0 7-12L68 44V14"/><path class="f" d="M38 76h44l10 18a5 5 0 0 1-4 7H32a5 5 0 0 1-4-7z"/><circle class="b" cx="56" cy="62" r="4"/><circle class="b" cx="66" cy="50" r="3"/></svg><p class="lbl ev-when">Date to be announced</p><h3>Science Week</h3><p>Small hands, big questions: experiments every child can try.</p><span class="ev-no lbl">01</span></article>
-      <article class="ev ev-spo"><svg class="ev-ic" viewBox="0 0 120 120" aria-hidden="true"><path d="M40 20h40v22a20 20 0 0 1-40 0z"/><path d="M40 26H26c0 14 6 22 16 24M80 26h14c0 14-6 22-16 24M60 62v18M44 100h32M48 100l4-20h16l4 20"/><path class="f" d="M40 20h40v10H40z"/></svg><p class="lbl ev-when">Date to be announced</p><h3>Sports Day</h3><p>Races, relays and a cheer for every finish.</p><span class="ev-no lbl">02</span></article>
-      <article class="ev ev-sho"><svg class="ev-ic" viewBox="0 0 120 120" aria-hidden="true"><path d="M14 18h92M18 18c0 30 10 52 26 62M102 18c0 30-10 52-26 62"/><path class="f" d="M18 18c6 22 14 40 26 50V18zM102 18c-6 22-14 40-26 50V18z"/><path d="M10 100h100M24 100V86h72v14"/></svg><p class="lbl ev-when">Date to be announced</p><h3>Annual Show</h3><p>Every class on stage, every family in the hall.</p><span class="ev-no lbl">03</span></article>
-      <article class="ev ev-col"><svg class="ev-ic" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 14C34 14 14 32 14 56c0 22 18 34 34 30 8-2 6-12 14-14 10-2 18 14 34 4 10-6 12-18 10-28C102 30 84 14 60 14z"/><circle class="f" cx="40" cy="48" r="7"/><circle class="b" cx="60" cy="34" r="7"/><circle class="g" cx="80" cy="46" r="7"/></svg><p class="lbl ev-when">Date to be announced</p><h3>Colour Day</h3><p>Paint, play and a lot of happy mess.</p><span class="ev-no lbl">04</span></article>
+      <article class="ev ev-sci" data-ev="0" tabindex="0" role="button" aria-haspopup="dialog"><svg class="ev-ic" viewBox="0 0 120 120" aria-hidden="true"><path d="M46 14h28M52 14v30L28 92a8 8 0 0 0 7 12h50a8 8 0 0 0 7-12L68 44V14"/><path class="f" d="M38 76h44l10 18a5 5 0 0 1-4 7H32a5 5 0 0 1-4-7z"/><circle class="b" cx="56" cy="62" r="4"/><circle class="b" cx="66" cy="50" r="3"/></svg><p class="lbl ev-when">Date to be announced</p><h3>Science Week</h3><p>Small hands, big questions: experiments every child can try.</p><span class="ev-no lbl">01</span><span class="ev-more lbl">Details &amp; countdown ↗</span></article>
+      <article class="ev ev-spo" data-ev="1" tabindex="0" role="button" aria-haspopup="dialog"><svg class="ev-ic" viewBox="0 0 120 120" aria-hidden="true"><path d="M40 20h40v22a20 20 0 0 1-40 0z"/><path d="M40 26H26c0 14 6 22 16 24M80 26h14c0 14-6 22-16 24M60 62v18M44 100h32M48 100l4-20h16l4 20"/><path class="f" d="M40 20h40v10H40z"/></svg><p class="lbl ev-when">Date to be announced</p><h3>Sports Day</h3><p>Races, relays and a cheer for every finish.</p><span class="ev-no lbl">02</span><span class="ev-more lbl">Details &amp; countdown ↗</span></article>
+      <article class="ev ev-sho" data-ev="2" tabindex="0" role="button" aria-haspopup="dialog"><svg class="ev-ic" viewBox="0 0 120 120" aria-hidden="true"><path d="M14 18h92M18 18c0 30 10 52 26 62M102 18c0 30-10 52-26 62"/><path class="f" d="M18 18c6 22 14 40 26 50V18zM102 18c-6 22-14 40-26 50V18z"/><path d="M10 100h100M24 100V86h72v14"/></svg><p class="lbl ev-when">Date to be announced</p><h3>Annual Show</h3><p>Every class on stage, every family in the hall.</p><span class="ev-no lbl">03</span><span class="ev-more lbl">Details &amp; countdown ↗</span></article>
+      <article class="ev ev-col" data-ev="3" tabindex="0" role="button" aria-haspopup="dialog"><svg class="ev-ic" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 14C34 14 14 32 14 56c0 22 18 34 34 30 8-2 6-12 14-14 10-2 18 14 34 4 10-6 12-18 10-28C102 30 84 14 60 14z"/><circle class="f" cx="40" cy="48" r="7"/><circle class="b" cx="60" cy="34" r="7"/><circle class="g" cx="80" cy="46" r="7"/></svg><p class="lbl ev-when">Date to be announced</p><h3>Colour Day</h3><p>Paint, play and a lot of happy mess.</p><span class="ev-no lbl">04</span><span class="ev-more lbl">Details &amp; countdown ↗</span></article>
     </div>
   </div>
 </section>
@@ -398,40 +368,18 @@ d.classList.add('js');if(seen||matchMedia('(prefers-reduced-motion: reduce)').ma
   </div>
 </section>
 
-<!-- ═══════════ FOOTER ═══════════ -->
-<footer class="foot ink tear-t">
-  <div class="wrap">
-    <div class="foot-cta">
-      <p class="lbl sec-k"><i></i>Admissions open</p>
-      <p class="foot-h">Come and see Clarus <em>for yourself.</em></p>
-      <a class="btn btn-crimson" href="#admissions">Book a visit<svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
-    </div>
-    <div class="foot-cols">
-      <div class="foot-brand">
-        <svg class="foot-mark" viewBox="14 6 465 398" aria-hidden="true"><use href="#cmark"/></svg>
-        <p class="lbl">Learn anywhere, succeed everywhere</p>
-      </div>
-      <div><p class="lbl fh">Explore</p><a href="#classes">Classes</a><a href="#campuses">Campuses</a><a href="#uniform">Uniform</a><a href="#life">School life</a><a href="junior.html">Clarus Junior</a></div>
-      <div><p class="lbl fh">Admissions</p><a href="#admissions">Book a visit</a><a href="#fees-h">Fee schedule</a></div>
-      <div><p class="lbl fh">Visit</p><p>Campus address to be added</p><p>School hours to be added</p></div>
-    </div>
-  </div>
-  <p class="foot-word" aria-hidden="true">CLARUS</p>
-  <div class="wrap foot-base">
-    <span class="lbl">© 2026 Clarus School</span>
-    <a class="nexlyr" href="https://nexlyr.solutions" target="_blank" rel="noopener">
-      {{NEXLYR}}
-      <span class="nx-txt"><small>Designed &amp; built by</small><b>NEXLYR</b></span>
-      <span class="nx-go">Connect</span>
-    </a>
-  </div>
-</footer>
+{{FOOT}}
 
 </main>
+
+{{CHAT}}
+
+<dialog class="ev-modal" id="ev-modal" aria-labelledby="evm-t"></dialog>
 
 <script src="vendor/gsap/gsap.min.js"></script>
 <script src="vendor/gsap/ScrollTrigger.min.js"></script>
 <script src="vendor/lenis/lenis.min.js"></script>
+<script src="js/site.js"></script>
 <script src="js/clarus.js"></script>
 </body>
 </html>

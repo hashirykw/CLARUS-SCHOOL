@@ -1,0 +1,21 @@
+<!-- shared chat assistant (answers from the school's own details in js/site.js) -->
+<div class="chat" id="chat">
+  <section class="chat-pop" id="chat-pop" role="dialog" aria-modal="false" aria-labelledby="chat-t" hidden>
+    <header class="chat-head">
+      <svg class="chat-mark" viewBox="152 76 188.5 188" aria-hidden="true"><use href="#cstar"/></svg>
+      <div><p class="chat-t" id="chat-t">Clarus Help Desk</p><p class="lbl chat-s"><i class="live"></i>Replies instantly</p></div>
+      <button class="chat-x" id="chat-x" type="button" aria-label="Close chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </header>
+    <div class="chat-log" id="chat-log" aria-live="polite" data-lenis-prevent></div>
+    <div class="chat-quick" id="chat-quick"></div>
+    <form class="chat-form" id="chat-form" autocomplete="off">
+      <label class="sr" for="chat-in">Type your question</label>
+      <input id="chat-in" placeholder="Ask about admissions, fees, classes…" maxlength="300">
+      <button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+    </form>
+  </section>
+  <button class="chat-btn" id="chat-btn" type="button" aria-expanded="false" aria-controls="chat-pop">
+    <svg class="chat-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg>
+    <span class="lbl">Ask Clarus</span>
+  </button>
+</div>

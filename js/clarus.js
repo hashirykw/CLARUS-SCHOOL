@@ -20,7 +20,14 @@ const CAMPUSES = [
   { id: 'sr', name: 'Senior Campus', mark: 'Senior', classes: 'Class 1 onwards, growing to Matric', status: 'Open', address: '', hours: '', map: '',
     photo: 'assets/photos/hallway.webp', w: 760, h: 1600, alt: 'A long, sunlit school corridor with wooden floors' },
 ];
-const WHATSAPP = '';   // school WhatsApp in international format, e.g. 923001234567
+const WHATSAPP = '';
+// School life events. Set date as 'YYYY-MM-DDTHH:MM' (Pakistan time) and the pop-up shows a live countdown; leave '' while it is to be announced.
+const EVENTS = [
+  { title: 'Science Week', date: '', place: '', text: 'Small hands, big questions. A week of experiments every child can try, from floating and sinking to growing seeds in the classroom.' },
+  { title: 'Sports Day',   date: '', place: '', text: 'Races, relays and a cheer for every finish. Families are welcome to watch from the stands.' },
+  { title: 'Annual Show',  date: '', place: '', text: 'Every class on stage, every family in the hall: songs, short plays and a first bow.' },
+  { title: 'Colour Day',   date: '', place: '', text: 'Paint, play and a lot of happy mess, with every class wearing its own colour.' },
+];   // school WhatsApp in international format, e.g. 923001234567
 
 /* ═════════ setup ═════════ */
 const { gsap, ScrollTrigger, Lenis } = window;
@@ -33,13 +40,15 @@ const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(
 const ARW = '<svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>';
 
 /* ═════════ build: staircase, campuses, form options ═════════ */
-const steps = $('#steps');
-const H = [34, 44, 54, 64, 74, 86, 100];
-steps.innerHTML = CLASSES.map((c, i) => `
-  <li class="step${c.open ? '' : ' plan'}" style="--h:${H[i]};--i:${i}">
-    <span class="s-n">${String(i + 1).padStart(2, '0')}</span>
-    <div><h3>${esc(c.title)}</h3><p>${esc(c.text)}</p></div>
-    <span class="s-tag lbl">${c.open ? 'Open 2026' : 'Planned'}</span>
+const clsList = $('#cls-list');
+const NOW = CLASSES.filter(c => c.open).length - 1;
+clsList.innerHTML = CLASSES.map((c, i) => `
+  <li class="cl${c.open ? ' is-open' : ' is-plan'}${i === NOW ? ' is-now' : ''}" style="--i:${i}">
+    <span class="cl-node" aria-hidden="true"></span>
+    <span class="cl-n">${String(i + 1).padStart(2, '0')}</span>
+    <h3 class="cl-t">${esc(c.title)}${i === NOW ? '<span class="cl-now lbl">We are here</span>' : ''}</h3>
+    <p class="cl-d">${esc(c.text)}</p>
+    <span class="cl-s lbl">${c.open ? 'Open 2026' : 'Planned'}</span>
   </li>`).join('');
 
 $('#campus-pair').innerHTML = CAMPUSES.map((c, i) => `
@@ -91,39 +100,7 @@ if (!REDUCE) {
   gsap.ticker.add(t => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
 }
-const goTo = y => lenis ? lenis.scrollTo(y, { duration: 1.4, easing: t => 1 - Math.pow(1 - t, 4) }) : scrollTo({ top: y, behavior: REDUCE ? 'auto' : 'smooth' });
-$$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
-  const id = a.getAttribute('href'); if (id.length < 2) return;
-  const el = id === '#top' ? document.body : $(id); if (!el) return;
-  e.preventDefault(); closeMenu();
-  if (a.dataset.campus) campusSel.value = a.dataset.campus;
-  goTo(id === '#top' ? 0 : el.getBoundingClientRect().top + scrollY - (id === '#admissions' ? 0 : 0));
-}));
-
-/* ═════════ nav: solid after the hero starts to move, hides on the way down ═════════ */
-const nav = $('#nav');
-let lastY = 0;
-function onScroll() {
-  const y = scrollY;
-  nav.classList.toggle('is-solid', y > 24);
-  if (!root.classList.contains('menu-open')) nav.classList.toggle('is-hidden', y > 640 && y > lastY + 2);
-  if (y < lastY - 2) nav.classList.remove('is-hidden');
-  lastY = y;
-}
-addEventListener('scroll', onScroll, { passive: true }); onScroll();
-// highlight the section in view
-const linkFor = id => $(`.links a[href="#${id}"]`);
-['classes', 'campuses', 'uniform', 'life'].forEach(id => {
-  const sec = $('#' + id), l = linkFor(id); if (!sec || !l) return;
-  ScrollTrigger.create({ trigger: sec, start: 'top 45%', end: 'bottom 45%', onToggle: s => l.classList.toggle('on', s.isActive) });
-});
-
-/* ═════════ phone menu ═════════ */
-const sheet = $('#sheet'), menuBtn = $('#menu-btn');
-function openMenu() { sheet.hidden = false; requestAnimationFrame(() => sheet.classList.add('open')); menuBtn.setAttribute('aria-expanded', 'true'); root.classList.add('menu-open'); lenis && lenis.stop(); }
-function closeMenu() { if (!sheet.classList.contains('open')) return; sheet.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); root.classList.remove('menu-open'); lenis && lenis.start(); setTimeout(() => { if (!sheet.classList.contains('open')) sheet.hidden = true; }, 700); }
-menuBtn.addEventListener('click', () => sheet.classList.contains('open') ? closeMenu() : openMenu());
-addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+window.__lenis = lenis;
 
 /* ═════════ marquee: always moving, faster while scrolling ═════════ */
 const mq = $('#marquee');
@@ -158,7 +135,7 @@ if (pt) {
 /* ═════════ section reveals ═════════ */
 function reveals() {
   if (REDUCE) return;
-  $$('.sec-head, .campus-head .wrap, .jr-txt, .msg-txt, .adm-head, .foot-cta').forEach(head => {
+  $$('.sec-head, .campus-head .wrap, .jr-txt, .msg-txt, .adm-head').forEach(head => {
     const lines = $$('.ln > span', head), rest = $$(':scope > :not(.h2):not(.ln)', head).filter(e => !e.matches('.h2'));
     const tl = gsap.timeline({ scrollTrigger: { trigger: head, start: 'top 82%', toggleActions: 'play none none none' } });
     if (lines.length) tl.from(lines, { yPercent: 105, duration: 1.05, ease: 'expo.out', stagger: .09 }, 0);
@@ -170,40 +147,69 @@ function reveals() {
   $$('.uni-art svg').forEach(svg => gsap.from(svg, { y: -26, rotate: -3, transformOrigin: '50% 0%', duration: 1.4, ease: 'elastic.out(1,.55)', scrollTrigger: { trigger: svg, start: 'top 85%', toggleActions: 'play none none none' } }));
   $$('.campus-ph img').forEach(img => gsap.fromTo(img, { yPercent: -9 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }));
   $$('.campus').forEach(c => gsap.from($$('.campus-txt > *', c), { y: 22, opacity: 0, duration: .9, ease: 'power3.out', stagger: .07, scrollTrigger: { trigger: c, start: 'top 70%', toggleActions: 'play none none none' } }));
-  gsap.from('.foot-word', { yPercent: 40, opacity: 0, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: '.foot-word', start: 'top 98%', toggleActions: 'play none none none' } });
 }
 
-/* ═════════ staircase: steps rise, the star climbs to this year's class ═════════ */
-function stairs() {
-  const list = $$('.step'), star = $('#stairs-star'), box = $('#stairs');
-  if (REDUCE || isSmall()) {
-    gsap.from(list, { x: -20, opacity: 0, duration: .8, ease: 'power3.out', stagger: .06, scrollTrigger: { trigger: box, start: 'top 80%', toggleActions: 'play none none none' } });
-    return;
-  }
-  gsap.from(list, { scaleY: 0, duration: 1.1, ease: 'expo.out', stagger: .08, scrollTrigger: { trigger: box, start: 'top 75%', toggleActions: 'play none none none' } });
-  gsap.from($$('.step > *'), { opacity: 0, y: 10, duration: .6, ease: 'power2.out', stagger: .03, delay: .4, scrollTrigger: { trigger: box, start: 'top 75%', toggleActions: 'play none none none' } });
+/* ═════════ classes: a rule fills down the list; this year's class is marked ═════════ */
+function classes() {
+  const rows = $$('.cl'), fill = $('#cls-fill'), list = $('#cls');
+  if (REDUCE) { fill.style.transform = 'scaleY(1)'; return; }
+  rows.forEach(r => gsap.from($$('.cl-n, .cl-t, .cl-d, .cl-s', r), { y: 26, opacity: 0, duration: .9, ease: 'expo.out', stagger: .05,
+    scrollTrigger: { trigger: r, start: 'top 88%', toggleActions: 'play none none none' } }));
+  const nowRow = rows[NOW];
+  const target = () => { const r = list.getBoundingClientRect(), n = nowRow.getBoundingClientRect(); return Math.min(1, (n.top + n.height / 2 - r.top) / r.height); };
+  const light = () => { const y = fill.getBoundingClientRect().bottom + 1; rows.forEach(r => r.classList.toggle('lit', r.querySelector('.cl-node').getBoundingClientRect().top < y)); };
+  gsap.fromTo(fill, { scaleY: 0 }, { scaleY: () => target(), ease: 'none', invalidateOnRefresh: true,
+    scrollTrigger: { trigger: list, start: 'top 70%', endTrigger: nowRow, end: 'center 55%', scrub: .5, onUpdate: light, onRefresh: light } });
+}
 
-  const openCount = CLASSES.filter(c => c.open).length;
-  let pts = [];
-  const measure = () => {
-    pts = list.slice(0, openCount).map(s => ({ x: s.offsetLeft + s.offsetWidth / 2, y: s.offsetTop }));
-  };
-  measure();
-  const place = p => {
-    if (!pts.length) return;
-    const seg = Math.min(pts.length - 1.0001, p * (pts.length - 1)), i = Math.floor(seg), f = seg - i;
-    const a = pts[i], z = pts[Math.min(i + 1, pts.length - 1)];
-    const x = a.x + (z.x - a.x) * f, y = a.y + (z.y - a.y) * f - Math.sin(f * Math.PI) * 46;   // a little hop between steps
-    gsap.set(star, { x, y, rotate: p * 360 });
-  };
-  gsap.set(star, { opacity: 0 });
-  ScrollTrigger.create({
-    trigger: box, start: 'top 60%', end: 'bottom 55%', scrub: .6,
-    onEnter: () => gsap.to(star, { opacity: 1, duration: .4 }),
-    onUpdate: s => place(s.progress),
-    onRefresh: () => { measure(); },
+/* ═════════ school life: each event opens a pop-up with a countdown ═════════ */
+function events() {
+  const dlg = $('#ev-modal'); if (!dlg) return;
+  const icons = $$('.ev .ev-ic').map(svg => svg.outerHTML);
+  let timer = null;
+  const pad = n => String(n).padStart(2, '0');
+  function tick(ev) {
+    const box = $('.evm-count', dlg); if (!box) return;
+    const t = ev.date ? new Date(ev.date + '+05:00').getTime() : NaN;
+    let parts = ['--', '--', '--', '--'], note = 'The countdown starts as soon as the school announces the date.';
+    if (!isNaN(t)) {
+      const d = Math.max(0, t - Date.now());
+      parts = [Math.floor(d / 864e5), pad(Math.floor(d / 36e5) % 24), pad(Math.floor(d / 6e4) % 60), pad(Math.floor(d / 1e3) % 60)].map(String);
+      note = d ? new Date(t).toLocaleString('en-PK', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'Happening now!';
+    }
+    $$('.evm-u b', box).forEach((b, i) => { if (b.textContent !== parts[i]) b.textContent = parts[i]; });
+    $('.evm-note', dlg).textContent = note;
+  }
+  function open(i) {
+    const ev = EVENTS[i]; if (!ev) return;
+    dlg.innerHTML = `
+      <div class="evm-in">
+        <button class="evm-x" type="button" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        <div class="evm-top">${icons[i] || ''}<span class="lbl">Event ${pad(i + 1)} · School life</span></div>
+        <h3 id="evm-t">${esc(ev.title)}</h3>
+        <p class="evm-d">${esc(ev.text)}</p>
+        <div class="evm-count" role="timer" aria-live="off">
+          <div class="evm-u"><b>--</b><span class="lbl">Days</span></div>
+          <div class="evm-u"><b>--</b><span class="lbl">Hours</span></div>
+          <div class="evm-u"><b>--</b><span class="lbl">Min</span></div>
+          <div class="evm-u"><b>--</b><span class="lbl">Sec</span></div>
+        </div>
+        <p class="lbl evm-when">${ev.date ? 'Date' : 'Date to be announced'}</p>
+        <p class="evm-note"></p>
+        <dl class="evm-meta"><dt class="lbl">Venue</dt><dd>${esc(ev.place || 'To be announced')}</dd><dt class="lbl">Who</dt><dd>Clarus families</dd></dl>
+        <a class="btn btn-crimson" href="/#admissions">Book a visit<svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      </div>`;
+    tick(ev); clearInterval(timer); timer = setInterval(() => tick(ev), 1000);
+    dlg.showModal(); lenis && lenis.stop(); root.classList.add('modal-open');
+    if (!REDUCE) gsap.fromTo($('.evm-in', dlg), { y: 30, opacity: 0, scale: .97 }, { y: 0, opacity: 1, scale: 1, duration: .6, ease: 'expo.out' });
+  }
+  function close() { clearInterval(timer); if (dlg.open) dlg.close(); }
+  dlg.addEventListener('close', () => { clearInterval(timer); lenis && lenis.start(); root.classList.remove('modal-open'); });
+  dlg.addEventListener('click', e => { if (e.target === dlg || e.target.closest('.evm-x')) close(); else if (e.target.closest('a')) close(); });
+  $$('.ev[data-ev]').forEach(card => {
+    card.addEventListener('click', () => open(+card.dataset.ev));
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(+card.dataset.ev); } });
   });
-  place(0);
 }
 
 /* ═════════ hero entrance ═════════ */
@@ -301,7 +307,7 @@ $$('input, select', form).forEach(f => f.addEventListener('input', () => f.close
 /* ═════════ go ═════════ */
 const start = () => {
   fitAll();
-  reveals(); stairs(); heroScroll();
+  reveals(); classes(); events(); heroScroll();
   opening();
   let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { fitAll(); ScrollTrigger.refresh(); }, 150); });
 };

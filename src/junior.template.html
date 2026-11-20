@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Clarus Junior · The Early Years in 3D</title>
 <meta name="description" content="Walk through Clarus Junior in 3D: Nursery, KG, Class 1 and Class 2 at Clarus School.">
-<meta name="theme-color" content="#13233A">
-<link rel="preload" href="fonts/playfair-display-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/poppins-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/cinzel-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="theme-color" content="#F4F1EA">
+<link rel="preload" href="fonts/archivo-wide-900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/archivo-wide-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/archivo-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="canonical" href="https://clarus.nexlyr.solutions/junior">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Clarus School">
@@ -33,120 +33,79 @@
 <link rel="manifest" href="/site.webmanifest">
 <meta name="application-name" content="Clarus School">
 <meta name="apple-mobile-web-app-title" content="Clarus">
-<link rel="stylesheet" href="css/tokens.css">
+<script>document.documentElement.classList.add('js')</script>
 <link rel="stylesheet" href="vendor/lenis/lenis.css">
-<link rel="stylesheet" href="css/home.css">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/clarus.css">
+<link rel="stylesheet" href="css/junior.css">
 <script type="importmap">
 { "imports": { "three": "./vendor/three/three.min.js", "three/addons/": "./vendor/three/addons/" } }
 </script>
 </head>
-<body class="junior-page">
+<body class="junior-page" data-page="junior">
 {{DEFS}}
-<a class="skip" href="#top">Skip to content</a>
+<a class="skip" href="#journey">Skip to content</a>
 
-<!-- same ink-glass bar as the main school -->
-<header class="nav" id="nav">
-  <div class="nav-in glass">
-    <a class="brand" href="#top" aria-label="Clarus Junior, top of page">
-      <span class="badge"><svg viewBox="14 6 465 398" aria-hidden="true"><use href="#cmark"/></svg></span>
-      <span class="brand-t"><b>CLARUS JUNIOR</b><small>Nursery to Class 2 · Clarus School</small></span>
-    </a>
-    <nav class="links" aria-label="Main">
-      <a href="#journey">Our classes</a>
-      <a href="#about">About</a>
-      <a href="index.html#admissions">Admissions</a>
-      <a href="index.html">The main school</a>
-    </nav>
-    <div class="nav-end">
-      <a class="btn btn-bone btn-sm nav-cta" href="index.html#admissions">Book a visit</a>
-      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="sheet" aria-label="Open menu"><span></span></button>
-    </div>
-  </div>
-</header>
-<div class="sheet glass" id="sheet">
-  <a href="#journey">Our classes</a>
-  <a href="#about">About</a>
-  <a href="index.html#admissions">Admissions</a>
-  <a href="index.html">The main school</a>
-  <a class="btn btn-bone btn-wide" href="index.html#admissions">Book a visit</a>
-</div>
+{{NAV}}
 
-<main id="top">
-  <!-- The journey: tall section, sticky stage. Scroll position drives the camera. -->
+<main id="main">
+  <!-- The walk: a tall section with a sticky stage. Scroll position drives the camera. -->
   <section id="journey" aria-label="A walk through the classes">
-    <div class="stage">
+    <div class="stage paper">
       <canvas id="gl" aria-hidden="true"></canvas>
+
+      <div class="j-head" aria-hidden="true">
+        <span class="lbl">Clarus Junior</span>
+        <span class="lbl">The early years in 3D</span>
+        <span class="lbl">Nursery <b>→</b> Class 2</span>
+      </div>
 
       <div class="copy" id="copy">
         <div class="copy-main">
-          <p class="lab" id="c-label">Class 1 of 4</p>
+          <p class="lab lbl" id="c-label">Class 1 of 4</p>
           <h1 class="title" id="c-title">Nursery</h1>
         </div>
-        <div class="copy-side glass-paper">
+        <div class="copy-side">
           <p class="desc" id="c-desc">Play, songs, stories and first friends. A gentle start where little ones learn by doing.</p>
-          <a class="btn btn-sm" id="c-btn" href="#about">Explore more</a>
+          <a class="btn" id="c-btn" href="#about">Explore more</a>
         </div>
       </div>
 
       <div class="dots" id="dots" aria-hidden="true"></div>
-      <div class="j-cue" id="cue" aria-hidden="true"><span></span>Scroll</div>
+      <div class="j-cue lbl" id="cue" aria-hidden="true"><i></i>Scroll to walk</div>
     </div>
   </section>
 
-  <section id="about" class="j-about">
-    <div class="clouds" aria-hidden="true">{{CLOUDS}}</div>
-    <div class="about-in">
-      <p class="eyebrow">About Clarus Junior</p>
-      <h2 class="j-statement" id="statement">A bright, gentle start for Nursery to Class 2.</h2>
-      <p class="about-body">Text, class sizes and numbers here are placeholders until the school confirms them.</p>
+  <section id="about" class="j-about paper tear-t">
+    <div class="wrap">
+      <div class="j-about-head">
+        <p class="lbl sec-k"><i></i>About Clarus Junior</p>
+        <h2 class="h2 j-statement" id="statement">A bright, gentle start for Nursery to Class 2.</h2>
+        <p class="sec-p">Text, class sizes and numbers here are placeholders until the school confirms them.</p>
+      </div>
       <div class="tiles">
-        <div class="tile t1"><b>00</b><span>Children in each class</span></div>
-        <div class="tile t2"><b>00</b><span>Children to every teacher</span></div>
-        <div class="tile t3"><b>00</b><span>Houses, one family</span></div>
-        <div class="tile t4"><b>00</b><span>Your fourth number</span></div>
+        <div class="tile"><b>00</b><span>Children in each class</span></div>
+        <div class="tile"><b>00</b><span>Children to every teacher</span></div>
+        <div class="tile"><b>00</b><span>Houses, one family</span></div>
+        <div class="tile"><b>00</b><span>Your fourth number</span></div>
+      </div>
+      <div class="j-cta">
+        <p class="hand">bring your little one to visit</p>
+        <a class="btn" href="/#admissions">Book a visit<svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+        <a class="link" href="/">The main school</a>
       </div>
     </div>
   </section>
 </main>
 
-<footer class="foot">
-  <div class="strip" aria-hidden="true">
-    <div class="strip-row r1"><div class="strip-track"><img src="assets/photos/ph-nursery-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-art-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-4-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-5-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-science-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-boots-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-nursery-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-art-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-4-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-5-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-science-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-boots-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"></div></div>
-    <div class="strip-row r2"><div class="strip-track"><img src="assets/photos/ph-1-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-2-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-stage-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-smiles-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-6-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-sports-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-1-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-2-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-stage-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-smiles-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ph-6-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"><img src="assets/photos/ev-sports-s.webp" width="480" height="360" alt="" loading="lazy" decoding="async"></div></div>
-  </div>
-  <div class="foot-cta glass">
-    <p class="eyebrow">Admissions open</p>
-    <p class="fc-h">Bring your little one to visit.</p>
-    <a class="btn btn-bone" href="index.html#admissions">Book a visit</a>
-  </div>
-  <div class="foot-main on-ink">
-    <div class="foot-top">
-      <svg class="foot-mark" viewBox="14 6 465 398" aria-hidden="true"><use href="#cmark"/></svg>
-      <p class="foot-word">CLARUS SCHOOL</p>
-      <p class="foot-tag"><i></i>Learn anywhere, succeed everywhere<i></i></p>
-    </div>
-    <div class="foot-cols">
-      <div><p class="fh">Clarus Junior</p><a href="#journey">Our classes</a><a href="#about">About</a></div>
-      <div><p class="fh">Clarus School</p><a href="index.html">The main school</a><a href="index.html#life">School life</a><a href="index.html#admissions">Admissions</a></div>
-      <div><p class="fh">Visit</p><p>Campus address to be added</p><p>School hours to be added</p></div>
-    </div>
-  </div>
-  <div class="foot-base">
-    <span>© 2026 Clarus School</span>
-    <a class="nexlyr" href="https://nexlyr.solutions" target="_blank" rel="noopener">
-      {{NEXLYR}}
-      <span class="nx-txt"><small>Designed &amp; built by</small><b>NEXLYR</b></span>
-      <span class="nx-go">Connect</span>
-    </a>
-  </div>
-</footer>
+{{FOOT}}
+
+{{CHAT}}
 
 <script src="vendor/gsap/gsap.min.js"></script>
 <script src="vendor/gsap/ScrollTrigger.min.js"></script>
 <script src="vendor/gsap/SplitText.min.js"></script>
 <script src="vendor/lenis/lenis.min.js"></script>
-<script src="js/chrome.js"></script>
+<script src="js/site.js"></script>
 <script type="module" src="js/main.js"></script>
 </body>
 </html>

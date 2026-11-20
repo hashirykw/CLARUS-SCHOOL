@@ -28,7 +28,11 @@ Open http://localhost:8000. On Vercel it works as-is: static files, no build on 
 | School WhatsApp number for the visit form | `WHATSAPP` at the top of `js/clarus.js` |
 | Page text | `src/index.template.html`, then run `python3 src/build.py` to rebuild `index.html` |
 | Main page colours, fonts, layout | `css/clarus.css` (tokens at the top) |
-| Junior page | `junior.html`, `css/style.css`, `js/main.js`, `js/world.js` |
+| Navbar, footer, chat (shared by both pages) | `src/nav.html`, `src/foot.html`, `src/chat.html`, then run `python3 src/build.py` |
+| Chat answers | `KB` in `js/site.js` (answers only what the school has confirmed) |
+| Event dates for the countdown pop-ups | `EVENTS` at the top of `js/clarus.js` (date like `2026-12-15T09:00`, Pakistan time) |
+| Clarus Junior page styles | `css/junior.css` on top of `css/clarus.css` |
+| Junior page | `src/junior.template.html`, `css/junior.css`, `js/main.js`, `js/world.js` |
 
 `index.html` is generated: edit `src/index.template.html` and run `python3 src/build.py`. The build only pastes in the logo shapes (`src/defs.html`), the preloader (`src/loader.html`) and the Nexlyr credit (`src/nexlyr.html`). `src/` is not deployed.
 

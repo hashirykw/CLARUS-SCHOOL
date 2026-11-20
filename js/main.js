@@ -8,7 +8,7 @@ const CLASSES = [
   { label:'Class 2 of 4', title:'KG',       text:'Letters, sounds and numbers come alive through picture books, rhymes and plenty of hands-on play.', btn:'Explore more' },
   { label:'Class 3 of 4', title:'Class 1',  text:'First real reading and writing, number work, and small experiments that turn "why?" into "let me try".', btn:'Explore more' },
   { label:'Class 4 of 4', title:'Class 2',  text:'Confident readers start working in teams, presenting ideas and exploring the wider world.', btn:'Explore more' },
-  { label:'What comes next', title:'Beyond Junior', text:'Clarus grows with its children, with classes planned all the way to Matric.', btn:'See the main school' },
+  { label:'What comes next', title:'Beyond Junior', text:'Clarus grows with its children, with classes planned all the way to Matric.', btn:'See the main school', href:'/' },
 ];
 const HOLD = .22;   // share of each step where the camera rests on a scene before and after moving
 
@@ -30,7 +30,7 @@ function setScene(k){
   const c = CLASSES[k];
   if(split){ split.revert(); split = null; }
   gsap.killTweensOf([el.desc, el.btn]);
-  el.label.textContent = c.label; el.title.textContent = c.title; el.desc.textContent = c.text; (window.setBtnLabel || ((b,t)=>b.textContent=t))(el.btn, c.btn);
+  el.label.textContent = c.label; el.title.textContent = c.title; el.desc.textContent = c.text; el.btn.firstChild.nodeValue = c.btn; el.btn.setAttribute('href', c.href || '#about');
   [...el.dots.children].forEach((d,i)=>d.classList.toggle('on', i===k));
   if(REDUCE) return;
   split = new SplitText(el.title, { type:'chars' });
@@ -91,10 +91,10 @@ if(CAPTURE){
 } else {
   if(!REDUCE && Lenis){
     const lenis = new Lenis({ lerp:.09 });
+    window.__lenis = lenis;
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add(t => lenis.raf(t*1000));
     gsap.ticker.lagSmoothing(0);
-    document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{ const t = document.querySelector(a.getAttribute('href')); if(t){ e.preventDefault(); lenis.scrollTo(t); } }));
   }
   gsap.ticker.add(time => { if(visible) frame(time); });
   window.__ready = true;
