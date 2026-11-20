@@ -11,16 +11,40 @@ const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SMALL = () => innerWidth <= 820;
 
 /* ───────── materials (shared) ───────── */
+function canvasTex(w, h, draw, rx = 1, ry = 1) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rx, ry); t.anisotropy = 4; return t;
+}
+let TEX = null;
+function textures() {
+  if (TEX) return TEX;
+  let seed = 3; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  TEX = {
+    // card stock: a faint speckle so walls read as paper, not plastic
+    card: canvasTex(256, 256, (x, w, h) => { x.fillStyle = '#F4F0E7'; x.fillRect(0, 0, w, h); for (let i = 0; i < 2600; i++) { x.fillStyle = `rgba(${rnd() > .5 ? '120,100,70' : '255,255,255'},${.05 + rnd() * .06})`; x.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 1.5, 1 + rnd() * 1.5); } }, 3, 3),
+    // mown lawn: soft alternating stripes
+    lawn: canvasTex(512, 64, (x, w, h) => { for (let i = 0; i < 16; i++) { x.fillStyle = i % 2 ? '#A6B091' : '#9AA585'; x.fillRect(i * w / 16, 0, w / 16 + 1, h); } }),
+    // board: light oak grain
+    board: canvasTex(512, 256, (x, w, h) => { x.fillStyle = '#D3BC97'; x.fillRect(0, 0, w, h); for (let i = 0; i < 90; i++) { const y = rnd() * h; x.strokeStyle = `rgba(140,100,60,${.06 + rnd() * .1})`; x.lineWidth = .6 + rnd() * 1.6; x.beginPath(); x.moveTo(0, y); for (let X = 0; X <= w; X += 32) x.lineTo(X, y + Math.sin(X / 60 + i) * 3); x.stroke(); } }, 2, 1),
+    stone: canvasTex(256, 256, (x, w, h) => { x.fillStyle = '#E2D9C8'; x.fillRect(0, 0, w, h); x.strokeStyle = 'rgba(150,135,110,.25)'; x.lineWidth = 1.5; for (let i = 0; i <= 8; i++) { x.beginPath(); x.moveTo(0, i * h / 8); x.lineTo(w, i * h / 8); x.stroke(); for (let j = 0; j < 4; j++) { const xo = (j * w / 4 + (i % 2) * w / 8); x.beginPath(); x.moveTo(xo, i * h / 8); x.lineTo(xo, (i + 1) * h / 8); x.stroke(); } } }, 4, 4),
+  };
+  return TEX;
+}
 export function makeMaterials() {
   const std = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: .82, metalness: 0, ...o });
+  const T = textures();
   return {
-    card:   std(0xF4F0E7, { roughness: .9 }),
+    card:   std(0xffffff, { roughness: .9, map: T.card }),
     trim:   std(0xE3DCCD, { roughness: .85 }),
-    board:  std(0xD3BC97, { roughness: .6 }),
+    board:  std(0xffffff, { roughness: .55, map: T.board }),
     edge:   std(0xA88560, { roughness: .6 }),
     wood:   std(0x9C7349, { roughness: .55 }),
-    stone:  std(0xE2D9C8, { roughness: .95 }),
-    lawn:   std(0xA4AE8F, { roughness: 1 }),
+    stone:  std(0xffffff, { roughness: .95, map: T.stone }),
+    marble: std(0xEFEAE0, { roughness: .35, envMapIntensity: 1.2 }),
+    cypress:std(0x5E6E50, { roughness: .9 }),
+    water:  std(0x8EA4B6, { roughness: .05, metalness: .5, envMapIntensity: 2.2 }),
+    bloom:  std(0xC4485A, { roughness: .7 }),
+    lawn:   std(0xffffff, { roughness: 1, map: T.lawn }),
     leaf:   std(0x8C9C78, { roughness: .9 }),
     leaf2:  std(0xA7B391, { roughness: .9 }),
     glass:  std(0x5A6D8D, { roughness: .05, metalness: .35, envMapIntensity: 2.4 }),
@@ -129,6 +153,20 @@ function seniorStages(M) {
       for (const x of [-1.2, -.4, .4, 1.2]) { windowAt(k, .46, .95, s * 4.25 + x, .72, 1.53); windowAt(k, .46, .95, s * 4.25 + x, 2.2, 1.53); }
       for (const z of [-1.3, -.2, .9]) { windowAt(k, .46, .95, s * 6.12, .72, z - .35, s > 0 ? 'x' : '-x'); windowAt(k, .46, .95, s * 6.12, 2.2, z - .35, s > 0 ? 'x' : '-x'); }
     }
+    // classical details: rusticated ground floor, pilasters, window pediments, balustrades
+    const pedi = (x, y, z, w) => { const sh = new THREE.Shape(); sh.moveTo(-w / 2, 0); sh.lineTo(w / 2, 0); sh.lineTo(0, w * .26); sh.closePath(); const g = new THREE.ExtrudeGeometry(sh, { depth: .07, bevelEnabled: false }); g.translate(x, y, z); k.geo('trim', g); k.box('trim', w + .04, .05, .1, x, y - .05, z + .03); };
+    const balustrade = (cx, y, z, w) => { k.box('trim', w, .06, .16, cx, y, z); k.box('trim', w, .06, .18, cx, y + .26, z); for (let x = -w / 2 + .1; x <= w / 2 - .09; x += .17) k.cyl('trim', .028, .036, .2, cx + x, y + .06, z, 8); };
+    for (const s of [-1, 1]) {
+      const wx = s * 4.25, fz = 1.5;
+      for (let i = 1; i <= 4; i++) k.box('trim', 3.72, .025, .03, wx, .32 + i * .32, fz + .005);
+      for (const x of [-1.6, -.8, 0, .8, 1.6]) k.box('trim', .13, 1.56, .05, wx + x, 1.98, fz + .02);
+      for (const x of [-1.2, -.4, .4, 1.2]) { pedi(wx + x, 3.22, fz, .66); k.box('trim', .6, .05, .09, wx + x, 1.72, fz + .03); }
+      balustrade(wx, 3.92, fz - .1, 3.6);
+    }
+    for (const x of [-1.85, -.92, 0, .92, 1.85]) pedi(x, 3.82, 2.05, .7);
+    balustrade(0, 4.9, 2.0, 4.8);
+    // quoins on the centre block corners
+    for (const x of [-2.45, 2.45]) for (let i = 0; i < 12; i++) k.box('trim', i % 2 ? .22 : .32, .15, .05, x + (x < 0 ? .1 : -.1), .4 + i * .33, 2.07);
     // door
     k.box('wood', .9, 1.55, .06, 0, .32, 2.08); k.box('frame', 1.06, .08, .08, 0, 1.87, 2.08);
     k.box('frame', .03, 1.55, .08, 0, .32, 2.1);
@@ -172,8 +210,15 @@ function seniorStages(M) {
       for (const z of [2.2, 4.0]) { k.cyl('frame', .025, .03, .85, s * 1.55, 0, z, 8); k.sphere('lamp', .07, s * 1.55, .9, z, 1); }
     }
     k.cyl('frame', .02, .025, 2.6, 5.6, 0, 2.1, 6);
+    for (const s of [-1, 1]) for (const z of [3.1, 4.5]) { k.cyl('wood', .04, .05, .18, s * 2.35, 0, z, 6); const c = new THREE.ConeGeometry(.26, 1.55, 14); c.translate(s * 2.35, .18 + .775, z); k.geo('cypress', c); }
+    // fountain
+    const ring = new THREE.TorusGeometry(.62, .09, 10, 40); ring.rotateX(Math.PI / 2); ring.translate(0, .12, 4.45); k.geo('marble', ring);
+    k.cyl('marble', .66, .7, .1, 0, 0, 4.45, 40); k.cyl('water', .58, .58, .06, 0, .08, 4.45, 40);
+    k.cyl('marble', .08, .12, .5, 0, .1, 4.45, 16); k.cyl('marble', .28, .12, .1, 0, .58, 4.45, 24); k.cyl('water', .22, .22, .03, 0, .66, 4.45, 24);
+    // flower beds along the forecourt
+    for (const s of [-1, 1]) for (let i = 0; i < 9; i++) k.sphere(i % 3 ? 'bloom' : 'leaf2', .07, s * (2.2 + i * .3), .07, 1.55, 1);
   }, [0, B, 0]);
-  const flag = new THREE.Mesh(new THREE.PlaneGeometry(.62, .38, 8, 1), M.crimson); flag.position.set(5.92, 2.4, 2.1); flag.castShadow = true; flag.name = 'flag';
+  const flag = new THREE.Mesh(new THREE.PlaneGeometry(.62, .38, 8, 1), M.crimson); flag.position.set(5.92, 2.4, 2.1); flag.castShadow = false; flag.name = 'flag';
   const fp = flag.geometry.attributes.position; for (let i = 0; i < fp.count; i++) fp.setZ(i, Math.sin((fp.getX(i) + .31) * 7) * .025); fp.needsUpdate = true; flag.geometry.computeVertexNormals();
   stages.find(s => s.name === 'trees').add(flag);
   // re-anchor: every stage was drawn around the origin offset by its anchor
@@ -226,6 +271,8 @@ function juniorStages(M) {
   stage('trees', k => {
     for (const [x, z, s] of [[-5.6, -3.4, 1], [-4.2, -3.9, .8], [5.4, -3.3, 1.05], [2.4, -3.6, .85], [-5.6, 3.2, .9], [5.6, .2, .85], [-2.9, 3.4, .7]]) treeAt(k, x, z, s);
     for (const x of [-.1, -3.3]) k.rbox('leaf', 1.4, .22, .32, x, 0, 1.5, .1);
+    for (const x of [-2.45, -.95]) { k.cyl('wood', .035, .045, .16, x, 0, 2.0, 6); const c = new THREE.ConeGeometry(.2, 1.1, 12); c.translate(x, .16 + .55, 2.0); k.geo('cypress', c); }
+    for (let i = 0; i < 14; i++) k.sphere(i % 2 ? 'bloom' : 'sand', .065, -5.4 + i * .28, .07, 2.75, 1);
     for (let i = 0; i < 26; i++) k.box('card', .05, .32, .05, -5.75 + i * .46, 0, 4.15);
     k.box('card', 12, .04, .04, 0, .22, 4.15); k.box('card', 12, .04, .04, 0, .1, 4.15);
   }, [0, B, 0]);
@@ -260,93 +307,89 @@ export function stageScene(renderer, stages, { shadowSize = 2048, span = 11 } = 
   return { scene, model, key };
 }
 
+/* ───────── the camera walks a full circle around the model; light and model stay put,
+ * so the shadow map is drawn once (and again only while the model is assembling) ───────── */
+function orbitCamera(camera, angle, d, el, look) {
+  camera.position.set(Math.sin(angle) * d * Math.cos(el), Math.sin(el) * d + look, Math.cos(angle) * d * Math.cos(el));
+  camera.lookAt(0, look, 0);
+}
+function liveLoop(canvas, renderer, scene, camera, frame) {
+  let visible = false;
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { rootMargin: '80px' }).observe(canvas);
+  window.gsap.ticker.add(time => { if (!visible || document.hidden) return; if (frame(time)) renderer.render(scene, camera); });
+}
+
 /* ───────── hero ───────── */
 export async function heroModel(canvas, { onReady } = {}) {
   if (document.fonts) { try { await document.fonts.load('900 48px "Archivo Wide"'); } catch (e) {} }
   const M = makeMaterials();
   const stages = seniorStages(M);
-  const renderer = makeRenderer(canvas, Math.min(devicePixelRatio || 1, SMALL() ? 1.3 : 1.75));
-  const { scene, model } = stageScene(renderer, stages, { shadowSize: SMALL() ? 1024 : 2048 });
+  const renderer = makeRenderer(canvas, Math.min(devicePixelRatio || 1, SMALL() ? 1.3 : 1.6));
+  renderer.shadowMap.autoUpdate = false; renderer.shadowMap.needsUpdate = true;
+  const { scene } = stageScene(renderer, stages, { shadowSize: SMALL() ? 1024 : 2048 });
   const camera = new THREE.PerspectiveCamera(24, 1.5, .5, 120);
   const flag = scene.getObjectByName('flag');
-
-  let w = 0, h = 0, dirty = true;
-  const state = { turn: 0, scroll: 0, mx: 0, my: 0, tmx: 0, tmy: 0 };
+  const state = { turn: 0, scroll: 0, mx: 0, my: 0, tmx: 0, tmy: 0, spin: 0 };
+  let dirty = true;
   function size() {
-    const r = canvas.getBoundingClientRect(); w = Math.max(1, r.width); h = Math.max(1, r.height);
-    renderer.setSize(w, h, false); camera.aspect = w / h;
-    const narrow = camera.aspect < 1.2;
-    camera.fov = narrow ? 30 : 24; camera.updateProjectionMatrix(); dirty = true;
+    const r = canvas.getBoundingClientRect(); renderer.setSize(Math.max(1, r.width), Math.max(1, r.height), false);
+    camera.aspect = r.width / Math.max(1, r.height); camera.fov = camera.aspect < 1.2 ? 30 : 24; camera.updateProjectionMatrix(); dirty = true;
   }
-  function place() {
-    const base = -.55 + state.scroll * .9 + state.mx * .14 + state.turn;
-    model.rotation.y = base;
-    const d = camera.aspect < 1.2 ? 33 : 34;
-    const el = .42 + state.my * .05 - state.scroll * .08;
-    camera.position.set(Math.sin(.18) * d * Math.cos(el), Math.sin(el) * d, Math.cos(.18) * d * Math.cos(el));
-    camera.lookAt(0, 1.3, 0);
-  }
-  size(); addEventListener('resize', () => { size(); });
+  size(); addEventListener('resize', size);
+  const place = () => orbitCamera(camera, .55 + state.spin + state.scroll * 1.2 + state.mx * .18 + state.turn, camera.aspect < 1.2 ? 33 : 34, .42 + state.my * .05 - state.scroll * .06, 1.3);
 
-  // assembly: the board slides in, then the building rises floor by floor, the roof drops on, trees pop up
-  const tl = window.gsap.timeline({ paused: true, defaults: { ease: 'expo.out' }, onUpdate: () => { dirty = true; } });
-  stages.forEach(s => s.visible = true);
+  // assembly: board slides in, the building rises floor by floor, the dome drops on, the gardens grow
+  const tl = window.gsap.timeline({ paused: true, defaults: { ease: 'expo.out' }, onUpdate: () => { dirty = true; renderer.shadowMap.needsUpdate = true; }, onComplete: () => { renderer.shadowMap.needsUpdate = true; } });
   const board = stages[0], rest = stages.slice(1);
   if (!REDUCE) {
     tl.from(board.position, { y: -1.2, duration: 1.4 }, 0).from(board.scale, { x: .9, z: .9, duration: 1.4 }, 0);
     rest.forEach((s, i) => {
-      if (s.userData.kind === 'pop') tl.from(s.scale, { x: .001, y: .001, z: .001, duration: 1.1, ease: 'back.out(1.7)' }, 1.3 + i * .08);
-      else if (s.name === 'roof') tl.from(s.position, { y: '+=3', duration: 1.2, ease: 'bounce.out' }, 1.15);
+      if (s.name === 'roof') tl.from(s.position, { y: '+=3', duration: 1.2, ease: 'bounce.out' }, 1.15);
       else tl.from(s.scale, { y: .001, duration: 1.3 }, .45 + i * .18);
     });
-    tl.from(state, { turn: -1.1, duration: 3.2, ease: 'power3.out' }, 0);
+    tl.from(state, { turn: -1.4, duration: 3.4, ease: 'power3.out' }, 0);
   }
-
-  // pointer + scroll
-  let visible = true;
-  new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(canvas);
   if (!REDUCE) {
     addEventListener('pointermove', e => { state.tmx = e.clientX / innerWidth * 2 - 1; state.tmy = e.clientY / innerHeight * 2 - 1; }, { passive: true });
-    window.ScrollTrigger.create({ trigger: canvas, start: 'top top', end: 'bottom top', onUpdate: s => { state.scroll = s.progress; dirty = true; } });
+    window.ScrollTrigger.create({ trigger: canvas, start: 'top top', end: 'bottom top', onUpdate: s => { state.scroll = s.progress; } });
   }
-  let t0 = 0;
-  window.gsap.ticker.add(time => {
-    if (!visible || document.hidden) return;
-    const dx = state.tmx - state.mx, dy = state.tmy - state.my;
-    if (Math.abs(dx) > .0005 || Math.abs(dy) > .0005) { state.mx += dx * .06; state.my += dy * .06; dirty = true; }
-    if (flag && !REDUCE && time - t0 > 1 / 30) {   // the flag ripples at 30fps; cheap
-      t0 = time; const p = flag.geometry.attributes.position;
-      for (let i = 0; i < p.count; i++) { const x = p.getX(i) + .31; p.setZ(i, Math.sin(x * 7 - time * 4) * .03 * x); }
-      p.needsUpdate = true; dirty = true;
-    }
-    if (dirty) { place(); renderer.render(scene, camera); dirty = false; }
+  let last = 0, t0 = 0;
+  liveLoop(canvas, renderer, scene, camera, time => {
+    const dt = Math.min(.05, time - (last || time)); last = time;
+    if (!REDUCE) state.spin += dt * (Math.PI * 2 / 46);            // one full turn every ~46s
+    state.mx += (state.tmx - state.mx) * .06; state.my += (state.tmy - state.my) * .06;
+    if (flag && !REDUCE && time - t0 > 1 / 30) { t0 = time; const p = flag.geometry.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i) + .31; p.setZ(i, Math.sin(x * 7 - time * 4) * .03 * x); } p.needsUpdate = true; }
+    if (REDUCE && !dirty) return false;
+    place(); dirty = false; return true;
   });
   place(); renderer.render(scene, camera);
   onReady && onReady();
   return { play: () => tl.play(0), resize: size };
 }
 
-/* ───────── campus stills ───────── */
-export async function campusStills(targets) {
-  const canvas = document.createElement('canvas');
-  const renderer = makeRenderer(canvas, 1);
+/* ───────── campus cards: each model turns a full circle while its card is on screen ───────── */
+export async function campusLive(canvas, kind, { start = 0, speed = 1 } = {}) {
+  if (document.fonts) { try { await document.fonts.load('900 48px "Archivo Wide"'); } catch (e) {} }
   const M = makeMaterials();
-  const out = {};
-  for (const t of targets) {
-    const stages = t.kind === 'junior' ? juniorStages(M) : seniorStages(M);
-    const { scene, model } = stageScene(renderer, stages, { shadowSize: 2048, span: t.kind === 'junior' ? 9 : 11 });
-    model.rotation.y = t.turn ?? -.5;
-    const W = t.w || 1400, Hh = t.h || 1000;
-    renderer.setSize(W, Hh, false);
-    const cam = new THREE.PerspectiveCamera(t.fov || 24, W / Hh, .5, 120);
-    const d = t.dist || 34, el = t.el ?? .38;
-    cam.position.set(Math.sin(.2) * d * Math.cos(el), Math.sin(el) * d, Math.cos(.2) * d * Math.cos(el)); cam.lookAt(0, t.look ?? 1.4, 0);
-    renderer.render(scene, cam);
-    out[t.id] = await new Promise(res => canvas.toBlob(b => res(URL.createObjectURL(b)), 'image/png'));
-    scene.traverse(o => { if (o.geometry) o.geometry.dispose(); });
-  }
-  renderer.dispose(); renderer.forceContextLoss();
-  return out;
+  const stages = kind === 'junior' ? juniorStages(M) : seniorStages(M);
+  const renderer = makeRenderer(canvas, Math.min(devicePixelRatio || 1, SMALL() ? 1.25 : 1.5));
+  renderer.shadowMap.autoUpdate = false; renderer.shadowMap.needsUpdate = true;
+  const { scene } = stageScene(renderer, stages, { shadowSize: 1024, span: kind === 'junior' ? 9 : 11 });
+  const camera = new THREE.PerspectiveCamera(24, 1.5, .5, 120);
+  const size = () => { const r = canvas.getBoundingClientRect(); renderer.setSize(Math.max(1, r.width), Math.max(1, r.height), false); camera.aspect = r.width / Math.max(1, r.height); camera.updateProjectionMatrix(); };
+  size(); addEventListener('resize', size);
+  const d = kind === 'junior' ? 28 : 30, look = kind === 'junior' ? 1.1 : 1.4;
+  let a = start, last = 0, hover = 0, th = 0;
+  canvas.parentElement.addEventListener('pointerenter', () => { th = 1; });
+  canvas.parentElement.addEventListener('pointerleave', () => { th = 0; });
+  liveLoop(canvas, renderer, scene, camera, time => {
+    const dt = Math.min(.05, time - (last || time)); last = time;
+    hover += (th - hover) * .08;
+    if (!REDUCE) a += dt * (Math.PI * 2 / 40) * speed * (1 + hover * 1.5);
+    orbitCamera(camera, a, d * (1 - hover * .08), .4, look);
+    return true;
+  });
+  orbitCamera(camera, a, d, .4, look); renderer.render(scene, camera);
 }
 
 /* ───────── for the Clarus Junior walk: the Senior building as a small model at the end of the path ───────── */

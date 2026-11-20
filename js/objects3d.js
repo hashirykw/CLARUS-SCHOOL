@@ -47,75 +47,119 @@ function liveCanvas(canvas, scene, camera, { pr, onFrame } = {}) {
   return { invalidate: () => { dirty = true; }, renderer };
 }
 
-/* ═════════ the book staircase ═════════ */
-function spineTexture(title, num, open) {
-  const c = document.createElement('canvas'); c.width = 1024; c.height = 140;
+/* ═════════ the book staircase: a library shelf of leather-bound volumes on a stone plinth ═════════ */
+function spineLabel(title, num, open) {
+  const c = document.createElement('canvas'); c.width = 512; c.height = 128;
   const x = c.getContext('2d');
-  x.fillStyle = open ? '#1C2338' : '#F4F0E7'; x.fillRect(0, 0, c.width, c.height);
-  x.fillStyle = open ? '#D8A63C' : '#8C8778';
-  x.fillRect(28, 20, 4, 100); x.fillRect(c.width - 32, 20, 4, 100);
-  x.font = '700 30px "Archivo Wide", "Arial Black", sans-serif'; x.textBaseline = 'middle';
-  x.fillText(num, 56, 72);
-  x.font = '900 54px "Archivo Wide", "Arial Black", sans-serif';
-  if ('letterSpacing' in x) x.letterSpacing = '6px';
-  x.fillStyle = open ? '#F4F0E7' : '#1C2338';
-  x.textAlign = 'center'; x.fillText(title.toUpperCase(), c.width / 2 + 20, 74);
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
+  const ink = open ? '#E3B85A' : '#1C2338';
+  x.fillStyle = ink; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.font = '700 20px "Archivo Wide", "Arial Black", sans-serif'; if ('letterSpacing' in x) x.letterSpacing = '4px';
+  x.fillText(num, 256, 30);
+  const t = title.toUpperCase(); let size = 46;
+  x.font = `900 ${size}px "Archivo Wide", "Arial Black", sans-serif`;
+  while (x.measureText(t).width > 440 && size > 20) { size -= 2; x.font = `900 ${size}px "Archivo Wide", "Arial Black", sans-serif`; }
+  x.fillText(t, 256, 76);
+  x.fillRect(150, 108, 212, 2);
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; return tex;
 }
-function book(w, h, d, coverMat, pagesMat) {
+function coverLabel(title, num, open) {
+  const c = document.createElement('canvas'); c.width = 640; c.height = 400;
+  const x = c.getContext('2d'), ink = open ? '#E3B85A' : '#7A5A2A';
+  x.strokeStyle = ink; x.lineWidth = 4; x.strokeRect(22, 22, 596, 356); x.lineWidth = 1.5; x.strokeRect(36, 36, 568, 328);
+  x.fillStyle = ink; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.font = '700 30px "Archivo Wide", "Arial Black", sans-serif'; if ('letterSpacing' in x) x.letterSpacing = '8px';
+  x.fillText(num, 320, 110);
+  const t = title.toUpperCase(); let size = 78;
+  x.font = `900 ${size}px "Archivo Wide", "Arial Black", sans-serif`; if ('letterSpacing' in x) x.letterSpacing = '2px';
+  while (x.measureText(t).width > 520 && size > 30) { size -= 2; x.font = `900 ${size}px "Archivo Wide", "Arial Black", sans-serif`; }
+  x.fillText(t, 320, 205);
+  x.fillRect(250, 285, 140, 3);
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; return tex;
+}
+function volume(W, h, D, leather, pages, gilt, label, coverTex) {
   const g = new THREE.Group();
-  const cover = new THREE.Mesh(new RoundedBoxGeometry(w, h, d, 2, .035), coverMat); g.add(cover);
-  const pages = new THREE.Mesh(new THREE.BoxGeometry(w - .08, h - .07, d - .05), pagesMat); pages.position.z = -.03; pages.position.x = .03; g.add(pages);
+  const cover = new THREE.Mesh(new RoundedBoxGeometry(W, h, D, 3, Math.min(.04, h * .2)), leather); g.add(cover);
+  const block = new THREE.Mesh(new THREE.BoxGeometry(W - .06, h - .07, D - .06), pages); block.position.z = -.04; g.add(block);
+  // gilt page edges on the three open sides
+  const e1 = new THREE.Mesh(new THREE.BoxGeometry(W - .07, h - .08, .006), gilt); e1.position.z = -D / 2 - .002; g.add(e1);
+  // raised bands across the spine
+  for (const bx of [-.36, -.12, .12, .36]) { const r = new THREE.Mesh(new RoundedBoxGeometry(.035, h + .012, .03, 1, .01), leather); r.position.set(bx * W, 0, D / 2); g.add(r); }
+  for (const bx of [-.44, .44]) { const r = new THREE.Mesh(new THREE.BoxGeometry(.012, h - .05, .006), gilt); r.position.set(bx * W, 0, D / 2 + .004); g.add(r); }
+  if (coverTex) { const l = new THREE.Mesh(new THREE.PlaneGeometry(D * .8, W * .82), new THREE.MeshStandardMaterial({ map: coverTex, transparent: true, roughness: .3, metalness: .55 })); l.rotation.x = -Math.PI / 2; l.rotation.z = Math.PI / 2; l.position.y = h / 2 + .003; g.add(l); }
+  if (label) { const l = new THREE.Mesh(new THREE.PlaneGeometry(W * .66, h * .82), new THREE.MeshStandardMaterial({ map: label, transparent: true, roughness: .3, metalness: .5 })); l.position.set(0, 0, D / 2 + .006); g.add(l); }
   return g;
 }
 
 export async function books(canvas, classes) {
-  if (document.fonts) { try { await document.fonts.load('900 40px "Archivo Wide"'); } catch (e) {} }
-  const scene = lightScene(null, { span: 7, key: [-6, 10, 8] });
-  const pagesMat = std(0xF6F1E4, { roughness: .95 });
-  const fillers = [std(NAVY, { roughness: .5 }), std(CRIMSON, { roughness: .55 }), std(0xD9C08F, { roughness: .6 }), std(0x8D9B7A, { roughness: .6 }), std(0xE7E0D0, { roughness: .7 }), std(0x2E3B5A, { roughness: .5 })];
+  if (document.fonts) { try { await document.fonts.load('900 40px "Archivo Wide"'); await document.fonts.load('700 20px "Archivo Wide"'); } catch (e) {} }
+  const scene = lightScene(null, { span: 7, key: [-6, 10, 8], env: .65 });
+  const leather = {
+    navy: std(0x1E2742, { roughness: .42, metalness: .05, envMapIntensity: 1.2 }),
+    ox:   std(0x6A1E2B, { roughness: .45, metalness: .05, envMapIntensity: 1.2 }),
+    tan:  std(0x8E6038, { roughness: .5, envMapIntensity: 1.1 }),
+    vell: std(0xEDE4D0, { roughness: .6 }),
+    green:std(0x2F4A3A, { roughness: .45, envMapIntensity: 1.1 }),
+  };
+  const pages = std(0xF4EEDD, { roughness: .9 }), gilt = goldM();
+  const marble = std(0xEEE8DC, { roughness: .28, envMapIntensity: 1.3 });
   const root = new THREE.Group(); scene.add(root);
-  const W = 1.9, D = 1.35, gap = 1.12, now = classes.filter(c => c.open).length - 1;
+  const W = 1.04, D = 1.4, gap = 1.2, now = classes.filter(c => c.open).length - 1, n = classes.length;
+  const cycle = ['ox', 'navy', 'vell', 'navy', 'ox', 'navy'];
+  // the plinth: stepped stone with a gold inlay line
+  const L = n * gap + 1.0;
+  const p1 = new THREE.Mesh(new RoundedBoxGeometry(L + .5, .22, D + .8, 3, .04), marble); p1.position.y = .11;
+  const p2 = new THREE.Mesh(new RoundedBoxGeometry(L, .2, D + .45, 3, .04), marble); p2.position.y = .32;
+  const inlay = new THREE.Mesh(new THREE.BoxGeometry(L - .1, .025, .01), gilt); inlay.position.set(0, .32, (D + .45) / 2 + .002);
+  root.add(cast(p1), cast(p2), inlay);
+  const base = .42;
+  // two classical columns frame the shelf, the right one taller: the way up
+  const column = (h) => {
+    const c = new THREE.Group();
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(.17, .2, h, 24, 1), marble); shaft.position.y = .14 + h / 2; c.add(shaft);
+    for (let i = 0; i < 12; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(.02, h * .96, .03), std(0xE2DBCD, { roughness: .4 })); const ang = i / 12 * Math.PI * 2; f.position.set(Math.sin(ang) * .19, .14 + h / 2, Math.cos(ang) * .19); f.rotation.y = ang; c.add(f); }
+    const b = new THREE.Mesh(new RoundedBoxGeometry(.5, .14, .5, 2, .02), marble); b.position.y = .07; c.add(b);
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(.28, .2, .14, 24), marble); cap.position.y = .14 + h + .07; c.add(cap);
+    const ab = new THREE.Mesh(new RoundedBoxGeometry(.6, .1, .6, 2, .02), marble); ab.position.y = .14 + h + .19; c.add(ab);
+    return cast(c);
+  };
+  const cl = column(1.2); cl.position.set(-L / 2 - .05, base, -.2); root.add(cl);
+  const cr = column(2.5); cr.position.set(L / 2 + .05, base, -.2); root.add(cr);
   const cols = [];
-  let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
   classes.forEach((c, i) => {
-    const col = new THREE.Group(); col.position.x = (i - (classes.length - 1) / 2) * gap;
+    const col = new THREE.Group(); col.position.x = (i - (n - 1) / 2) * gap; col.position.y = base;
     let y = 0;
     for (let j = 0; j <= i; j++) {
-      const top = j === i, h = top ? .34 : .22 + rnd() * .12;
-      const mat = top ? new THREE.MeshStandardMaterial({ color: c.open ? NAVY : PAPER, roughness: c.open ? .45 : .8 }) : fillers[(i * 3 + j) % fillers.length];
-      const b = book(W - rnd() * .16, h, D - rnd() * .1, mat, pagesMat);
-      b.position.set((rnd() - .5) * .08, y + h / 2, (rnd() - .5) * .08); b.rotation.y = (rnd() - .5) * .08 + (top ? 0 : (rnd() - .5) * .06);
-      if (top) {
-        const lab = new THREE.Mesh(new THREE.PlaneGeometry(W - .2, h - .08), new THREE.MeshStandardMaterial({ map: spineTexture(c.title, String(i + 1).padStart(2, '0'), c.open), roughness: .6 }));
-        lab.position.set(0, 0, D / 2 + .002); b.add(lab);
-      }
-      col.add(cast(b)); y += h;
+      const top = j === i, h = top ? .3 : .21 + ((i * 7 + j * 3) % 5) * .018;
+      const mat = top ? (c.open ? leather.navy : leather.vell) : leather[cycle[(i + j * 2) % cycle.length]];
+      const v = volume(W - (j % 3) * .04, h, D - (j % 2) * .06, mat, pages, gilt, null, top ? coverLabel(c.title, String(i + 1).padStart(2, '0'), c.open) : null);
+      v.position.set(((i + j) % 3 - 1) * .012, y + h / 2, ((i * 2 + j) % 3 - 1) * .012); v.rotation.y = ((i + j) % 2 ? 1 : -1) * .012;
+      col.add(cast(v)); y += h;
     }
-    col.userData.top = y;
-    root.add(col); cols.push(col);
+    col.userData.top = y; root.add(col); cols.push(col);
   });
-  // the gold star standing on this year's class
-  const st = new THREE.Mesh(new THREE.ExtrudeGeometry(starShape(), { depth: .08, bevelEnabled: true, bevelThickness: .02, bevelSize: .02, bevelSegments: 2 }), goldM());
-  st.geometry.center(); st.scale.setScalar(.85); st.position.set(cols[now].position.x, cols[now].userData.top + .5, 0); cast(st); root.add(st);
-  const stand = new THREE.Mesh(new THREE.CylinderGeometry(.03, .03, .2, 10), goldM()); stand.position.set(st.position.x, cols[now].userData.top + .1, 0); root.add(stand);
+  // this year's class: a gold star on a slim stand
+  const st = new THREE.Mesh(new THREE.ExtrudeGeometry(starShape(), { depth: .07, bevelEnabled: true, bevelThickness: .02, bevelSize: .02, bevelSegments: 2 }), gilt);
+  st.geometry.center(); st.scale.setScalar(.62);
+  const holder = new THREE.Group(); holder.position.set(cols[now].position.x, base + cols[now].userData.top, 0);
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(.02, .03, .34, 10), gilt); stem.position.y = .17; holder.add(stem);
+  const foot = new THREE.Mesh(new THREE.CylinderGeometry(.12, .14, .04, 20), gilt); foot.position.y = .02; holder.add(foot);
+  st.position.y = .66; holder.add(st); root.add(cast(holder));
 
-  const camera = new THREE.PerspectiveCamera(26, 2, .5, 80);
+  const camera = new THREE.PerspectiveCamera(26, 2.6, .5, 80);
   const state = { turn: 0, sc: 0 };
   const place = () => {
-    root.rotation.y = -.32 + state.sc * .45 + state.turn;
-    const narrow = camera.aspect < 1.8, d = narrow ? 15.5 : 11.2;
-    camera.position.set(1.2, narrow ? 5.2 : 3.9, d); camera.lookAt(0, narrow ? 1.0 : 1.15, 0);
+    root.rotation.y = -.26 + state.sc * .4 + state.turn;
+    const narrow = camera.aspect < 1.8, d = narrow ? 15 : 11.5;
+    camera.position.set(1.0, narrow ? 6.2 : 5.0, d); camera.lookAt(0, narrow ? 1.2 : 1.35, 0);
   };
-  const live = liveCanvas(canvas, scene, camera, { onFrame: t => { st.rotation.y = t * .9; place(); return true; } });
+  const live = liveCanvas(canvas, scene, camera, { onFrame: t => { st.rotation.y = .35 + Math.sin(t * .9) * .5; place(); return true; } });
   place();
-  // drop the stacks in, one class after another
   const tl = gsap.timeline({ paused: true, onUpdate: live.invalidate });
   if (!REDUCE) {
-    cols.forEach((c, i) => tl.from(c.position, { y: 4.5, duration: 1.1, ease: 'bounce.out' }, i * .12));
-    tl.from(st.scale, { x: .001, y: .001, z: .001, duration: .9, ease: 'back.out(2)' }, cols.length * .12 + .2);
-    tl.from(state, { turn: -.5, duration: 2.4, ease: 'power3.out' }, 0);
-    ScrollTrigger.create({ trigger: canvas, start: 'top 80%', onEnter: () => tl.play() , toggleActions: 'play none none none' });
+    cols.forEach((c, i) => tl.from(c.position, { y: base + 3.6, duration: 1.2, ease: 'expo.out' }, i * .1).from(c.children.map(v => v.rotation), { z: (k) => (k % 2 ? .12 : -.12), duration: 1.2, ease: 'expo.out' }, i * .1));
+    tl.from(holder.scale, { x: .001, y: .001, z: .001, duration: .9, ease: 'back.out(2)' }, n * .1 + .3);
+    tl.from(state, { turn: -.45, duration: 2.4, ease: 'power3.out' }, 0);
+    ScrollTrigger.create({ trigger: canvas, start: 'top 80%', onEnter: () => tl.play(), toggleActions: 'play none none none' });
     ScrollTrigger.create({ trigger: canvas, start: 'top bottom', end: 'bottom top', onUpdate: s => { state.sc = s.progress; } });
   }
   return live;

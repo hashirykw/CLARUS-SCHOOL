@@ -54,7 +54,7 @@ clsList.innerHTML = CLASSES.map((c, i) => `
 $('#campus-pair').innerHTML = CAMPUSES.map((c, i) => `
   <article class="campus campus-${c.id} ${i ? 'ink' : 'paper'}" aria-labelledby="cp-${c.id}">
     ${c.note ? `<p class="hand c-note" aria-hidden="true">${esc(c.note)}</p>` : ''}
-    <figure class="campus-ph"><img class="ph-photo" src="${c.photo}" width="${c.w}" height="${c.h}" alt="${esc(c.alt)}" loading="lazy" decoding="async"><img class="ph-model" id="model-${c.id}" alt="Concept model of the ${esc(c.name)}" hidden><span class="lbl ph-tag">Concept model</span></figure>
+    <figure class="campus-ph"><img class="ph-photo" src="${c.photo}" width="${c.w}" height="${c.h}" alt="${esc(c.alt)}" loading="lazy" decoding="async"><canvas class="ph-model" id="model-${c.id}" role="img" aria-label="Concept model of the ${esc(c.name)}, turning"></canvas><span class="lbl ph-tag">Concept model</span></figure>
     <div class="campus-txt">
       <div class="campus-k"><span class="lbl">Campus 0${i + 1}</span><span class="lbl c-status">${esc(c.status)}</span></div>
       <h3 id="cp-${c.id}">${c.id === 'jr' ? `<mark>${esc(c.mark)}</mark> Campus` : esc(c.name)}</h3>
@@ -239,9 +239,8 @@ async function load3D() {
     const idle = window.requestIdleCallback || (f => setTimeout(f, 600));
     // more of the world: the book staircase, the crest, the school-life objects
     import('./objects3d.js').then(async o => {
-      const bc = $('#books3d'), cc = $('#crest3d');
+      const bc = $('#books3d');
       if (bc) { await o.books(bc, CLASSES); bc.closest('.cls-3d').classList.add('on'); }
-      if (cc) { await o.crest(cc); cc.closest('.promise-ph').classList.add('has-3d'); }
       idle(async () => {
         const urls = await o.eventStills();
         $$('.ev[data-ev]').forEach((card, i) => {
@@ -253,14 +252,10 @@ async function load3D() {
       }, { timeout: 4000 });
     }).catch(e => console.warn('3D objects unavailable', e));
     idle(async () => {
-      const urls = await m.campusStills([
-        { id: 'jr', kind: 'junior', turn: -.42, dist: 29, w: 1400, h: 900 },
-        { id: 'sr', kind: 'senior', turn: .55, dist: 35, w: 1400, h: 900 },
-      ]);
-      for (const id in urls) {
-        const img = $('#model-' + id); if (!img) continue;
-        img.onload = () => { img.closest('.campus-ph').classList.add('has-model'); };
-        img.src = urls[id]; img.hidden = false;
+      for (const [id, kind, start, speed] of [['jr', 'junior', -.5, 1], ['sr', 'senior', 2.2, .85]]) {
+        const cv = $('#model-' + id); if (!cv) continue;
+        await m.campusLive(cv, kind, { start, speed });
+        cv.closest('.campus-ph').classList.add('has-model');
       }
     }, { timeout: 2500 });
   } catch (e) { console.warn('3D unavailable', e); }

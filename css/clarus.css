@@ -240,13 +240,13 @@ html.opening body{overflow:hidden}
 .hero-photo canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}
 .hero-photo.has-3d picture{visibility:hidden}
 .hero-photo.has-3d{background:radial-gradient(70% 60% at 50% 55%,oklch(99% .004 85 / .55),transparent 75%)}
-.campus-ph .ph-model{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity 1s var(--ease-out),transform 1.2s var(--ease-out)}
+.campus-ph .ph-model{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity 1s var(--ease-out),transform 1.2s var(--ease-out)}
 .campus-ph.has-model .ph-model{opacity:1}
 .campus-ph.has-model .ph-photo{opacity:0}
 .campus-ph .ph-photo{transition:opacity .8s var(--ease-out)}
 .campus-ph .ph-tag{position:absolute;left:.7rem;bottom:.7rem;padding:.35rem .5rem;font-size:.52rem;background:var(--crimson);color:var(--paper-hi);opacity:0;transition:opacity .6s .4s}
 .campus-ph.has-model .ph-tag{opacity:1}
-.campus:hover .campus-ph.has-model .ph-model{transform:scale(1.04) translateY(-1%)}
+
 .hero-pol{position:absolute;left:clamp(-4.5rem,-5vw,-2rem);bottom:clamp(-4.5rem,-6vw,-2.5rem);width:clamp(9.5rem,15vw,14.5rem);rotate:-7deg;z-index:3}
 .hero-pol figcaption{font-size:1.15rem}
 .hero-star{position:absolute;right:clamp(-1rem,-1.2vw,-.5rem);top:clamp(-2.6rem,-3vw,-1.8rem);width:clamp(3.4rem,5vw,4.8rem);z-index:4;filter:drop-shadow(0 6px 10px oklch(40% .1 70 / .25))}
@@ -711,3 +711,26 @@ html{font-size:14px}
   html.js .rv{opacity:1;transform:none}
   html.js .reveal-img{clip-path:none}
 }
+
+/* ───────── frosted glass: only on small floating surfaces, so it stays smooth ───────── */
+:root{--glass:oklch(98.5% .006 85 / .62);--glass-ink:oklch(20% .045 262 / .58);--glass-edge:inset 0 1px 0 oklch(100% 0 0 / .75),inset 0 0 0 1px oklch(100% 0 0 / .35);--frost:blur(18px) saturate(1.5)}
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .nav.is-solid{background:oklch(96.4% .007 85 / .7);-webkit-backdrop-filter:var(--frost);backdrop-filter:var(--frost);box-shadow:0 1px 0 var(--rule),inset 0 -1px 0 oklch(100% 0 0 / .5)}
+  .menu-pop,.chat-pop,.evm-in{background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6);
+    box-shadow:var(--glass-edge),0 1px 0 var(--rule),0 30px 60px -26px oklch(10% .04 262 / .45)}
+  .menu-pop::before,.chat-pop::before,.evm-in::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,oklch(100% 0 0 / .55),oklch(100% 0 0 / 0) 42%,oklch(100% 0 0 / 0) 70%,oklch(100% 0 0 / .18))}
+  .chat-pop{position:relative}
+  .chat-pop>*{position:relative}
+  .ev-modal::backdrop{background:oklch(15% .04 262 / .38);-webkit-backdrop-filter:blur(8px) saturate(1.2);backdrop-filter:blur(8px) saturate(1.2)}
+  .chat-btn{background:var(--glass-ink);-webkit-backdrop-filter:var(--frost);backdrop-filter:var(--frost);box-shadow:inset 0 1px 0 oklch(100% 0 0 / .22),0 14px 30px -16px oklch(10% .04 262 / .6)}
+  .sel-tag,.campus-ph .ph-tag{background:oklch(47% .16 20 / .78);-webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4);box-shadow:inset 0 1px 0 oklch(100% 0 0 / .3)}
+  .cls-3d-tag{padding:.35rem .6rem;background:var(--glass);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:var(--glass-edge)}
+  .ev:hover{background:oklch(30% .05 262 / .45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:inset 0 1px 0 oklch(100% 0 0 / .1)}
+}
+/* a slow sheen across the glass surfaces when they open */
+.menu-pop.open::after,html.chat-open .chat-pop::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 35%,oklch(100% 0 0 / .45) 50%,transparent 65%);background-size:250% 100%;animation:sheen 1.4s var(--ease-out) .1s both}
+@keyframes sheen{from{background-position:120% 0}to{background-position:-30% 0}}
+/* "turns 360°" glass chip on the campus models */
+.campus-ph.has-model::after{content:"360°";position:absolute;right:.7rem;bottom:.7rem;padding:.35rem .5rem;font:700 .52rem/1 var(--font-display);letter-spacing:.14em;color:var(--ink);background:var(--glass);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:var(--glass-edge)}
+.ink .campus-ph.has-model::after{color:var(--paper-hi);background:var(--glass-ink)}
+@media (prefers-reduced-motion:reduce){.menu-pop.open::after,html.chat-open .chat-pop::after{animation:none;display:none}}
