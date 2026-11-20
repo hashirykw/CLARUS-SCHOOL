@@ -245,9 +245,13 @@ async function load3D() {
         const urls = await o.eventStills();
         $$('.ev[data-ev]').forEach((card, i) => {
           if (!urls[i]) return;
-          const img = new Image(); img.className = 'ev-3d'; img.alt = ''; img.decoding = 'async';
-          img.onload = () => card.classList.add('has-3d'); img.src = urls[i];
-          card.querySelector('.ev-ic').after(img);
+          const img = new Image();
+          img.onload = () => {
+            const d = document.createElement('i'); d.className = 'ev-3d'; d.setAttribute('aria-hidden', 'true');
+            d.style.backgroundImage = `url(${urls[i]})`; d.style.animationDelay = `${-i * 1.3}s`;
+            card.querySelector('.ev-ic').after(d); card.classList.add('has-3d');
+          };
+          img.src = urls[i];
         });
       }, { timeout: 4000 });
     }).catch(e => console.warn('3D objects unavailable', e));

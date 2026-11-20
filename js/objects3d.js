@@ -146,13 +146,13 @@ export async function books(canvas, classes) {
   st.position.y = .66; holder.add(st); root.add(cast(holder));
 
   const camera = new THREE.PerspectiveCamera(26, 2.6, .5, 80);
-  const state = { turn: 0, sc: 0 };
+  const state = { turn: 0, sc: 0, spin: 0 }; let lastT = 0;
   const place = () => {
-    root.rotation.y = -.26 + state.sc * .4 + state.turn;
+    root.rotation.y = -.26 + state.sc * .4 + state.turn + state.spin;
     const narrow = camera.aspect < 1.8, d = narrow ? 15 : 11.5;
-    camera.position.set(1.0, narrow ? 6.2 : 5.0, d); camera.lookAt(0, narrow ? 1.2 : 1.35, 0);
+    camera.position.set(1.0, narrow ? 6.2 : 5.0, d); camera.lookAt(0, narrow ? 1.4 : 1.6, 0);
   };
-  const live = liveCanvas(canvas, scene, camera, { onFrame: t => { st.rotation.y = .35 + Math.sin(t * .9) * .5; place(); return true; } });
+  const live = liveCanvas(canvas, scene, camera, { onFrame: t => { const dt = Math.min(.05, t - (lastT || t)); lastT = t; if (!REDUCE) state.spin += dt * Math.PI * 2 / 36; st.rotation.y = .35 + Math.sin(t * .9) * .5 - state.spin * 0; place(); return true; } });
   place();
   const tl = gsap.timeline({ paused: true, onUpdate: live.invalidate });
   if (!REDUCE) {
@@ -256,9 +256,15 @@ function palette() {
   return g;
 }
 
-export async function eventStills() {
+export const SPIN_FRAMES = 36;
+/* each school-life object is rendered as a full 360° turntable strip, then played back with CSS steps():
+ * real 3D rotation at the cost of an image, with no live WebGL context per card */
+export async function eventStills(size = 300) {
+  const F = SPIN_FRAMES;
   const canvas = document.createElement('canvas');
-  const r = makeRenderer(canvas, 1); r.setSize(640, 640, false);
+  const r = makeRenderer(canvas, 1); r.setSize(size, size, false);
+  const strip = document.createElement('canvas'); strip.width = size * F; strip.height = size;
+  const sx = strip.getContext('2d');
   const out = [];
   const items = [
     [flask(), [0, 1.2, 0], .1, 7.2],
@@ -266,13 +272,19 @@ export async function eventStills() {
     [stage(), [0, 1.3, 0], -.35, 8.6],
     [palette(), [0, .2, 0], .35, 6.4],
   ];
+  const breathe = () => new Promise(res => (window.requestIdleCallback || setTimeout)(res));
   for (const [obj, look, turn, dist] of items) {
     const scene = lightScene(r, { env: .8, span: 4, key: [-4, 8, 6] });
-    cast(obj); obj.rotation.y = turn; scene.add(obj);
+    cast(obj); scene.add(obj);
     const cam = new THREE.PerspectiveCamera(30, 1, .1, 50);
     cam.position.set(dist * .45, dist * .52, dist * .8); cam.lookAt(...look);
-    r.render(scene, cam);
-    out.push(await new Promise(res => canvas.toBlob(b => res(URL.createObjectURL(b)), 'image/png')));
+    sx.clearRect(0, 0, strip.width, size);
+    for (let f = 0; f < F; f++) {
+      obj.rotation.y = turn + f / F * Math.PI * 2;
+      r.render(scene, cam); sx.drawImage(canvas, f * size, 0);
+      if (f % 6 === 5) await breathe();
+    }
+    out.push(await new Promise(res => strip.toBlob(b => res(URL.createObjectURL(b)), 'image/webp', .9)));
   }
   r.dispose(); r.forceContextLoss();
   return out;

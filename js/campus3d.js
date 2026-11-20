@@ -356,7 +356,7 @@ export async function heroModel(canvas, { onReady } = {}) {
   let last = 0, t0 = 0;
   liveLoop(canvas, renderer, scene, camera, time => {
     const dt = Math.min(.05, time - (last || time)); last = time;
-    if (!REDUCE) state.spin += dt * (Math.PI * 2 / 46);            // one full turn every ~46s
+    if (!REDUCE) state.spin += dt * (Math.PI * 2 / 36);            // one full turn every ~36s
     state.mx += (state.tmx - state.mx) * .06; state.my += (state.tmy - state.my) * .06;
     if (flag && !REDUCE && time - t0 > 1 / 30) { t0 = time; const p = flag.geometry.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i) + .31; p.setZ(i, Math.sin(x * 7 - time * 4) * .03 * x); } p.needsUpdate = true; }
     if (REDUCE && !dirty) return false;
@@ -385,7 +385,7 @@ export async function campusLive(canvas, kind, { start = 0, speed = 1 } = {}) {
   liveLoop(canvas, renderer, scene, camera, time => {
     const dt = Math.min(.05, time - (last || time)); last = time;
     hover += (th - hover) * .08;
-    if (!REDUCE) a += dt * (Math.PI * 2 / 40) * speed * (1 + hover * 1.5);
+    if (!REDUCE) a += dt * (Math.PI * 2 / 30) * speed * (1 + hover * 1.5);
     orbitCamera(camera, a, d * (1 - hover * .08), .4, look);
     return true;
   });
