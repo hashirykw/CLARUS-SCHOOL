@@ -13,7 +13,7 @@
 .copy-main{position:absolute;left:var(--gutter);right:calc(var(--gutter) + min(22rem,34vw) + 2rem);top:calc(var(--nav-h) + 3.6rem)}
 .lab{display:inline-flex;align-items:center;gap:.55rem;color:var(--ink-3)}
 .lab::before{content:"";width:.55rem;height:.55rem;background:var(--crimson)}
-.title{font-size:clamp(3rem,2rem + 5vw,7.5rem);line-height:.86;margin-top:.8rem;min-height:.9em;color:var(--ink);overflow-wrap:anywhere}
+.title{font-size:clamp(2.6rem,1.6rem + 4.2vw,6.4rem);line-height:.88;margin-top:.8rem;min-height:.9em;color:var(--ink);overflow-wrap:normal;word-break:normal}
 .copy-side{position:absolute;right:var(--gutter);top:calc(var(--nav-h) + 3.6rem);width:min(22rem,34vw);padding:1.3rem 1.4rem 1.4rem;display:flex;flex-direction:column;align-items:flex-start;gap:1rem;
   background:var(--paper-hi);border-top:5px solid var(--ink);box-shadow:0 1px 0 var(--rule),0 24px 50px -30px var(--shadow)}
 .desc{color:var(--ink-2);font-size:.98rem;line-height:1.55;min-height:4.7em}

@@ -107,11 +107,13 @@ const mq = $('#marquee');
 if (mq) {
   const track = $('.mq-track', mq);
   for (let i = 0; i < 3; i++) mq.appendChild(track.cloneNode(true));
-  let x = 0, boost = 0;
+  let x = 0, boost = 0, onScreen = true;
+  new IntersectionObserver(es => { onScreen = es[0].isIntersecting; }).observe(mq.parentElement);
   if (!REDUCE) {
     lenis && lenis.on('scroll', e => { boost = Math.min(Math.abs(e.velocity) * .35, 9); });
+    let w = track.offsetWidth; const mw = () => { w = track.offsetWidth; }; addEventListener('resize', mw); document.fonts && document.fonts.ready.then(mw);
     gsap.ticker.add((t, dt) => {
-      const w = track.offsetWidth; if (!w) return;
+      if (!onScreen || !w) return;
       x -= (0.045 + boost * .02) * dt; boost *= .92;
       if (-x >= w) x += w;
       mq.style.transform = `translate3d(${x}px,0,0)`;
@@ -124,11 +126,13 @@ const pt = $('#promise-t');
 if (pt) {
   const HL = ['every', 'child,', 'Matric.'];
   pt.innerHTML = pt.textContent.trim().split(/\s+/).map(w => `<span class="w${HL.includes(w) ? ' hl-w' : ''}">${esc(w)}</span>`).join(' ');
-  const words = $$('.w', pt);
+  const words = $$('.w', pt); let lastN = 0;
   if (REDUCE) words.forEach(w => w.classList.add('on', ...(w.classList.contains('hl-w') ? ['hl'] : [])));
   else ScrollTrigger.create({
     trigger: pt, start: 'top 80%', end: 'bottom 45%', scrub: true,
-    onUpdate: s => { const n = Math.round(s.progress * words.length); words.forEach((w, i) => { const on = i < n; w.classList.toggle('on', on && !w.classList.contains('hl-w')); w.classList.toggle('hl', on && w.classList.contains('hl-w')); }); }
+    onUpdate: s => { const n = Math.round(s.progress * words.length); if (n === lastN) return;
+      const lo = Math.min(n, lastN), hi = Math.max(n, lastN); lastN = n;
+      for (let i = lo; i < hi; i++) { const w = words[i], on = i < n, hl = w.classList.contains('hl-w'); w.classList.toggle(hl ? 'hl' : 'on', on); } }
   });
 }
 
@@ -156,10 +160,20 @@ function classes() {
   rows.forEach(r => gsap.from($$('.cl-n, .cl-t, .cl-d, .cl-s', r), { y: 26, opacity: 0, duration: .9, ease: 'expo.out', stagger: .05,
     scrollTrigger: { trigger: r, start: 'top 88%', toggleActions: 'play none none none' } }));
   const nowRow = rows[NOW];
-  const target = () => { const r = list.getBoundingClientRect(), n = nowRow.getBoundingClientRect(); return Math.min(1, (n.top + n.height / 2 - r.top) / r.height); };
-  const light = () => { const y = fill.getBoundingClientRect().bottom + 1; rows.forEach(r => r.classList.toggle('lit', r.querySelector('.cl-node').getBoundingClientRect().top < y)); };
-  gsap.fromTo(fill, { scaleY: 0 }, { scaleY: () => target(), ease: 'none', invalidateOnRefresh: true,
-    scrollTrigger: { trigger: list, start: 'top 70%', endTrigger: nowRow, end: 'center 55%', scrub: .5, onUpdate: light, onRefresh: light } });
+  let H = 1, nodes = [], target = 1, lit = -1;
+  const measure = () => {
+    H = list.offsetHeight || 1;
+    nodes = rows.map(r => r.offsetTop + r.offsetHeight / 2);
+    target = Math.min(1, (nowRow.offsetTop + nowRow.offsetHeight / 2) / H);
+  };
+  const light = p => {
+    const y = p * target * H; let n = 0; while (n < nodes.length && nodes[n] <= y + 1) n++;
+    if (n === lit) return; lit = n; rows.forEach((r, i) => r.classList.toggle('lit', i < n));
+  };
+  measure();
+  ScrollTrigger.create({ trigger: list, start: 'top 70%', endTrigger: nowRow, end: 'center 55%', scrub: .5,
+    onRefresh: s => { measure(); fill.style.transform = `scaleY(${s.progress * target})`; light(s.progress); },
+    onUpdate: s => { fill.style.transform = `scaleY(${s.progress * target})`; light(s.progress); } });
 }
 
 /* ═════════ school life: each event opens a pop-up with a countdown ═════════ */

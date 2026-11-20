@@ -43,6 +43,7 @@ d.classList.add('js');if(seen||matchMedia('(prefers-reduced-motion: reduce)').ma
 <link rel="preload" href="fonts/archivo-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" href="assets/photos/classroom-sun.webp" media="(min-width:821px)">
 <link rel="preload" as="image" href="assets/photos/classroom-sun-m.webp" media="(max-width:820px)">
+<script>(function(){try{if(sessionStorage.getItem('clarus-curtain')){document.documentElement.classList.add('arrive');sessionStorage.removeItem('clarus-curtain')}}catch(e){}})();</script>
 <link rel="stylesheet" href="vendor/lenis/lenis.css">
 <link rel="stylesheet" href="css/clarus.css">
 </head>
@@ -75,6 +76,7 @@ d.classList.add('js');if(seen||matchMedia('(prefers-reduced-motion: reduce)').ma
 </div>
 
 <!-- shared navbar: the same bar on every page (built in by src/build.py) -->
+<div class="curtain" id="curtain" aria-hidden="true"><svg viewBox="14 6 465 398"><use href="#cmark"/></svg><span class="lbl">Clarus School</span></div>
 <header class="nav" id="nav">
   <a class="brand" href="/" aria-label="Clarus School, home">
     <svg class="brand-mark" viewBox="14 6 465 398" aria-hidden="true"><use href="#cmark"/></svg>
@@ -92,6 +94,7 @@ d.classList.add('js');if(seen||matchMedia('(prefers-reduced-motion: reduce)').ma
     <a class="btn nav-cta" href="/#admissions">Book a visit<svg class="arw" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
     <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu-pop" aria-label="Open menu"><span class="lbl">Menu</span><i></i></button>
   </div>
+  <i class="nav-prog" id="nav-prog" aria-hidden="true"></i>
   <div class="menu-pop" id="menu-pop" hidden>
     <nav aria-label="Menu">
       <a href="/#classes"><small>01</small>Classes</a>

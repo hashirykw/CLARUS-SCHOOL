@@ -280,14 +280,11 @@ export const SCENES = [['nursery',sceneNursery],['kg',sceneKG],['class1',sceneCl
 export async function createWorld(renderer){
   const scene = new THREE.Scene();
   const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(),.04).texture; scene.environmentIntensity = .45;
-  scene.fog = new THREE.Fog(P.floor,12,26);
 
   // floor: exact page colour with a dot grid; shadows land on a separate transparent plane
-  const dots = canvasTex(256,256,(x,w,h)=>{ x.fillStyle = hex(P.floor); x.fillRect(0,0,w,h); x.fillStyle = '#CFC4B2'; x.beginPath(); x.arc(w/2,h/2,9,0,7); x.fill(); });
-  dots.wrapS = dots.wrapT = THREE.RepeatWrapping; dots.repeat.set(650,200);
   const L = SPACING*4, cx = L/2;
-  const fl = new THREE.Mesh(new THREE.PlaneGeometry(260,80), new THREE.MeshBasicMaterial({ map:dots, toneMapped:false })); fl.rotation.x = -Math.PI/2; fl.position.x = cx; scene.add(fl);
-  const shp = new THREE.Mesh(new THREE.PlaneGeometry(260,80), new THREE.ShadowMaterial({ opacity:.2, color:0x4A3B2A })); shp.rotation.x = -Math.PI/2; shp.position.set(cx,.002,0); shp.receiveShadow = true; scene.add(shp);
+  // the page's own paper grid shows through: no painted floor, only the shadow-catcher below
+  const shp = new THREE.Mesh(new THREE.PlaneGeometry(260,80), new THREE.ShadowMaterial({ opacity:.16, color:0x2A2340 })); shp.rotation.x = -Math.PI/2; shp.position.set(cx,.002,0); shp.receiveShadow = true; scene.add(shp);
 
   // ribbon path: one curve, colour blends from scene to scene
   const cps = []; for(let i=0;i<=26;i++){ const x = -12+i*3.2; cps.push(V(x,0,1.45+.26*Math.sin(i*1.35))); }
@@ -326,7 +323,7 @@ export async function createWorld(renderer){
   scene.add(new THREE.HemisphereLight(0xffffff,0xEADFCF,1.0));
   const key = new THREE.DirectionalLight(0xFFF4E4,2.3); key.castShadow = true;
   const sc = key.shadow.camera; sc.left = -8; sc.right = 8; sc.top = 8; sc.bottom = -8; sc.near = .5; sc.far = 40;
-  key.shadow.mapSize.set(2048,2048); key.shadow.radius = 5; key.shadow.bias = -.0003; key.shadow.normalBias = .02; scene.add(key,key.target);
+  key.shadow.mapSize.set(1024,1024); key.shadow.radius = 5; key.shadow.bias = -.0003; key.shadow.normalBias = .02; scene.add(key,key.target);
   const fill = new THREE.DirectionalLight(0xE6EEFF,.55); fill.position.set(6,4,6); scene.add(fill);
 
   const camera = new THREE.PerspectiveCamera(27,1.6,.1,120);
@@ -336,7 +333,6 @@ export async function createWorld(renderer){
     const a = w/h, t = THREE.MathUtils.clamp((1.45-a)/(1.45-.5),0,1);
     for(const k in wide) cur[k] = wide[k] + (tall[k]-wide[k])*t;
     camera.aspect = a; camera.fov = cur.fov; camera.updateProjectionMatrix();
-    scene.fog.near = cur.z + 4; scene.fog.far = cur.z + 18;
   }
   function update(camX,time){
     camera.position.set(camX+.45,cur.y,cur.z); camera.lookAt(camX+.12,cur.ly,0);

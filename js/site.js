@@ -21,7 +21,7 @@ document.addEventListener('click', e => {
   let h = a.getAttribute('href');
   if (h === '/' && PAGE === 'home') { e.preventDefault(); closeMenu(); scrollToEl(body); return; }
   if (h.startsWith('/#') && PAGE === 'home') h = h.slice(1);
-  if (!h.startsWith('#') || h.length < 2) { closeMenu(); return; }
+  if (!h.startsWith('#') || h.length < 2) return;
   const el = $(h); if (!el) return;
   e.preventDefault(); closeMenu();
   if (a.dataset.campus) { const sel = $('#enq-campus'); if (sel) sel.value = a.dataset.campus; }
@@ -49,6 +49,35 @@ if (PAGE === 'home' && 'IntersectionObserver' in window) {
   }), { rootMargin: '-45% 0px -50% 0px' });
   links.forEach(l => { const s = document.getElementById(l.dataset.sec); if (s) io.observe(s); });
 }
+
+/* ═════════ scroll progress: a crimson hairline under the bar ═════════ */
+const prog = $('#nav-prog');
+let progQ = false;
+function progress() {
+  progQ = false;
+  const max = document.documentElement.scrollHeight - innerHeight;
+  prog.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`;
+}
+addEventListener('scroll', () => { if (!progQ) { progQ = true; requestAnimationFrame(progress); } }, { passive: true }); progress();
+
+/* ═════════ page transitions: a paper curtain between the main page and Clarus Junior ═════════ */
+const otherPage = a => {
+  if (a.target === '_blank' || a.hasAttribute('download')) return false;
+  const u = new URL(a.href, location.href);
+  if (u.origin !== location.origin) return false;
+  const to = /\/junior(\.html)?$/.test(u.pathname) ? 'junior' : (u.pathname === '/' || u.pathname.endsWith('/index.html')) ? 'home' : null;
+  return to && to !== PAGE;
+};
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href]');
+  if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0 || !otherPage(a)) return;
+  e.preventDefault(); closeMenu();
+  try { sessionStorage.setItem('clarus-curtain', '1'); } catch (_) {}
+  root.classList.add('leaving');
+  setTimeout(() => { location.href = a.href; }, REDUCE ? 0 : 620);
+}, true);
+addEventListener('pageshow', e => { if (e.persisted) root.classList.remove('leaving'); });
+if (root.classList.contains('arrive')) requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('arrived')));
 
 /* ═════════ dropdown menu (a small panel, never full screen) ═════════ */
 const menuBtn = $('#menu-btn'), pop = $('#menu-pop');

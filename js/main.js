@@ -42,7 +42,7 @@ function setScene(k){
 /* 3D */
 await document.fonts.load('400 96px Jost'); await document.fonts.ready;
 const canvas = $('gl');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true, powerPreference:'high-performance' });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true, powerPreference:'high-performance', premultipliedAlpha:true });
 renderer.setClearColor(0x000000,0);
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.toneMapping = THREE.NeutralToneMapping;
@@ -51,7 +51,7 @@ window.__sources = world.sources;
 const N = world.count;
 function resize(){
   const w = el.stage.clientWidth, h = el.stage.clientHeight;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, w < 820 ? 1.5 : 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, w < 820 ? 1.25 : 1.5));
   renderer.setSize(w,h,false); world.resize(w,h); dirty = true;
 }
 let dirty = true, progress = 0, visible = true;
@@ -96,6 +96,12 @@ if(CAPTURE){
     gsap.ticker.add(t => lenis.raf(t*1000));
     gsap.ticker.lagSmoothing(0);
   }
-  gsap.ticker.add(time => { if(visible) frame(time); });
+  // full frame rate while the camera moves; half rate while resting (only the mascot waves then)
+  let lastP = -1, tick = 0;
+  gsap.ticker.add(time => {
+    if(!visible || document.hidden) return;
+    const moving = Math.abs(progress - lastP) > 1e-5; lastP = progress;
+    if(moving || (++tick & 1)) frame(time);
+  });
   window.__ready = true;
 }
