@@ -119,7 +119,7 @@ function signTexture(text, w = 1024, h = 96) {
 }
 
 /* ───────── the Senior building: a classical hall with portico, wings, cupola ───────── */
-function seniorStages(M) {
+export function seniorStages(M) {
   const stages = [];
   const stage = (name, fn, anchor = [0, 0, 0], kind = 'rise') => { const k = new Kit(); fn(k); const g = k.build(M); g.name = name; g.userData.kind = kind; g.userData.anchor = anchor; stages.push(g); return g; };
   const T = .42;                                     // top of the board
@@ -227,7 +227,7 @@ function seniorStages(M) {
 }
 
 /* ───────── the Junior building: two gabled houses, a link block, a little playground ───────── */
-function juniorStages(M) {
+export function juniorStages(M) {
   const stages = [];
   const stage = (name, fn, anchor = [0, 0, 0], kind = 'rise') => { const k = new Kit(); fn(k); const g = k.build(M); g.name = name; g.userData.kind = kind; g.position.set(...anchor); stages.push(g); return g; };
   const T = .42, B = T + .03;
